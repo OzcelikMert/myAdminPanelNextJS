@@ -1,0 +1,40 @@
+.page-post,
+.page-post-term {
+  form {
+    .post-image {
+      width: 150px
+    }
+  }
+  .table-post {
+    overflow: hidden;
+    position: relative;
+    .table-responsive {
+      min-height: 550px;
+      .image {
+        img {
+          width: 60px;
+          height: 60px;
+          border-radius: 75px;
+        }
+      }
+    }
+  }
+
+  .btn-save {
+    padding: 15px 40px 15px 40px;
+  }
+
+  .category-badge:hover {
+    background: theme-gradient-color("primary");
+  }
+}
+
+@media (max-width: 767px) {
+  .page-post,
+  .page-post-term {
+    .list-mode-btn {
+      width: 100%;
+      padding: 15px
+    }
+  }
+}

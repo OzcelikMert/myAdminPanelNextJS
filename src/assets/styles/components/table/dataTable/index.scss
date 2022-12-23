@@ -1,0 +1,33 @@
+.rdt_Table {
+  div {
+    background-color: var(--theme-bg) !important;
+    color: var(--theme-table-text-color) !important;
+  }
+
+  .rdt_TableRow {
+    border-bottom-color: var(--theme-table-row-border-color) !important;
+
+    &:hover {
+      background-color: var(--theme-bg);
+      border-bottom-color: var(--theme-table-row-border-color) !important;
+      outline: none !important;
+    }
+  }
+
+  .rdt_TableHeadRow {
+    border-bottom-color: var(--theme-table-row-border-color) !important;
+  }
+}
+
+.rdt_Pagination {
+  background-color: var(--theme-table) !important;
+  color: var(--theme-table-text-color) !important;
+
+  button {
+    fill: var(--theme-table-pagination-btn-color) !important;
+
+    &:disabled {
+      fill: var(--theme-table-pagination-btn-disable-color) !important;
+    }
+  }
+}

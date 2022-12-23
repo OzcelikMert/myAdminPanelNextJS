@@ -1,0 +1,18 @@
+.custom-select {
+  .custom-select__control,
+  .custom-select__menu {
+    background: var(--theme-bg);
+  }
+
+  .custom-select__menu {
+    div {
+      div:hover {
+        background: var(--theme-content-wrapper-bg);
+      }
+    }
+  }
+
+  .custom-select__single-value {
+    color: var(--theme-input-color)
+  }
+}
