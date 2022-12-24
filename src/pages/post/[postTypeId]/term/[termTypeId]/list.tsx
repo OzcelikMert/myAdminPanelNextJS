@@ -1,25 +1,27 @@
 import React, {Component} from 'react'
 import {
+    PostTermTypeId,
     PostTermTypes, PostTypeId,
     PostTypes, Status,
     StatusId
 } from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import {ThemeTableToggleMenu} from "components/table";
+import {ThemeTableToggleMenu} from "components/elements/table";
 import Swal from "sweetalert2";
 import PostTermDocument from "types/services/postTerm";
 import postTermService from "services/postTerm.service";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import imageSourceUtil from "utils/imageSource.util";
 import classNameUtil from "utils/className.util";
 import permissionUtil from "utils/permission.util";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
-import ThemeDataTable from "components/table/dataTable";
+import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
+    typeId: PostTermTypeId
+    postTypeId: PostTypeId
     searchKey: string
     postTerms: PostTermDocument[],
     showingPostTerms: PageState["postTerms"]
@@ -35,6 +37,8 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
+            typeId: Number(this.props.router.query.termTypeId ?? 1),
+            postTypeId: Number(this.props.router.query.postTypeId ?? 1),
             searchKey: "",
             selectedPostTerms: [],
             listMode: "list",
@@ -55,15 +59,15 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
 
     setPageTitle() {
         this.props.setBreadCrumb([
-            this.props.t(PostTypes.findSingle("id", this.props.getPageData.searchParams.postTypeId)?.langKey ?? "[noLangAdd]"),
-            this.props.t(PostTermTypes.findSingle("id", this.props.getPageData.searchParams.termTypeId)?.langKey ?? "[noLangAdd]")
+            this.props.t(PostTypes.findSingle("id", this.state.postTypeId)?.langKey ?? "[noLangAdd]"),
+            this.props.t(PostTermTypes.findSingle("id", this.state.typeId)?.langKey ?? "[noLangAdd]")
         ])
     }
 
     async getPostTerms() {
         let postTerms = (await postTermService.get({
-            typeId: this.props.getPageData.searchParams.termTypeId,
-            postTypeId: this.props.getPageData.searchParams.postTypeId,
+            typeId: this.state.typeId,
+            postTypeId: this.state.postTypeId,
             langId: this.props.getPageData.mainLangId
         })).data;
         this.setState({
@@ -93,8 +97,8 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
 
                     postTermService.delete({
                         termId: selectedPostTermId,
-                        typeId: this.props.getPageData.searchParams.termTypeId,
-                        postTypeId: this.props.getPageData.searchParams.postTypeId
+                        typeId: this.state.typeId,
+                        postTypeId: this.state.postTypeId
                     }).then(resData => {
                         loadingToast.hide();
                         if (resData.status) {
@@ -121,8 +125,8 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
 
             postTermService.updateStatus({
                 termId: selectedPostTermId,
-                typeId: this.props.getPageData.searchParams.termTypeId,
-                postTypeId: this.props.getPageData.searchParams.postTypeId,
+                typeId: this.state.typeId,
+                postTypeId: this.state.postTypeId,
                 statusId: statusId
             }).then(resData => {
                 loadingToast.hide();
@@ -178,15 +182,15 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     }
 
     navigateTermPage(type: "add" | "back" | "edit", postTermId = "") {
-        let postTypeId = this.props.getPageData.searchParams.postTypeId;
-        let postTermTypeId = this.props.getPageData.searchParams.termTypeId;
+        let postTypeId = this.state.postTypeId;
+        let postTermTypeId = this.state.typeId;
         let pagePath = [PostTypeId.Page, PostTypeId.Navigate].includes(Number(postTypeId)) ? PagePaths.post(postTypeId) : PagePaths.themeContent().post(postTypeId);
         let path = (type === "add")
             ? pagePath.term(postTermTypeId).add()
             : (type === "edit")
                 ? pagePath.term(postTermTypeId).edit(postTermId)
                 : pagePath.list();
-        this.props.router.navigate(path, {replace: true});
+        this.props.router.push(path);
     }
 
     get getTableColumns(): TableColumn<PageState["showingPostTerms"][0]>[] {
@@ -265,7 +269,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                     permissionUtil.checkPermission(
                                         this.props.getSessionData.roleId,
                                         this.props.getSessionData.permissions,
-                                        permissionUtil.getPermissionIdForPostType(this.props.getPageData.searchParams.postTypeId, "Add")
+                                        permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Add")
                                     ) ? <button className="btn btn-gradient-info btn-lg w-100"
                                                 onClick={() => this.navigateTermPage("add")}>
                                         + {this.props.t("addNew")}
@@ -298,12 +302,12 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                             permissionUtil.checkPermission(
                                                 this.props.getSessionData.roleId,
                                                 this.props.getSessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.props.getPageData.searchParams.postTypeId, "Edit")
+                                                permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Edit")
                                             ) ||
                                             permissionUtil.checkPermission(
                                                 this.props.getSessionData.roleId,
                                                 this.props.getSessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.props.getPageData.searchParams.postTypeId, "Delete")
+                                                permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                                             )
                                         ) ? <ThemeTableToggleMenu
                                             t={this.props.t}
@@ -316,7 +320,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                                     permissionUtil.checkPermission(
                                                         this.props.getSessionData.roleId,
                                                         this.props.getSessionData.permissions,
-                                                        permissionUtil.getPermissionIdForPostType(this.props.getPageData.searchParams.postTypeId, "Delete")
+                                                        permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                                                     ) ? [StatusId.Deleted] : []
                                                 )
                                             }

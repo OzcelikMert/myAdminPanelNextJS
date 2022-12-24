@@ -1,9 +1,9 @@
 import React, {Component, FormEvent} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeForm, ThemeFormType} from "components/form";
+import {ThemeForm, ThemeFormType} from "components/elements/form";
 import HandleForm from "library/react/handles/form";
 import profileService from "services/profile.service";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 
 type PageState = {
     isSubmitting: boolean

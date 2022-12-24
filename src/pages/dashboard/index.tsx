@@ -172,14 +172,14 @@ class PageDashboard extends Component<PageProps, PageState> {
         });
     }
 
-    navigateTermPage(type: "termEdit" | "edit" | "listPost", postTypeId: number, itemId = "", termTypeId = 0) {
+    async navigateTermPage(type: "termEdit" | "edit" | "listPost", postTypeId: number, itemId = "", termTypeId = 0) {
         let pagePath = postTypeId == PostTypeId.Page ? PagePaths.post(postTypeId) : PagePaths.themeContent().post(postTypeId);
         let path = (type === "edit")
             ? pagePath.edit(itemId)
             : (type === "listPost")
                 ? pagePath.list()
                 : pagePath.term(termTypeId).edit(itemId)
-        this.props.router.navigate(path, {replace: true});
+        await this.props.router.push(path);
     }
 
     get getTableColumns(): TableColumn<PageState["lastPosts"][0]>[] {

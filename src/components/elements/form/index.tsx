@@ -16,6 +16,7 @@ type PageProps = {
     isSubmitting?: boolean,
     formAttributes?: React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>
     children: JSX.Element
+    enterToSubmit?: true
 };
 
 class ThemeForm extends Component<PageProps, PageState> {
@@ -24,7 +25,7 @@ class ThemeForm extends Component<PageProps, PageState> {
     }
 
     onKeyDown(event: React.KeyboardEvent<HTMLFormElement>) {
-        if (event.key === "Enter" ) event.preventDefault();
+        if (!this.props.enterToSubmit && event.key === "Enter") event.preventDefault();
     }
 
     render() {

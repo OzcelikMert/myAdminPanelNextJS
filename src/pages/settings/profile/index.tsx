@@ -1,21 +1,19 @@
 import React, {Component, FormEvent} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/elements/form";
 import HandleForm from "library/react/handles/form";
 import {
     PermissionGroups,
-    PermissionId,
     Permissions, Status,
     UserRoleId, UserRoles
 } from "constants/index";
 import Spinner from "components/tools/spinner";
-import ThemeChooseImage from "components/chooseImage";
+import ThemeChooseImage from "components/elements/chooseImage";
 import userService from "services/user.service";
 import profileService from "services/profile.service";
-import Thread from "library/thread";
 import classNameUtil from "utils/className.util";
 import imageSourceUtil from "utils/imageSource.util";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import {ProfileUpdateParamDocument} from "types/services/profile";
 
@@ -88,7 +86,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                 };
 
                 if (user.roleId == UserRoleId.Admin) {
-                    state.data.permissions = Object.keys(PermissionId).map(permKey => PermissionId[permKey]);
+                    state.data.permissions = Permissions.map(permission => permission.id);
                 }
 
                 state.formData = {

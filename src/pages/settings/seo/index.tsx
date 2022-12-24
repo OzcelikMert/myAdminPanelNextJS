@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
-import {ThemeForm, ThemeFormTags, ThemeFormType} from "components/form";
+import {ThemeForm, ThemeFormTags, ThemeFormType} from "components/elements/form";
 import {PagePropCommonDocument} from "types/pageProps";
 import HandleForm from "library/react/handles/form";
 import settingService from "services/setting.service";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import {SettingSeoUpdateParamDocument} from "types/services/setting";
 
 type PageState = {

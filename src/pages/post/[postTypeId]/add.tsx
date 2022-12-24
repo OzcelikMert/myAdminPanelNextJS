@@ -2,24 +2,23 @@ import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
 import JoditEditor from "jodit-react";
 import moment from "moment";
-import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/form"
+import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form"
 import {LanguageKeysArray, PageTypes, PostTermTypeId, PostTypeId, PostTypes, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import SweetAlert from "react-sweetalert2";
 import V from "library/variable";
 import Variable from "library/variable";
 import HandleForm from "library/react/handles/form";
-import ThemeChooseImage from "components/chooseImage";
+import ThemeChooseImage from "components/elements/chooseImage";
 import postTermService from "services/postTerm.service";
 import postService from "services/post.service";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import staticContentUtil from "utils/staticContent.util";
 import imageSourceUtil from "utils/imageSource.util";
 import {PostContentButtonDocument, PostUpdateParamDocument} from "types/services/post";
 import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
-import ThemeToolTip from "components/tooltip";
+import ThemeToolTip from "components/elements/tooltip";
 
 type PageState = {
     langKeys: { value: string, label: string }[]
@@ -59,8 +58,8 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             mainTitle: "",
             isLoading: true,
             formData: {
-                postId: this.props.getPageData.searchParams.postId,
-                typeId: this.props.getPageData.searchParams.postTypeId,
+                postId: this.props.router.query.postId as string ?? "",
+                typeId: Number(this.props.router.query.postTypeId ?? 1),
                 categoryTermId: [],
                 tagTermId: [],
                 statusId: 0,
@@ -97,7 +96,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             this.getPageTypes();
         }
         this.getStatus();
-        if (this.props.getPageData.searchParams.postId) {
+        if (this.state.formData.postId) {
             await this.getPost();
         }
         this.setState({
@@ -121,7 +120,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
 
     setPageTitle() {
         let titles: string[] = [
-            this.props.t(PostTypes.findSingle("id", this.props.getPageData.searchParams.postTypeId)?.langKey ?? "[noLangAdd]"),
+            this.props.t(PostTypes.findSingle("id", this.state.formData.typeId)?.langKey ?? "[noLangAdd]"),
             this.props.t(this.state.formData.postId ? "edit" : "add")
         ];
         if (this.state.formData.postId) {
@@ -176,7 +175,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
 
     async getTerms() {
         let resData = await postTermService.get({
-            postTypeId: this.props.getPageData.searchParams.postTypeId,
+            postTypeId: this.state.formData.typeId,
             langId: this.props.getPageData.mainLangId,
             statusId: StatusId.Active
         });
@@ -212,8 +211,8 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             this.setState((state: PageState) => {
                 state.posts = [{value: "", label: this.props.t("notSelected")}];
                 resData.data.orderBy("order", "asc").forEach(item => {
-                    if (!V.isEmpty(this.props.getPageData.searchParams.postId)) {
-                        if (this.props.getPageData.searchParams.postId == item._id) return;
+                    if (!V.isEmpty(this.state.formData.postId)) {
+                        if (this.state.formData.postId == item._id) return;
                     }
                     state.posts.push({
                         value: item._id,
@@ -228,7 +227,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     async getPost() {
         let resData = await postService.get({
             postId: this.state.formData.postId,
-            typeId: this.props.getPageData.searchParams.postTypeId,
+            typeId: this.state.formData.typeId,
             langId: this.props.getPageData.langId,
             getContents: 1
         });
@@ -278,10 +277,10 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     navigateTermPage() {
-        let postTypeId = this.props.getPageData.searchParams.postTypeId;
+        let postTypeId = this.state.formData.typeId;
         let pagePath = [PostTypeId.Page, PostTypeId.Navigate].includes(Number(postTypeId))  ? PagePaths.post(postTypeId) : PagePaths.themeContent().post(postTypeId);
         let path = pagePath.list();
-        this.props.router.navigate(path, {replace: true});
+        this.props.router.push(path);
     }
 
     onSubmit(event: FormEvent) {
@@ -536,21 +535,24 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     TabContent = () => {
+       /* config={{
+            uploader:{insertImageAsBase64URI: true},
+            showXPathInStatusbar: false,
+                showCharsCounter: false,
+                showWordsCounter: false,
+                toolbarAdaptive: true,
+                askBeforePasteFromWord: false,
+                askBeforePasteHTML: false,
+                defaultActionOnPaste: "insert_clear_html",
+                placeholder: this.props.t("content")
+        }}*/
         return (
             <div className="row">
                 <div className="col-md-7 mb-3">
                     <JoditEditor
                         value={this.state.formData.contents.content || ""}
                         config={{
-                            uploader: {insertImageAsBase64URI: true},
-                            showXPathInStatusbar: false,
-                            showCharsCounter: false,
-                            showWordsCounter: false,
-                            toolbarAdaptive: true,
-                            askBeforePasteFromWord: false,
-                            askBeforePasteHTML: false,
                             defaultActionOnPaste: "insert_clear_html",
-                            placeholder: this.props.t("content")
                         }}
                         onBlur={newContent => this.onChangeJoeEditor(newContent)}
                     />

@@ -19,26 +19,27 @@ import AppAdmin from "components/app";
 import English from "languages/en.json"
 import Turkish from "languages/tr.json"
 
+if(typeof window !== "undefined") {
+    const language = i18n.use(initReactI18next);
 
-const language = i18n.use(initReactI18next);
-
-language.init({
-    resources: {
-        en: {translation: English},
-        tr: {translation: Turkish}
-    },
-    keySeparator: false,
-    lng: Languages.findSingle("id", localStorageUtil.adminLanguage.get)?.code || window.navigator.language.slice(0, 2) || Languages[0].code,
-    fallbackLng: Languages.findSingle("id", LanguageId.English)?.code || Languages[0].code,
-    interpolation: {
-        escapeValue: false
-    }
-});
+    language.init({
+        resources: {
+            en: {translation: English},
+            tr: {translation: Turkish}
+        },
+        keySeparator: false,
+        lng: Languages.findSingle("id", localStorageUtil.adminLanguage.get)?.code || window.navigator.language.slice(0, 2) || Languages[0].code,
+        fallbackLng: Languages.findSingle("id", LanguageId.English)?.code || Languages[0].code,
+        interpolation: {
+            escapeValue: false
+        }
+    });
+}
 
 function App(props: AppProps) {
-    (new ThemeUtil(localStorageUtil.adminIsDarkTheme.get)).setThemeColor();
+    if(typeof window !== "undefined") (new ThemeUtil(localStorageUtil.adminIsDarkTheme.get)).setThemeColor();
     return (
-        <AppAdmin {...props} />
+        typeof window !== "undefined" ? <AppAdmin {...props} /> : <div>Loading...</div>
     )
 }
 

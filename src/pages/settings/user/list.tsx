@@ -4,16 +4,15 @@ import {PermissionId, Status, UserRoleId, UserRoles} from "constants/index";
 import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
 import UserDocument from "types/services/user";
-import ThemeUsersProfileCard from "components/users/profileCard";
+import ThemeUsersProfileCard from "components/elements/users/profileCard";
 import userService from "services/user.service";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import imageSourceUtil from "utils/imageSource.util";
 import classNameUtil from "utils/className.util";
 import permissionUtil from "utils/permission.util";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
-import ThemeDataTable from "components/table/dataTable";
+import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
     searchKey: string
@@ -124,7 +123,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
 
     navigateTermPage(type: "edit", itemId = "") {
         let path = PagePaths.settings().user().edit(itemId)
-        this.props.router.navigate(path, {replace: true});
+        this.props.router.push(path);
     }
 
     get getTableColumns(): TableColumn<PageState["users"][0]>[] {
@@ -240,6 +239,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                         let userInfo = this.state.users.findSingle("_id", this.state.selectedUserId);
                         return userInfo ? <ThemeUsersProfileCard
                             router={this.props.router}
+                            t={this.props.t}
                             onClose={() => {
                                 this.setState({isViewUserInfo: false})
                             }}

@@ -2,7 +2,7 @@ import React, {Component, createRef, RefObject} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
 import UploadingFilesDocument from "types/pages/gallery/upload";
 import galleryService from "services/gallery.service";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 
 type PageState = {
     isDragging: boolean,
@@ -20,7 +20,7 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
 
     constructor(props: PageProps) {
         super(props);
-        this.maxFileSize = Number(process.env.REACT_APP_UPLOAD_FILE_SIZE ?? 1024000);
+        this.maxFileSize = Number(process.env.UPLOAD_FILE_SIZE ?? 1524000);
         this.state = {
             isDragging: false,
             uploadingFiles: []

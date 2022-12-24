@@ -2,20 +2,20 @@ import React, {Component} from 'react'
 import {PageTypeId, PageTypes, PostTermTypeId, PostTypeId, PostTypes, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import {ThemeTableToggleMenu} from "components/table";
+import {ThemeTableToggleMenu} from "components/elements/table";
 import Swal from "sweetalert2";
 import postService from "services/post.service";
 import PostDocument from "types/services/post";
 import Spinner from "components/tools/spinner";
-import Thread from "library/thread";
 import imageSourceUtil from "utils/imageSource.util";
 import classNameUtil from "utils/className.util";
 import permissionUtil from "utils/permission.util";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
-import ThemeDataTable from "components/table/dataTable";
+import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
+    typeId: PostTypeId
     searchKey: string
     posts: PostDocument[],
     showingPosts: PageState["posts"]
@@ -31,6 +31,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
+            typeId: Number(this.props.router.query.postTypeId ?? 1),
             searchKey: "",
             selectedPosts: [],
             listMode: "list",
@@ -50,21 +51,21 @@ export default class PagePostList extends Component<PageProps, PageState> {
     }
 
     componentDidUpdate(prevProps: Readonly<PageProps>) {
-        if (this.props.router.location.pathname !== prevProps.router.location.pathname) {
+        if (this.props.router.pathname !== prevProps.router.pathname) {
             this.getPosts();
         }
     }
 
     setPageTitle() {
         this.props.setBreadCrumb([
-            this.props.t(PostTypes.findSingle("id", this.props.getPageData.searchParams.postTypeId)?.langKey ?? "[noLangAdd]"),
+            this.props.t(PostTypes.findSingle("id", this.state.typeId)?.langKey ?? "[noLangAdd]"),
             this.props.t("list")
         ])
     }
 
     async getPosts() {
         let posts = (await postService.get({
-            typeId: this.props.getPageData.searchParams.postTypeId,
+            typeId: this.state.typeId,
             langId: this.props.getPageData.langId
         })).data;
         this.setState((state: PageState) => {
@@ -94,7 +95,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
 
                     postService.delete({
                         postId: selectedPostId,
-                        typeId: this.props.getPageData.searchParams.postTypeId
+                        typeId: this.state.typeId
                     }).then(resData => {
                         loadingToast.hide();
                         if (resData.status) {
@@ -120,7 +121,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
             });
             postService.updateStatus({
                 postId: selectedPostId,
-                typeId: this.props.getPageData.searchParams.postTypeId,
+                typeId: this.state.typeId,
                 statusId: statusId
             }).then(resData => {
                 loadingToast.hide();
@@ -176,20 +177,20 @@ export default class PagePostList extends Component<PageProps, PageState> {
     }
 
     navigateTermPage(type: "termEdit" | "edit", itemId = "", termTypeId = 0) {
-        let postTypeId = this.props.getPageData.searchParams.postTypeId;
+        let postTypeId = this.state.typeId;
         let pagePath = [PostTypeId.Page, PostTypeId.Navigate].includes(Number(postTypeId)) ? PagePaths.post(postTypeId) : PagePaths.themeContent().post(postTypeId);
         let path = (type === "edit")
             ? pagePath.edit(itemId)
             : (type === "termEdit" && itemId)
                 ? pagePath.term(termTypeId).edit(itemId)
                 : pagePath.term(termTypeId).list()
-        this.props.router.navigate(path, {replace: true});
+        this.props.router.push(path);
     }
 
     get getTableColumns(): TableColumn<PageState["showingPosts"][0]>[] {
         return [
             (
-                ![PostTypeId.Navigate].includes(Number(this.props.getPageData.searchParams.postTypeId))
+                ![PostTypeId.Navigate].includes(this.state.typeId)
                     ? {
                         name: this.props.t("image"),
                         width: "75px",
@@ -223,7 +224,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 sortable: true
             },
             (
-                [PostTypeId.Navigate].includes(Number(this.props.getPageData.searchParams.postTypeId))
+                [PostTypeId.Navigate].includes(this.state.typeId)
                     ? {
                         name: this.props.t("main"),
                         selector: row => row.mainId ? row.mainId.contents?.title || this.props.t("[noLangAdd]") : this.props.t("notSelected"),
@@ -231,12 +232,16 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     } : {}
             ),
             (
-                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Navigate].includes(Number(this.props.getPageData.searchParams.postTypeId))
+                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Navigate].includes(this.state.typeId)
                     ? {
                         name: this.props.t("category"),
                         cell: row => row.terms.findMulti("typeId", PostTermTypeId.Category).length > 0
                             ? row.terms.map(item => {
-                                    if (item.typeId == PostTermTypeId.Category) {
+                                    if(typeof item === "undefined"){
+                                        return <label
+                                            className={`badge badge-gradient-danger me-1`}
+                                        >{this.props.t("deleted")}</label>
+                                    } else if (item.typeId == PostTermTypeId.Category) {
                                         return <label
                                             onClick={() => this.navigateTermPage("termEdit", item._id, row.typeId)}
                                             className={`badge badge-gradient-success me-1 cursor-pointer`}
@@ -249,7 +254,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     } : {}
             ),
             (
-                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Service].includes(Number(this.props.getPageData.searchParams.postTypeId))
+                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Service].includes(this.state.typeId)
                     ? {
                         name: this.props.t("views"),
                         selector: row => row.views,
@@ -257,7 +262,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     } : {}
             ),
             (
-                [PostTypeId.Page].includes(Number(this.props.getPageData.searchParams.postTypeId))
+                [PostTypeId.Page].includes(this.state.typeId)
                     ? {
                         name: this.props.t("pageType"),
                         selector: row => this.props.t(PageTypes.findSingle("id", (row.pageTypeId ? row.pageTypeId : PageTypeId.Default))?.langKey ?? "[noLangAdd]"),
@@ -302,7 +307,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     ><i className="fa fa-pencil-square-o"></i></button>
                 ) : null
             }
-        ].filter(column => typeof column.name !== "undefined");
+        ];
     }
 
     render() {
@@ -312,7 +317,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     <div className="col-md-3">
                         <div className="row">
                             {
-                                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Navigate, PostTypeId.Reference].includes(Number(this.props.getPageData.searchParams.postTypeId))
+                                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Navigate, PostTypeId.Reference].includes(this.state.typeId)
                                     ? <div className="col-6">
                                         <button className="btn btn-gradient-info btn-lg w-100"
                                                 onClick={() => this.navigateTermPage("termEdit", "", PostTermTypeId.Category)}>
@@ -321,7 +326,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                     </div> : null
                             }
                             {
-                                ![PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Navigate, PostTypeId.Reference].includes(Number(this.props.getPageData.searchParams.postTypeId))
+                                ![PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Navigate, PostTypeId.Reference].includes(this.state.typeId)
                                     ? <div className="col-6 text-end">
                                         <button className="btn btn-gradient-primary btn-edit-tag btn-lg w-100"
                                                 onClick={() => this.navigateTermPage("termEdit", "", PostTermTypeId.Tag)}>
@@ -355,12 +360,12 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                             permissionUtil.checkPermission(
                                                 this.props.getSessionData.roleId,
                                                 this.props.getSessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.props.getPageData.searchParams.postTypeId, "Edit")
+                                                permissionUtil.getPermissionIdForPostType(this.state.typeId, "Edit")
                                             ) ||
                                             permissionUtil.checkPermission(
                                                 this.props.getSessionData.roleId,
                                                 this.props.getSessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.props.getPageData.searchParams.postTypeId, "Delete")
+                                                permissionUtil.getPermissionIdForPostType(this.state.typeId, "Delete")
                                             )
                                         ) ? <ThemeTableToggleMenu
                                             t={this.props.t}
@@ -373,7 +378,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                                     permissionUtil.checkPermission(
                                                         this.props.getSessionData.roleId,
                                                         this.props.getSessionData.permissions,
-                                                        permissionUtil.getPermissionIdForPostType(this.props.getPageData.searchParams.postTypeId, "Delete")
+                                                        permissionUtil.getPermissionIdForPostType(this.state.typeId, "Delete")
                                                     ) ? [StatusId.Deleted] : []
                                                 )
                                             }
@@ -383,7 +388,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                     }
                                 </div>
                                 <ThemeDataTable
-                                    columns={this.getTableColumns}
+                                    columns={this.getTableColumns.filter(column => typeof column.name !== "undefined")}
                                     data={this.state.showingPosts}
                                     onSelect={rows => this.onSelect(rows)}
                                     onSearch={searchKey => this.onSearch(searchKey)}

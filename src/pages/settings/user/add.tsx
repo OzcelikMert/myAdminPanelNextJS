@@ -4,11 +4,10 @@ import moment from "moment";
 import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionGroups, Permissions, StatusId, UserRoleId, UserRoles} from "constants/index";
 import HandleForm from "library/react/handles/form";
-import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form";
 import SweetAlert from "react-sweetalert2";
 import V, {DateMask} from "library/variable";
 import userService from "services/user.service";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import staticContentUtil from "utils/staticContent.util";
 import PagePaths from "constants/pagePaths";
@@ -37,7 +36,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
             mainTitle: "",
             isSubmitting: false,
             formData: {
-                userId: this.props.getPageData.searchParams.userId,
+                userId: this.props.router.query.userId as string ?? "",
                 name: "",
                 email: "",
                 password: "",
@@ -103,7 +102,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
 
     async getUser() {
         let resData = await userService.get({
-            userId: this.props.getPageData.searchParams.userId
+            userId: this.state.formData.userId
         });
         if (resData.status) {
             if (resData.data.length > 0) {
@@ -135,7 +134,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
 
     navigateTermPage() {
         let path = PagePaths.settings().user().list();
-        this.props.router.navigate(path, {replace: true});
+        this.props.router.push(path);
     }
 
     onSubmit(event: FormEvent) {
@@ -207,7 +206,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
             <SweetAlert
                 show={this.state.isSuccessMessage}
                 title={this.props.t("successful")}
-                text={`${this.props.t((V.isEmpty(this.props.getPageData.searchParams.userId)) ? "itemAdded" : "itemEdited")}!`}
+                text={`${this.props.t((V.isEmpty(this.state.formData.userId)) ? "itemAdded" : "itemEdited")}!`}
                 icon="success"
                 timer={1000}
                 timerProgressBar={true}
@@ -324,7 +323,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                         name="password"
                         type="password"
                         autoComplete={"new-password"}
-                        required={V.isEmpty(this.props.getPageData.searchParams.userId)}
+                        required={V.isEmpty(this.state.formData.userId)}
                         value={this.state.formData.password}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />

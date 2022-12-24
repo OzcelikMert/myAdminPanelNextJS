@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import ThemeInputType from "components/form/input/type";
+import ThemeInputType from "components/elements/form/input/type";
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeForm} from "components/form";
+import {ThemeForm} from "components/elements/form";
 import HandleForm from "library/react/handles/form";
 import V from "library/variable";
 import authService from "services/auth.service";
@@ -32,7 +32,7 @@ class PageLock extends Component<PageProps, PageState> {
 
     componentDidMount() {
         if (V.isEmpty(this.props.getSessionData.email)) {
-            this.props.router.navigate(PagePaths.login(), {replace: true});
+            this.props.router.push(PagePaths.login());
         }
     }
 
@@ -50,7 +50,7 @@ class PageLock extends Component<PageProps, PageState> {
                     this.props.setSessionData({
                         id: user._id
                     }, () => {
-                        this.props.router.navigate(PagePaths.dashboard(), {replace: true});
+                        this.props.router.push(PagePaths.dashboard());
                     });
                 } else {
                     this.setState({

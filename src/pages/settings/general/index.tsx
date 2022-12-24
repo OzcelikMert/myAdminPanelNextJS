@@ -1,16 +1,15 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
 import HandleForm from "library/react/handles/form";
 import {Languages, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import languageService from "services/language.service";
 import ServerInfoDocument from "types/services/serverInfo";
 import serverInfoService from "services/serverInfo.service";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
-import ThemeToast from "components/toast";
-import ThemeChooseImage from "components/chooseImage";
+import ThemeToast from "components/elements/toast";
+import ThemeChooseImage from "components/elements/chooseImage";
 import imageSourceUtil from "utils/imageSource.util";
 import {SettingGeneralUpdateParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
@@ -24,7 +23,7 @@ type PageState = {
     serverInfo: ServerInfoDocument
     formData: Omit<SettingGeneralUpdateParamDocument, "contactForms" | "staticLanguages" | "seoContents"> & { panelLangId: string },
     formActiveKey: string
-};
+} & {[key: string]: any};
 
 type PageProps = {} & PagePropCommonDocument;
 
@@ -297,7 +296,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                         <ThemeChooseImage
                             {...this.props}
                             isShow={this.state["logo"]}
-                            onHide={() => this.setState((state) => {
+                            onHide={() => this.setState((state: PageState) => {
                                 state["logo"] = false;
                                 return state;
                             })}
@@ -316,7 +315,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             <button
                                 type="button"
                                 className="btn btn-gradient-warning btn-xs ms-1"
-                                onClick={() => this.setState((state) => {
+                                onClick={() => this.setState((state: PageState) => {
                                     state["logo"] = true;
                                     return state;
                                 })}
@@ -329,7 +328,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                         <ThemeChooseImage
                             {...this.props}
                             isShow={this.state["logoTwo"]}
-                            onHide={() => this.setState((state) => {
+                            onHide={() => this.setState((state: PageState) => {
                                 state["logoTwo"] = false;
                                 return state;
                             })}
@@ -348,7 +347,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             <button
                                 type="button"
                                 className="btn btn-gradient-warning btn-xs ms-1"
-                                onClick={() => this.setState((state) => {
+                                onClick={() => this.setState((state: PageState) => {
                                     state["logoTwo"] = true;
                                     return state;
                                 })}
@@ -361,7 +360,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                         <ThemeChooseImage
                             {...this.props}
                             isShow={this.state["icon"]}
-                            onHide={() => this.setState((state) => {
+                            onHide={() => this.setState((state: PageState) => {
                                 state["icon"] = false;
                                 return state;
                             })}
@@ -380,7 +379,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             <button
                                 type="button"
                                 className="btn btn-gradient-warning btn-xs ms-1"
-                                onClick={() => this.setState((state) => {
+                                onClick={() => this.setState((state: PageState) => {
                                     state["icon"] = true;
                                     return state;
                                 })}

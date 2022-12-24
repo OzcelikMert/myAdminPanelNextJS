@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import ThemeInputType from "components/form/input/type";
+import ThemeInputType from "components/elements/form/input/type";
 import {PagePropCommonDocument} from "types/pageProps";
 import {LanguageId, StatusId} from "constants/index";
-import {ThemeForm, ThemeFormCheckBox} from "components/form";
+import {ThemeForm, ThemeFormCheckBox} from "components/elements/form";
 import HandleForm from "library/react/handles/form";
 import authService from "services/auth.service";
 import UserDocument from "types/services/user";
@@ -64,7 +64,7 @@ class PageLogin extends Component<PageProps, PageState> {
                             name: user.name,
                             permissions: user.permissions,
                         });
-                        this.props.router.navigate(PagePaths.dashboard(), {replace: true});
+                        this.props.router.push(PagePaths.dashboard());
                     }else {
                         this.setState({
                             user: user
@@ -94,20 +94,11 @@ class PageLogin extends Component<PageProps, PageState> {
                                 <ThemeForm
                                     isSubmitting={this.state.isSubmitting}
                                     formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                                    enterToSubmit={true}
                                 >
                                     <div className="row">
                                         <div className="col-md-12 mb-3">
                                             <ThemeInputType
-                                                onKeyDown={(e) => {
-                                                    if (e.keyCode === 13) {
-                                                        if (this.state.formData.email !== "" && this.state.formData.password !== "") {
-                                                            this.onSubmit(e)
-                                                        }
-                                                        else {
-                                                            window.alert("Lütfen şifrenizi ve emailinizi boş bırakmayınız!");
-                                                        }
-                                                    }
-                                                }}
                                                 title={this.props.t("email")}
                                                 type="email"
                                                 name="email"
@@ -118,16 +109,6 @@ class PageLogin extends Component<PageProps, PageState> {
                                         </div>
                                         <div className="col-md-12 mb-3">
                                             <ThemeInputType
-                                                onKeyDown={(e) => {
-                                                    if (e.keyCode === 13) {
-                                                        if (this.state.formData.email !== "" && this.state.formData.password !== "") {
-                                                            this.onSubmit(e)
-                                                        }
-                                                        else {
-                                                            window.alert("Lütfen şifrenizi ve emailinizi boş bırakmayınız!");
-                                                        }
-                                                    }
-                                                }}
                                                 title={this.props.t("password")}
                                                 type="password"
                                                 name="password"

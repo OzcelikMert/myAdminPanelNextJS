@@ -41,10 +41,10 @@ export default {
     getPermissionIdForPostType(typeId: number, query: "Edit" | "Delete" | "Add"): PermissionId {
         let permissionId = 0;
         Object.keys(PostTypeId).forEach((postType) => {
-            let postTypeId: any = PostTypeId[postType];
+            let postTypeId: any = PostTypeId[postType as any];
             if (typeId == postTypeId) {
                 try {
-                    permissionId = PermissionId[`${postType.toCapitalizeCase()}${query.toCapitalizeCase()}`] ?? 0;
+                    permissionId = Number(PermissionId[`${postType.toCapitalizeCase()}${query.toCapitalizeCase()}` as any] ?? 0);
                 } catch (e) {}
             }
         })

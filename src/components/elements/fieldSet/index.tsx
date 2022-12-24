@@ -5,7 +5,7 @@ type PageState = {};
 type PageProps = {
     legend?: string
     legendElement?: JSX.Element
-    children: JSX.Element
+    children: any
 };
 
 class ThemeFieldSet extends Component<PageProps, PageState> {

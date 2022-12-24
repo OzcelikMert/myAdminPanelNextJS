@@ -1,18 +1,17 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import Carousel, {Modal, ModalGateway} from "react-images";
+import Lightbox from "yet-another-react-lightbox";
 import {LazyLoadImage} from 'react-lazy-load-image-component';
 import Swal from "sweetalert2";
 import galleryService from "services/gallery.service";
 import Spinner from "components/tools/spinner";
-import Thread from "library/thread";
 import pathUtil from "utils/path.util";
 import {TableColumn} from "react-data-table-component";
 import imageSourceUtil from "utils/imageSource.util";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import permissionUtil from "utils/permission.util";
 import {PermissionId} from "constants/index";
-import ThemeDataTable from "components/table/dataTable";
+import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
     images: string[]
@@ -241,18 +240,14 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
         }
 
         return this.state.isOpenViewer ? (
-                <ModalGateway>
-                    <Modal onClose={() => this.onCloseViewer()} closeOnBackdropClick={false}>
-                        <Carousel
-                            currentIndex={index}
-                            views={images.map(image => ({
-                                alt: image,
-                                source: pathUtil.uploads.images + image,
-                                caption: image
-                            }))}
-                        />
-                    </Modal>
-                </ModalGateway>
+                <Lightbox
+                    index={index}
+                    open={this.state.isOpenViewer}
+                    close={() => this.onCloseViewer()}
+                    slides={images.map(image => ({
+                        src: pathUtil.uploads.images + image
+                    }))}
+                />
             ) : null
     }
 

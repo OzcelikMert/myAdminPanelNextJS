@@ -1,19 +1,19 @@
 import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
-import {ThemeForm, ThemeFormSelect, ThemeFormType,} from "components/form"
+import {ThemeForm, ThemeFormSelect, ThemeFormType,} from "components/elements/form"
 import {PagePropCommonDocument} from "types/pageProps";
 import {PostTermTypeId, PostTermTypes, PostTypeId, PostTypes, StatusId} from "constants/index";
 import V from "library/variable";
 import SweetAlert from "react-sweetalert2";
 import HandleForm from "library/react/handles/form";
-import ThemeChooseImage from "components/chooseImage";
+import ThemeChooseImage from "components/elements/chooseImage";
 import postTermService from "services/postTerm.service";
 import Spinner from "components/tools/spinner";
 import staticContentUtil from "utils/staticContent.util";
 import imageSourceUtil from "utils/imageSource.util";
 import {PostTermUpdateParamDocument} from "types/services/postTerm";
 import PagePaths from "constants/pagePaths";
-import ThemeToolTip from "components/tooltip";
+import ThemeToolTip from "components/elements/tooltip";
 
 type PageState = {
     formActiveKey: string
@@ -39,9 +39,9 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
             isSubmitting: false,
             mainTitle: "",
             formData: {
-                termId: this.props.getPageData.searchParams.termId,
-                postTypeId: this.props.getPageData.searchParams.postTypeId,
-                typeId: this.props.getPageData.searchParams.termTypeId,
+                termId: this.props.router.query.termId as string ?? "",
+                typeId: Number(this.props.router.query.termTypeId ?? 1),
+                postTypeId: Number(this.props.router.query.postTypeId ?? 1),
                 mainId: "",
                 statusId: 0,
                 order: 0,
@@ -64,7 +64,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         this.setPageTitle();
         await this.getTerms();
         this.getStatus();
-        if (this.props.getPageData.searchParams.termId) {
+        if (this.state.formData.termId) {
             await this.getTerm();
         }
         this.setState({
@@ -88,8 +88,8 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     setPageTitle() {
         let titles: string[] = [
-            this.props.t(PostTypes.findSingle("id", this.props.getPageData.searchParams.postTypeId)?.langKey ?? "[noLangAdd]"),
-            this.props.t(PostTermTypes.findSingle("id", this.props.getPageData.searchParams.termTypeId)?.langKey ?? "[noLangAdd]"),
+            this.props.t(PostTypes.findSingle("id", this.state.formData.postTypeId)?.langKey ?? "[noLangAdd]"),
+            this.props.t(PostTermTypes.findSingle("id", this.state.formData.typeId)?.langKey ?? "[noLangAdd]"),
             this.props.t(this.state.formData.termId ? "edit" : "add")
         ];
         if (this.state.formData.termId) {
@@ -121,8 +121,8 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
             this.setState((state: PageState) => {
                 state.postTerms = [{ value: "", label: this.props.t("notSelected") }];
                 resData.data.orderBy("order", "asc").forEach(item => {
-                    if (!V.isEmpty(this.props.getPageData.searchParams.termId)) {
-                        if (this.props.getPageData.searchParams.termId == item._id) return;
+                    if (!V.isEmpty(this.state.formData.termId)) {
+                        if (this.state.formData.termId == item._id) return;
                     }
                     state.postTerms.push({
                         value: item._id,
@@ -170,11 +170,11 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     }
 
     navigateTermPage() {
-        let postTypeId = this.props.getPageData.searchParams.postTypeId;
-        let postTermTypeId = this.props.getPageData.searchParams.termTypeId;
+        let postTypeId = this.state.formData.postTypeId;
+        let postTermTypeId = this.state.formData.typeId;
         let pagePath = [PostTypeId.Page, PostTypeId.Navigate].includes(Number(postTypeId)) ? PagePaths.post(postTypeId).term(postTermTypeId) : PagePaths.themeContent().post(postTypeId).term(postTermTypeId);
         let path = pagePath.list()
-        this.props.router.navigate(path, { replace: true });
+        this.props.router.push(path);
     }
 
     onSubmit(event: FormEvent) {
@@ -227,7 +227,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
             <SweetAlert
                 show={this.state.isSuccessMessage}
                 title={this.props.t("successful")}
-                text={`${this.props.t((V.isEmpty(this.props.getPageData.searchParams.termId)) ? "itemAdded" : "itemEdited")}!`}
+                text={`${this.props.t((V.isEmpty(this.state.formData.termId)) ? "itemAdded" : "itemEdited")}!`}
                 icon="success"
                 timer={1000}
                 timerProgressBar={true}
@@ -324,12 +324,12 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     />
                 </div>
                 {
-                    this.props.getPageData.searchParams.termTypeId == PostTermTypeId.Category
+                    this.state.formData.typeId == PostTermTypeId.Category
                         ? <div className="col-md-7 mb-3">
                             <ThemeFormSelect
                                 title={`
                                     ${this.props.t("main")} 
-                                    ${this.props.t((this.props.getPageData.searchParams.termTypeId == PostTermTypeId.Category) ? "category" : "tag")}
+                                    ${this.props.t((this.state.formData.typeId == PostTermTypeId.Category) ? "category" : "tag")}
                                 `}
                                 name="mainId"
                                 placeholder={this.props.t("chooseMainCategory")}

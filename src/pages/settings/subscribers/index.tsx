@@ -3,14 +3,13 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionId, StatusId} from "constants/index";
 import  {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import permissionUtil from "utils/permission.util";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import {SubscriberDocument} from "types/services/subscriber";
 import subscriberService from "services/subscriber.service";
-import {ThemeTableToggleMenu} from "components/table";
-import ThemeDataTable from "components/table/dataTable";
+import {ThemeTableToggleMenu} from "components/elements/table";
+import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
     searchKey: string

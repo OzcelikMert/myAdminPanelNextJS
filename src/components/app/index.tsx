@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import 'styles/global.scss';
 import {PagePropCommonDocument} from "types/pageProps";
 import {LanguageId} from "constants/index";
 import Navbar from "components/tools/navbar";
@@ -182,6 +181,7 @@ export default class AppAdmin extends Component<PageProps, PageState> {
                                                         </div>
                                                         <div className="col-md-4 p-0 content-language">
                                                             <ThemeContentLanguage
+                                                                t={commonProps.t}
                                                                 router={this.props.router}
                                                                 options={this.state.contentLanguages}
                                                                 value={this.state.contentLanguages.findSingle("_id", this.state.pageData.langId)}

@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
 import {LanguageKeysArray, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import {
     SettingStaticLanguageDocument, SettingStaticLanguageUpdateParamDocument
 } from "types/services/setting";
