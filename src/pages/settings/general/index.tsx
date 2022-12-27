@@ -130,8 +130,10 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 script: this.state.formData.script,
             }).then(resData => {
                 if (resData.status) {
-                    this.props.setPageData({
-                        mainLangId: this.state.formData.defaultLangId
+                    this.props.setStateApp({
+                        pageData: {
+                            mainLangId: this.state.formData.defaultLangId
+                        }
                     }, () => {
                         new ThemeToast({
                             type: "success",
@@ -485,7 +487,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                             <this.TabSocialMedia/>
                                         </Tab>
                                         {
-                                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                                 ? <Tab eventKey="tools" title={this.props.t("tools")}>
                                                     <this.TabTools/>
                                                 </Tab> : null

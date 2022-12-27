@@ -12,30 +12,38 @@ import PagePaths from "constants/pagePaths";
 import ThemeBreadCrumb from "components/elements/breadCrumb";
 import ThemeContentLanguage from "components/elements/contentLanguage";
 import Spinner from "components/tools/spinner";
-import ProviderAuth from "components/providers/providerAuth";
-import ProviderPermission from "components/providers/providerPermission";
 import {AppProps} from "next/app";
 import ComponentHead from "components/head";
-import {useTranslation} from "react-i18next";
-
+import {useTranslation} from "next-i18next";
+import authService from "services/auth.service";
+import {ErrorCodes} from "library/api";
+import permissionUtil from "utils/permission.util";
+import ThemeToast from "components/elements/toast";
 
 type PageState = {
     contentLanguages: LanguageDocument[],
     breadCrumbTitle: string,
-    isPageLoading: boolean,
+    isAppLoading: boolean,
+    isPageLoading: boolean
 } & AppAdminGetState;
 
-type PageProps = {} & AppProps
+type PageProps = {
+    t: PagePropCommonDocument["t"]
+} & AppProps
 
-export default class AppAdmin extends Component<PageProps, PageState> {
-    oldLocation = "";
+class AppAdmin extends Component<PageProps, PageState> {
+    oldLocation: string;
 
     constructor(props: PageProps) {
         super(props);
+        this.oldLocation = this.props.router.pathname;
         this.state = {
             breadCrumbTitle: "",
             contentLanguages: [],
-            isPageLoading: true,
+            isAppLoading: true,
+            isPageLoading: false,
+            isAuth: false,
+            permissionIsValid: false,
             pageData: {
                 langId: "",
                 mainLangId: "",
@@ -54,19 +62,23 @@ export default class AppAdmin extends Component<PageProps, PageState> {
 
     async componentDidMount() {
         this.setState({
-            isPageLoading: true
+            isAppLoading: true
         }, async () => {
-            await this.getContentLanguages();
-            await this.getContentMainLanguage();
-            await this.onRouteChanged();
+            await this.checkSession();
+            if (this.state.isAuth) {
+                await this.checkPermission();
+                await this.getContentLanguages();
+                await this.getContentMainLanguage();
+            }
             this.setState({
-                isPageLoading: false
+                isAppLoading: false
             })
         })
     }
 
     async componentDidUpdate(prevProps: Readonly<PageProps>, prevState: Readonly<PageState>) {
-        if (this.props.router.pathname !== prevProps.router.pathname) {
+        console.log("App Index:", prevProps.router.pathname, this.props)
+        if (prevProps.router.pathname !== this.props.router.pathname) {
             await this.onRouteChanged();
         }
     }
@@ -75,10 +87,85 @@ export default class AppAdmin extends Component<PageProps, PageState> {
         this.setState({
             isPageLoading: true,
         }, async () => {
-            this.setState((state: PageState) => {
-                state.pageData.langId = state.pageData.mainLangId;
-                return state;
-            }, () => this.setState({isPageLoading: false}))
+            await this.checkSession();
+            if (this.state.isAuth) {
+                await this.checkPermission();
+            }
+            console.log("onRouteChanged")
+            this.setState({
+                pageData:{
+                    ...this.state.pageData,
+                    langId: this.state.pageData.mainLangId
+                }
+            }, () => {
+                console.log("wqeqwe")
+                this.setState({isPageLoading: false}, () => {
+                    console.log("Scrolled")
+                    window.scrollTo(0, 0)
+                })
+            })
+        })
+    }
+
+    async checkSession() {
+        let isAuth = false;
+        let resData = await authService.getSession({});
+        if (resData.status && resData.errorCode == ErrorCodes.success) {
+            if (resData.data.length > 0) {
+                isAuth = true;
+                let user = resData.data[0];
+                this.setState({
+                    sessionData: {
+                        id: user._id,
+                        langId: LanguageId.English,
+                        roleId: user.roleId,
+                        email: user.email,
+                        image: user.image,
+                        name: user.name,
+                        permissions: user.permissions
+                    }
+                });
+            }
+        }
+
+        await new Promise(resolve => {
+            this.setState({
+                isAuth: isAuth
+            }, () => {
+                resolve(1);
+            });
+        })
+    }
+
+    async checkPermission() {
+        let permissionIsValid = true;
+        const ignoredPaths = [
+            PagePaths.login(),
+            PagePaths.lock()
+        ];
+        if (
+            !ignoredPaths.includes(this.props.router.pathname) &&
+            !permissionUtil.checkPermissionPath(
+                this.props.router.pathname,
+                this.state.sessionData.roleId,
+                this.state.sessionData.permissions
+            )
+        ) {
+            permissionIsValid = false;
+            new ThemeToast({
+                type: "error",
+                title: this.props.t("error"),
+                content: this.props.t("noPerm"),
+                position: "top-center"
+            });
+        }
+
+        await new Promise(resolve => {
+            this.setState({
+                permissionIsValid: permissionIsValid,
+            }, () => {
+                resolve(1)
+            });
         })
     }
 
@@ -93,20 +180,9 @@ export default class AppAdmin extends Component<PageProps, PageState> {
         })
     }
 
-    setSessionData(data: AppAdminSetState["sessionData"], callBack?: () => void) {
+    setStateApp(data: AppAdminSetState, callBack?: () => void) {
         this.setState((state: PageState) => {
-            state.sessionData = Object.assign(state.sessionData, data);
-            return state;
-        }, () => {
-            if (callBack) {
-                callBack();
-            }
-        })
-    }
-
-    setPageData(data: AppAdminSetState["pageData"], callBack?: () => void) {
-        this.setState((state: PageState) => {
-            state.pageData = Object.assign(state.pageData, data);
+            state = Object.assign(state, data);
             return state;
         }, () => {
             if (callBack) {
@@ -137,39 +213,58 @@ export default class AppAdmin extends Component<PageProps, PageState> {
     }
 
     render() {
+        if (this.state.isAppLoading) {
+            return <Spinner isFullPage={true}/>;
+        }
+
+        if (
+            !this.state.isAuth &&
+            this.props.router.pathname !== PagePaths.login() &&
+            this.props.router.pathname !== PagePaths.lock()
+        ) {
+            this.props.router.push(PagePaths.login())
+            return null;
+        }
+
+        if (
+            this.state.isAuth &&
+            this.props.router.pathname === PagePaths.login() &&
+            this.props.router.pathname === PagePaths.lock()
+        ) {
+            this.props.router.push(PagePaths.dashboard())
+            return null;
+        }
+
+        if (this.state.isAuth && !this.state.permissionIsValid) {
+            this.props.router.push(PagePaths.dashboard());
+            return null;
+        }
+
         const fullPageLayoutRoutes = [
             PagePaths.login(),
             PagePaths.lock()
         ];
         let isFullPageLayout = fullPageLayoutRoutes.includes(this.props.router.pathname);
 
-        if (this.oldLocation !== this.props.router.pathname) {
-            this.oldLocation = this.props.router.pathname;
-            return null;
-        }
-
         const commonProps: PagePropCommonDocument = {
             router: this.props.router,
-            t: useTranslation().t,
+            t: this.props.t,
             setBreadCrumb: titles => this.setBreadCrumb(titles),
-            setSessionData: (data, callBack) => this.setSessionData(data, callBack),
-            getSessionData: this.state.sessionData,
-            getPageData: this.state.pageData,
-            setPageData: (data, callBack) => this.setPageData(data, callBack)
+            setStateApp: (data, callBack) => this.setStateApp(data, callBack),
+            getStateApp: this.state
         };
 
-
-        return this.state.isPageLoading ? <Spinner isFullPage={true} /> : (
-            <>
-                <ComponentHead title={this.state.breadCrumbTitle} />
+        return (
+            <div>
+                <ComponentHead title={this.state.breadCrumbTitle}/>
                 <div className="container-scroller">
-                    {!isFullPageLayout && this.state.sessionData.id.length > 0 ? <Navbar {...commonProps}/> : null}
+                    {!isFullPageLayout && this.state.isAuth ? <Navbar {...commonProps}/> : null}
                     <div
                         className={`container-fluid page-body-wrapper ${isFullPageLayout ? "full-page-wrapper" : ""}`}>
-                        {!isFullPageLayout && this.state.sessionData.id.length > 0 ? <Sidebar {...commonProps}/> : null}
-                        <ProviderAuth {...commonProps} isFullPage={isFullPageLayout}>
-                            <ProviderPermission {...commonProps} isFullPage={isFullPageLayout}>
-                                <div className="main-panel">
+                        {!isFullPageLayout && this.state.isAuth ? <Sidebar {...commonProps}/> : null}
+                        {
+                            !this.state.isPageLoading
+                                ? <div className="main-panel">
                                     <div className="content-wrapper">
                                         {
                                             !isFullPageLayout ?
@@ -201,13 +296,28 @@ export default class AppAdmin extends Component<PageProps, PageState> {
                                         }
                                         <this.props.Component {...commonProps}/>
                                     </div>
-                                    {!isFullPageLayout ? <Footer/> : ''}
-                                </div>
-                            </ProviderPermission>
-                        </ProviderAuth>
+                                    {!isFullPageLayout && this.state.isAuth ? <Footer/> : ''}
+                                </div> : <Spinner isFullPage={isFullPageLayout}/>
+                        }
                     </div>
                 </div>
-            </>
+            </div>
         );
     }
 }
+
+export function withCustomProps(Component: any) {
+    function ComponentWithCustomProps(props: any) {
+        let {t, i18n} = useTranslation();
+        return (
+            <Component
+                {...props}
+                t={t}
+            />
+        );
+    }
+
+    return ComponentWithCustomProps;
+}
+
+export default withCustomProps(AppAdmin);

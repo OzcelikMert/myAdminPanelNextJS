@@ -55,14 +55,16 @@ class PageLogin extends Component<PageProps, PageState> {
                 if (resData.data.length > 0) {
                     let user = resData.data[0];
                     if(resData.status){
-                        this.props.setSessionData({
-                            id: user._id,
-                            langId: LanguageId.English,
-                            roleId: user.roleId,
-                            email: user.email,
-                            image: user.image,
-                            name: user.name,
-                            permissions: user.permissions,
+                        this.props.setStateApp({
+                            sessionData: {
+                                id: user._id,
+                                langId: LanguageId.English,
+                                roleId: user.roleId,
+                                email: user.email,
+                                image: user.image,
+                                name: user.name,
+                                permissions: user.permissions
+                            }
                         });
                         this.props.router.push(PagePaths.dashboard());
                     }else {
@@ -87,8 +89,7 @@ class PageLogin extends Component<PageProps, PageState> {
             <div className="page-login">
                 <div className="d-flex align-items-stretch auth auth-img-bg h-100">
                     <div className="row flex-grow">
-                        <div
-                            className="col-lg-6 d-flex align-items-center justify-content-center login-half-form">
+                        <div className="col-lg-6 d-flex align-items-center justify-content-center login-half-form">
                             <div className="auth-form-transparent text-left p-3">
                                 <h4 className="text-center">{this.props.t("loginPanel")}</h4>
                                 <ThemeForm
@@ -177,9 +178,7 @@ class PageLogin extends Component<PageProps, PageState> {
                         </div>
                         <div className="col-lg-6 login-half-bg d-flex flex-row">
                             <div className="brand-logo">
-                                {
-                                    <img src={require('images/ozcelikLogo.png')} alt="logo" />
-                                }
+                                <img src={require('assets/images/ozcelikLogo.png')} alt="logo" />
                             </div>
                         </div>
                     </div>

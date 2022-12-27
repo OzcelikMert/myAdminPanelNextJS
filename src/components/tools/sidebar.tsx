@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 import {Collapse} from 'react-bootstrap';
 import {PagePropCommonDocument} from "types/pageProps";
 import permissionUtil from "utils/permission.util";
 import SidebarNavs, {SideBarPath} from "constants/sidebarNavs";
 import SidebarNav from "constants/sidebarNavs";
+import PagePaths from "constants/pagePaths";
+import clone from "clone";
 
 type PageState = {
-    isMenuOpen: any
+    isMenuOpen: { [key: string]: any }
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -39,6 +40,7 @@ class Sidebar extends Component<PageProps, PageState> {
     }
 
     componentDidUpdate(prevProps: Readonly<PageProps>) {
+        console.log("sidebar: ", prevProps.router.pathname)
         if (this.props.router.pathname !== prevProps.router.pathname) {
             this.onRouteChanged();
         }
@@ -65,8 +67,9 @@ class Sidebar extends Component<PageProps, PageState> {
     toggleMenuState(stateKey?: string) {
         if(stateKey){
             this.setState((state: PageState) => {
-                state.isMenuOpen[stateKey] = !state.isMenuOpen[stateKey];
-                return state;
+                let _state = clone(state);
+                _state.isMenuOpen[stateKey] = !_state.isMenuOpen[stateKey];
+                return _state;
             })
         }
     }
@@ -75,22 +78,25 @@ class Sidebar extends Component<PageProps, PageState> {
         return this.props.router.pathname.search(path) > -1;
     }
 
+    changeRoute(path: string) {
+        this.props.router.replace(path);
+    }
+
     Item = (props: SideBarPath) => {
         let self = this;
 
         function HasChild(_props: SideBarPath) {
-            if (!permissionUtil.checkPermissionPath(_props.path, self.props.getSessionData.roleId, self.props.getSessionData.permissions)) return null;
+            if (!permissionUtil.checkPermissionPath(_props.path, self.props.getStateApp.sessionData.roleId, self.props.getStateApp.sessionData.permissions)) return null;
             return (
-                <Link className={`nav-link ${self.isPathActive(_props.path) ? 'active' : ''}`} to={_props.path ?? ""}>
-                    <span
-                        className={`menu-title text-capitalize ${self.isPathActive(_props.path) ? 'active' : ''}`}>{self.props.t(_props.title)}</span>
+                <p className={`nav-link ${self.isPathActive(_props.path) ? 'active' : ''}`} onClick={() => self.changeRoute(_props.path ?? PagePaths.dashboard())}>
+                    <span className={`menu-title text-capitalize ${self.isPathActive(_props.path) ? 'active' : ''}`}>{self.props.t(_props.title)}</span>
                     <i className={`mdi mdi-${_props.icon} menu-icon`}></i>
-                </Link>
+                </p>
             );
         }
 
         function HasChildren(_props: SideBarPath) {
-            if (!permissionUtil.checkPermissionPath(_props.path, self.props.getSessionData.roleId, self.props.getSessionData.permissions)) return null;
+            if (!permissionUtil.checkPermissionPath(_props.path, self.props.getStateApp.sessionData.roleId, self.props.getStateApp.sessionData.permissions)) return null;
             let state = (_props.state) ? self.state.isMenuOpen[_props.state] : false;
             return (
                 <span>

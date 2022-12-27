@@ -6,7 +6,7 @@ import {PostTypeId, PostTypes, Status} from "constants/index";
 import Spinner from "components/tools/spinner";
 import PostDocument from "types/services/post";
 import postService from "services/post.service";
-import WorldMap from "react-svg-worldmap";
+//import WorldMap from "react-svg-worldmap";
 import viewService from "services/view.service";
 import {ViewNumberDocument, ViewStatisticsDocument} from "types/services/view";
 import imageSourceUtil from "utils/imageSource.util";
@@ -128,7 +128,7 @@ class PageDashboard extends Component<PageProps, PageState> {
 
     async getLastPosts() {
         let resData = await postService.get({
-            langId: this.props.getPageData.mainLangId,
+            langId: this.props.getStateApp.pageData.mainLangId,
             maxCount: 10
         });
         if (resData.status) {
@@ -239,8 +239,8 @@ class PageDashboard extends Component<PageProps, PageState> {
                 button: true,
                 width: "70px",
                 cell: row => permissionUtil.checkPermission(
-                    this.props.getSessionData.roleId,
-                    this.props.getSessionData.permissions,
+                    this.props.getStateApp.sessionData.roleId,
+                    this.props.getStateApp.sessionData.permissions,
                     permissionUtil.getPermissionIdForPostType(row.typeId, "Edit")
                 ) ? (
                     <button
@@ -355,7 +355,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                                 </div>
                             </div>
                             <div className="row overflow-auto">
-                                <WorldMap
+                                {/*<WorldMap
                                     color="#b66dff"
                                     borderColor="var(--theme-worldmap-stroke-bg)"
                                     frameColor="red"
@@ -367,7 +367,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                                         country: view._id.toLowerCase(),
                                         value: view.total
                                     }))}
-                                />
+                                />*/}
                             </div>
                         </div>
                     </div>

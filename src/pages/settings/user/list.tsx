@@ -59,7 +59,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
         this.setState((state: PageState) => {
             state.users = state.users.sort(user => {
                 let sort = 0;
-                if (user._id == this.props.getSessionData.id) {
+                if (user._id == this.props.getStateApp.sessionData.id) {
                     sort = 1;
                 }
                 return sort;
@@ -189,14 +189,14 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 button: true,
                 width: "70px",
                 cell: row => {
-                    let sessionUserRole = UserRoles.findSingle("id", this.props.getSessionData.roleId);
+                    let sessionUserRole = UserRoles.findSingle("id", this.props.getStateApp.sessionData.roleId);
                     let rowUserRole = UserRoles.findSingle("id", row.roleId);
                     return (
                         (sessionUserRole && rowUserRole) &&
                         (rowUserRole.rank < sessionUserRole.rank) &&
                         permissionUtil.checkPermission(
-                            this.props.getSessionData.roleId,
-                            this.props.getSessionData.permissions,
+                            this.props.getStateApp.sessionData.roleId,
+                            this.props.getStateApp.sessionData.permissions,
                             PermissionId.UserEdit
                         )
                     ) ? <button
@@ -211,14 +211,14 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 button: true,
                 width: "70px",
                 cell: row => {
-                    let sessionUserRole = UserRoles.findSingle("id", this.props.getSessionData.roleId);
+                    let sessionUserRole = UserRoles.findSingle("id", this.props.getStateApp.sessionData.roleId);
                     let rowUserRole = UserRoles.findSingle("id", row.roleId);
                     return (
                         (sessionUserRole && rowUserRole) &&
                         (rowUserRole.rank < sessionUserRole.rank) &&
                         permissionUtil.checkPermission(
-                            this.props.getSessionData.roleId,
-                            this.props.getSessionData.permissions,
+                            this.props.getStateApp.sessionData.roleId,
+                            this.props.getStateApp.sessionData.permissions,
                             PermissionId.UserDelete
                         )
                     ) ? <button
@@ -245,7 +245,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                             }}
                             isShow={this.state.isViewUserInfo}
                             userInfo={userInfo}
-                            langId={this.props.getSessionData.langId}
+                            langId={this.props.getStateApp.sessionData.langId}
                         /> : null
                     })()
                 }

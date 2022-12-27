@@ -58,8 +58,8 @@ class ThemeChooseImageGallery extends Component<PageProps, PageState> {
                                     transition={false}>
                                     {
                                         permissionUtil.checkPermission(
-                                            this.props.getSessionData.roleId,
-                                            this.props.getSessionData.permissions,
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
                                             PermissionId.GalleryEdit
                                         ) ? <Tab eventKey="upload" title={"Upload"}>
                                             <PageGalleryUpload

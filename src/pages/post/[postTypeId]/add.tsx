@@ -5,7 +5,6 @@ import moment from "moment";
 import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form"
 import {LanguageKeysArray, PageTypes, PostTermTypeId, PostTypeId, PostTypes, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
-import SweetAlert from "react-sweetalert2";
 import V from "library/variable";
 import Variable from "library/variable";
 import HandleForm from "library/react/handles/form";
@@ -19,6 +18,7 @@ import {PostContentButtonDocument, PostUpdateParamDocument} from "types/services
 import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
 import ThemeToolTip from "components/elements/tooltip";
+import Swal from "sweetalert2";
 
 type PageState = {
     langKeys: { value: string, label: string }[]
@@ -36,7 +36,6 @@ type PageState = {
         categoryTermId: string[]
         tagTermId: string[]
     },
-    isSuccessMessage: boolean
     isSelectionImage: boolean
 };
 
@@ -67,7 +66,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 dateStart: new Date(),
                 isFixed: 0,
                 contents: {
-                    langId: this.props.getPageData.langId,
+                    langId: this.props.getStateApp.pageData.langId,
                     image: "",
                     title: "",
                     content: "",
@@ -77,7 +76,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                     seoContent: "",
                 },
             },
-            isSuccessMessage: false,
             isSelectionImage: false
         }
     }
@@ -105,7 +103,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     async componentDidUpdate(prevProps: PagePropCommonDocument) {
-        if (prevProps.getPageData.langId != this.props.getPageData.langId) {
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
             this.setState((state: PageState) => {
                 state.isLoading = true;
                 return state;
@@ -137,7 +135,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     async getComponents() {
-        let resData = await componentService.get({langId: this.props.getPageData.mainLangId});
+        let resData = await componentService.get({langId: this.props.getStateApp.pageData.mainLangId});
         if (resData.status) {
             this.setState((state: PageState) => {
                 state.components = resData.data.orderBy("order", "asc").map(component => {
@@ -176,7 +174,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     async getTerms() {
         let resData = await postTermService.get({
             postTypeId: this.state.formData.typeId,
-            langId: this.props.getPageData.mainLangId,
+            langId: this.props.getStateApp.pageData.mainLangId,
             statusId: StatusId.Active
         });
         if (resData.status) {
@@ -203,7 +201,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
 
     async getPosts() {
         let resData = await postService.get({
-            langId: this.props.getPageData.mainLangId,
+            langId: this.props.getStateApp.pageData.mainLangId,
             statusId: StatusId.Active,
             typeId: PostTypeId.Navigate
         });
@@ -228,7 +226,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         let resData = await postService.get({
             postId: this.state.formData.postId,
             typeId: this.state.formData.typeId,
-            langId: this.props.getPageData.langId,
+            langId: this.props.getStateApp.pageData.langId,
             getContents: 1
         });
         if (resData.status) {
@@ -257,12 +255,12 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                             ...state.formData.contents,
                             ...post.contents,
                             views: post.contents?.views ?? 0,
-                            langId: this.props.getPageData.langId,
+                            langId: this.props.getStateApp.pageData.langId,
                             content: post.contents?.content ?? ""
                         }
                     };
 
-                    if (this.props.getPageData.langId == this.props.getPageData.mainLangId) {
+                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
                         state.mainTitle = state.formData.contents.title;
                     }
 
@@ -302,26 +300,11 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 ? postService.update(params)
                 : postService.add(params)).then(resData => {
                 this.setState((state: PageState) => {
-                    if (resData.status) {
-                        state.isSuccessMessage = true;
-                    }
-
                     state.isSubmitting = false;
-
                     return state;
-                })
+                }, () => this.setMessage())
             });
         })
-    }
-
-    onCloseSuccessMessage() {
-        this.setState({
-            isSuccessMessage: false
-        });
-
-        if (!this.state.formData.postId) {
-            this.navigateTermPage();
-        }
     }
 
     onChangeJoeEditor(newContent: string) {
@@ -329,6 +312,23 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             state.formData.contents.content = newContent;
             return state;
         })
+    }
+
+    setMessage() {
+        Swal.fire({
+            title: this.props.t("successful"),
+            text: `${this.props.t((V.isEmpty(this.state.formData.postId)) ? "itemAdded" : "itemEdited")}!`,
+            icon: "success",
+            timer: 1000,
+            timerProgressBar: true,
+            didClose: () => this.onCloseSuccessMessage()
+        })
+    }
+
+    onCloseSuccessMessage() {
+        if (!this.state.formData.postId) {
+            this.navigateTermPage();
+        }
     }
 
     get TabGeneralButtonEvents() {
@@ -382,20 +382,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 })
             }
         }
-    }
-
-    Messages = () => {
-        return (
-            <SweetAlert
-                show={this.state.isSuccessMessage}
-                title={this.props.t("successful")}
-                text={`${this.props.t((V.isEmpty(this.state.formData.postId)) ? "itemAdded" : "itemEdited")}!`}
-                icon="success"
-                timer={1000}
-                timerProgressBar={true}
-                didClose={() => this.onCloseSuccessMessage()}
-            />
-        )
     }
 
     TabComponents = () => {
@@ -737,7 +723,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     render() {
         return this.state.isLoading ? <Spinner/> : (
             <div className="page-post">
-                <this.Messages/>
                 <div className="row mb-3">
                     <div className="col-md-3">
                         <div className="row">

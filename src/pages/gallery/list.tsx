@@ -12,6 +12,7 @@ import ThemeToast from "components/elements/toast";
 import permissionUtil from "utils/permission.util";
 import {PermissionId} from "constants/index";
 import ThemeDataTable from "components/elements/table/dataTable";
+import ComponentHead from "components/head";
 
 type PageState = {
     images: string[]
@@ -98,8 +99,8 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
 
     onSelect(images: string[]) {
         if(!this.props.isModal && !permissionUtil.checkPermission(
-            this.props.getSessionData.roleId,
-            this.props.getSessionData.permissions,
+            this.props.getStateApp.sessionData.roleId,
+            this.props.getStateApp.sessionData.permissions,
             PermissionId.GalleryEdit
         )) return;
 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Link} from "react-router-dom";
+import Link from "next/link";
 import PagePaths from "constants/pagePaths";
 
 type PageState = {};
@@ -12,7 +12,7 @@ export default class ThemeBreadCrumb extends Component<PageProps, PageState> {
     render() {
         return (
             <h3 className="page-title">
-                <Link to={PagePaths.dashboard()}>
+                <Link href={PagePaths.dashboard()}>
                     <span className="page-title-icon bg-gradient-primary text-white me-2">
                         <i className="mdi mdi-home"></i>
                     </span>

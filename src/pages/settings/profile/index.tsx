@@ -73,7 +73,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
 
     async getUser() {
         let resData = await userService.get({
-            userId: this.props.getSessionData.id
+            userId: this.props.getStateApp.sessionData.id
         });
         if (resData.status) {
             const user = resData.data[0];
@@ -118,8 +118,10 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                     state.formData.image = image;
                     return state;
                 }, () => {
-                    this.props.setSessionData({
-                        image: image
+                    this.props.setStateApp({
+                        sessionData: {
+                            image: image
+                        }
                     })
                 });
             });
@@ -137,8 +139,10 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
         }, () => {
             profileService.update(this.state.formData).then(resData => {
                 if (resData.status) {
-                    this.props.setSessionData({
-                        name: this.state.formData.name
+                    this.props.setStateApp({
+                        sessionData: {
+                            name: this.state.formData.name
+                        }
                     }, () => {
                         new ThemeToast({
                             type: "success",
@@ -252,7 +256,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                                     width="200"
                                     height="200"
                                     src={imageSourceUtil.getUploadedImageSrc(this.state.formData.image)}
-                                    alt={this.props.getSessionData.name}
+                                    alt={this.props.getStateApp.sessionData.name}
                                 />
                                 <button
                                     className="btn btn-gradient-dark w-25 mt-2"

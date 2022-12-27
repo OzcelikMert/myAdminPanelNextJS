@@ -2,9 +2,10 @@ import type {AppProps} from 'next/app'
 import React from "react";
 import {LanguageId, Languages} from "constants/languages";
 import localStorageUtil from "utils/localStorage.util";
-import i18n from "i18next";
-import {initReactI18next} from "react-i18next";
+import {I18n} from "next-i18next";
 import ThemeUtil from "utils/theme.util";
+import dynamic from "next/dynamic";
+import {useState, useEffect} from 'react'
 
 import "styles/global.scss";
 
@@ -14,13 +15,14 @@ import "library/variable/number"
 import "library/variable/date"
 import "library/variable/math"
 
+//const AppAdmin = dynamic(() => import('components/app'), { ssr: false })
 import AppAdmin from "components/app";
 
 import English from "languages/en.json"
 import Turkish from "languages/tr.json"
 
 if(typeof window !== "undefined") {
-    const language = i18n.use(initReactI18next);
+    /*const language = i18n.use(initReactI18next);
 
     language.init({
         resources: {
@@ -33,13 +35,27 @@ if(typeof window !== "undefined") {
         interpolation: {
             escapeValue: false
         }
-    });
+    });*/
+}
+
+function SafeHydrate({ children }: any) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+    return (
+        <div suppressHydrationWarning>
+            {!mounted ? null : children}
+        </div>
+    )
 }
 
 function App(props: AppProps) {
     if(typeof window !== "undefined") (new ThemeUtil(localStorageUtil.adminIsDarkTheme.get)).setThemeColor();
     return (
-        typeof window !== "undefined" ? <AppAdmin {...props} /> : <div>Loading...</div>
+        <SafeHydrate>
+            <AppAdmin {...props} />
+        </SafeHydrate>
     )
 }
 

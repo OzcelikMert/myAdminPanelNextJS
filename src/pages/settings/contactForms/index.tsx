@@ -140,7 +140,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                     <ThemeFieldSet
                         legend={`${this.props.t("contactForm")} (#${contactFormProps.key})`}
                         legendElement={
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <i className="mdi mdi-pencil-box text-warning fs-3 cursor-pointer"
                                      onClick={() => this.TabContactFormEvents.onEdit(this.state.formData.contactForms, contactFormIndex)}></i>
                                 : undefined
@@ -230,7 +230,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
         return (
             <div className="row">
                 {
-                    this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                    this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                         ? <div className="col-md-7">
                             <button type={"button"} className="btn btn-gradient-success btn-lg"
                                     onClick={() => this.TabContactFormEvents.onCreate()}>+ {this.props.t("newContactForm")}

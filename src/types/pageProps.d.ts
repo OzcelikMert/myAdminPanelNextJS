@@ -8,9 +8,6 @@ export interface PagePropCommonDocument {
     router: AppProps["router"],
     t: (key: LanguageKeys) => string
     setBreadCrumb: (titles: string[]) => void
-    setSessionData: (data: AppAdminSetState["sessionData"], callBack?: () => void) => void
-    getSessionData: AppAdminGetState["sessionData"],
-    setPageData: (data: AppAdminSetState["pageData"], callBack?: () => void) => void
-    getPageData: AppAdminGetState["pageData"],
-
+    setStateApp: (data: AppAdminSetState, callBack?: () => void) => void
+    getStateApp: AppAdminGetState
 }

@@ -68,7 +68,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         let postTerms = (await postTermService.get({
             typeId: this.state.typeId,
             postTypeId: this.state.postTypeId,
-            langId: this.props.getPageData.mainLangId
+            langId: this.props.getStateApp.pageData.mainLangId
         })).data;
         this.setState({
             postTerms: postTerms,
@@ -239,8 +239,8 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 width: "70px",
                 button: true,
                 cell: row => permissionUtil.checkPermission(
-                    this.props.getSessionData.roleId,
-                    this.props.getSessionData.permissions,
+                    this.props.getStateApp.sessionData.roleId,
+                    this.props.getStateApp.sessionData.permissions,
                     permissionUtil.getPermissionIdForPostType(row.postTypeId, "Edit")
                 ) ? (
                     <button
@@ -267,8 +267,8 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                             <div className="col-6 text-end">
                                 {
                                     permissionUtil.checkPermission(
-                                        this.props.getSessionData.roleId,
-                                        this.props.getSessionData.permissions,
+                                        this.props.getStateApp.sessionData.roleId,
+                                        this.props.getStateApp.sessionData.permissions,
                                         permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Add")
                                     ) ? <button className="btn btn-gradient-info btn-lg w-100"
                                                 onClick={() => this.navigateTermPage("add")}>
@@ -300,13 +300,13 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                     {
                                         (
                                             permissionUtil.checkPermission(
-                                                this.props.getSessionData.roleId,
-                                                this.props.getSessionData.permissions,
+                                                this.props.getStateApp.sessionData.roleId,
+                                                this.props.getStateApp.sessionData.permissions,
                                                 permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Edit")
                                             ) ||
                                             permissionUtil.checkPermission(
-                                                this.props.getSessionData.roleId,
-                                                this.props.getSessionData.permissions,
+                                                this.props.getStateApp.sessionData.roleId,
+                                                this.props.getStateApp.sessionData.permissions,
                                                 permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                                             )
                                         ) ? <ThemeTableToggleMenu
@@ -318,14 +318,14 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                                     StatusId.InProgress
                                                 ].concat(
                                                     permissionUtil.checkPermission(
-                                                        this.props.getSessionData.roleId,
-                                                        this.props.getSessionData.permissions,
+                                                        this.props.getStateApp.sessionData.roleId,
+                                                        this.props.getStateApp.sessionData.permissions,
                                                         permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                                                     ) ? [StatusId.Deleted] : []
                                                 )
                                             }
                                             onChange={(event, statusId) => this.onChangeStatus(event, statusId)}
-                                            langId={this.props.getSessionData.langId}
+                                            langId={this.props.getStateApp.sessionData.langId}
                                         /> : null
                                     }
                                 </div>

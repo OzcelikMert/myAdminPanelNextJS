@@ -23,7 +23,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
             isLoading: true,
             formData: {
                 seoContents: {
-                    langId: this.props.getPageData.mainLangId,
+                    langId: this.props.getStateApp.pageData.mainLangId,
                     title: "",
                     content: "",
                     tags: [],
@@ -41,7 +41,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
     }
 
     async componentDidUpdate(prevProps: Readonly<PageProps>) {
-        if (prevProps.getPageData.langId != this.props.getPageData.langId) {
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
             this.setState((state: PageState) => {
                 state.isLoading = true;
                 return state;
@@ -59,7 +59,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
     }
 
     async getSeo() {
-        let resData = await settingService.get({langId: this.props.getPageData.langId});
+        let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId});
 
         if (resData.status) {
             this.setState((state: PageState) => {
@@ -69,7 +69,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
                         seoContents: {
                             ...state.formData.seoContents,
                             ...setting.seoContents,
-                            langId: this.props.getPageData.langId
+                            langId: this.props.getStateApp.pageData.langId
                         }
                     };
                 }

@@ -4,7 +4,6 @@ import {ThemeForm, ThemeFormSelect, ThemeFormType,} from "components/elements/fo
 import {PagePropCommonDocument} from "types/pageProps";
 import {PostTermTypeId, PostTermTypes, PostTypeId, PostTypes, StatusId} from "constants/index";
 import V from "library/variable";
-import SweetAlert from "react-sweetalert2";
 import HandleForm from "library/react/handles/form";
 import ThemeChooseImage from "components/elements/chooseImage";
 import postTermService from "services/postTerm.service";
@@ -14,6 +13,7 @@ import imageSourceUtil from "utils/imageSource.util";
 import {PostTermUpdateParamDocument} from "types/services/postTerm";
 import PagePaths from "constants/pagePaths";
 import ThemeToolTip from "components/elements/tooltip";
+import Swal from "sweetalert2";
 
 type PageState = {
     formActiveKey: string
@@ -22,7 +22,6 @@ type PageState = {
     isSubmitting: boolean
     mainTitle: string
     formData: PostTermUpdateParamDocument,
-    isSuccessMessage: boolean
     isSelectionImage: boolean
     isLoading: boolean
 };
@@ -46,7 +45,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 statusId: 0,
                 order: 0,
                 contents: {
-                    langId: this.props.getPageData.langId,
+                    langId: this.props.getStateApp.pageData.langId,
                     image: "",
                     title: "",
                     url: "",
@@ -54,7 +53,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     seoContent: "",
                 }
             },
-            isSuccessMessage: false,
             isSelectionImage: false,
             isLoading: true
         }
@@ -73,7 +71,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     }
 
     async componentDidUpdate(prevProps: Readonly<PageProps>) {
-        if (prevProps.getPageData.langId != this.props.getPageData.langId) {
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
             this.setState((state: PageState) => {
                 state.isLoading = true;
                 return state;
@@ -114,7 +112,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         let resData = await postTermService.get({
             typeId: this.state.formData.typeId,
             postTypeId: this.state.formData.postTypeId,
-            langId: this.props.getPageData.mainLangId,
+            langId: this.props.getStateApp.pageData.mainLangId,
             statusId: StatusId.Active
         });
         if (resData.status) {
@@ -138,7 +136,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         let resData = await postTermService.get({
             typeId: this.state.formData.typeId,
             postTypeId: this.state.formData.postTypeId,
-            langId: this.props.getPageData.langId
+            langId: this.props.getStateApp.pageData.langId
         });
         if (resData.status) {
             if (resData.data.length > 0) {
@@ -152,11 +150,11 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                             ...state.formData.contents,
                             ...term.contents,
                             views: term.contents?.views ?? 0,
-                            langId: this.props.getPageData.langId
+                            langId: this.props.getStateApp.pageData.langId
                         }
                     }
 
-                    if (this.props.getPageData.langId == this.props.getPageData.mainLangId) {
+                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
                         state.mainTitle = state.formData.contents.title;
                     }
                     return state;
@@ -198,7 +196,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                                 statusId: StatusId.Active,
                                 order: 0,
                                 contents: {
-                                    langId: this.props.getPageData.mainLangId,
+                                    langId: this.props.getStateApp.pageData.mainLangId,
                                     image: "",
                                     title: "",
                                     url: "",
@@ -206,35 +204,27 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                                     seoContent: "",
                                 }
                             }
-                            state.isSuccessMessage = true;
                         }
 
                         state.isSubmitting = false;
                         return state;
-                    });
+                    }, () => this.setMessage());
                 });
         })
     }
 
-    onCloseSuccessMessage() {
-        this.setState({
-            isSuccessMessage: false
-        });
+    setMessage() {
+        Swal.fire({
+            title: this.props.t("successful"),
+            text: `${this.props.t((V.isEmpty(this.state.formData.termId)) ? "itemAdded" : "itemEdited")}!`,
+            icon: "success",
+            timer: 1000,
+            timerProgressBar: true,
+            didClose: () => this.onCloseSuccessMessage()
+        })
     }
 
-    Messages = () => {
-        return (
-            <SweetAlert
-                show={this.state.isSuccessMessage}
-                title={this.props.t("successful")}
-                text={`${this.props.t((V.isEmpty(this.state.formData.termId)) ? "itemAdded" : "itemEdited")}!`}
-                icon="success"
-                timer={1000}
-                timerProgressBar={true}
-                didClose={() => this.onCloseSuccessMessage()}
-            />
-        )
-    }
+    onCloseSuccessMessage() {}
 
     TabSEO = () => {
         return (
@@ -347,7 +337,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     render() {
         return this.state.isLoading ? <Spinner /> : (
             <div className="page-post-term">
-                <this.Messages />
                 <ThemeChooseImage
                     {...this.props}
                     isShow={this.state.isSelectionImage}

@@ -66,7 +66,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
     async getPosts() {
         let posts = (await postService.get({
             typeId: this.state.typeId,
-            langId: this.props.getPageData.langId
+            langId: this.props.getStateApp.pageData.langId
         })).data;
         this.setState((state: PageState) => {
             state.posts = posts;
@@ -297,8 +297,8 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 width: "70px",
                 button: true,
                 cell: row => permissionUtil.checkPermission(
-                    this.props.getSessionData.roleId,
-                    this.props.getSessionData.permissions,
+                    this.props.getStateApp.sessionData.roleId,
+                    this.props.getStateApp.sessionData.permissions,
                     permissionUtil.getPermissionIdForPostType(row.typeId, "Edit")
                 ) ? (
                     <button
@@ -358,13 +358,13 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                     {
                                         (
                                             permissionUtil.checkPermission(
-                                                this.props.getSessionData.roleId,
-                                                this.props.getSessionData.permissions,
+                                                this.props.getStateApp.sessionData.roleId,
+                                                this.props.getStateApp.sessionData.permissions,
                                                 permissionUtil.getPermissionIdForPostType(this.state.typeId, "Edit")
                                             ) ||
                                             permissionUtil.checkPermission(
-                                                this.props.getSessionData.roleId,
-                                                this.props.getSessionData.permissions,
+                                                this.props.getStateApp.sessionData.roleId,
+                                                this.props.getStateApp.sessionData.permissions,
                                                 permissionUtil.getPermissionIdForPostType(this.state.typeId, "Delete")
                                             )
                                         ) ? <ThemeTableToggleMenu
@@ -376,14 +376,14 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                                     StatusId.InProgress
                                                 ].concat(
                                                     permissionUtil.checkPermission(
-                                                        this.props.getSessionData.roleId,
-                                                        this.props.getSessionData.permissions,
+                                                        this.props.getStateApp.sessionData.roleId,
+                                                        this.props.getStateApp.sessionData.permissions,
                                                         permissionUtil.getPermissionIdForPostType(this.state.typeId, "Delete")
                                                     ) ? [StatusId.Deleted] : []
                                                 )
                                             }
                                             onChange={(event, statusId) => this.onChangeStatus(event, statusId)}
-                                            langId={this.props.getSessionData.langId}
+                                            langId={this.props.getStateApp.sessionData.langId}
                                         /> : null
                                     }
                                 </div>

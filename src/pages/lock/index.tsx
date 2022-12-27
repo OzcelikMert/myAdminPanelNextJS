@@ -31,7 +31,7 @@ class PageLock extends Component<PageProps, PageState> {
     }
 
     componentDidMount() {
-        if (V.isEmpty(this.props.getSessionData.email)) {
+        if (V.isEmpty(this.props.getStateApp.sessionData.email)) {
             this.props.router.push(PagePaths.login());
         }
     }
@@ -43,12 +43,14 @@ class PageLock extends Component<PageProps, PageState> {
         }, () => {
             authService.login({
                 password: this.state.formData.password,
-                email: this.props.getSessionData.email
+                email: this.props.getStateApp.sessionData.email
             }).then(resData => {
                 if (resData.status && resData.data.length > 0) {
                     let user = resData.data[0];
-                    this.props.setSessionData({
-                        id: user._id
+                    this.props.setStateApp({
+                        sessionData: {
+                            id: user._id
+                        }
                     }, () => {
                         this.props.router.push(PagePaths.dashboard());
                     });
@@ -71,10 +73,10 @@ class PageLock extends Component<PageProps, PageState> {
                             <div className="auth-form-transparent text-left p-5 text-center">
                                 <img
                                     className="lock-profile-img"
-                                    src={imageSourceUtil.getUploadedImageSrc(this.props.getSessionData.image)}
-                                    alt={this.props.getSessionData.name}
+                                    src={imageSourceUtil.getUploadedImageSrc(this.props.getStateApp.sessionData.image)}
+                                    alt={this.props.getStateApp.sessionData.name}
                                 />
-                                <h4 className="text-center text-light mb-3 mt-3">{this.props.getSessionData.name}</h4>
+                                <h4 className="text-center text-light mb-3 mt-3">{this.props.getStateApp.sessionData.name}</h4>
                                 <ThemeForm
                                     isSubmitting={this.state.isSubmitting}
                                     formAttributes={{onSubmit: (event) => this.onSubmit(event)}}

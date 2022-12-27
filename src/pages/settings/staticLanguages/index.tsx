@@ -3,7 +3,6 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
 import {LanguageKeysArray, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import ThemeToast from "components/elements/toast";
 import {
@@ -44,7 +43,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
     }
 
     async componentDidUpdate(prevProps: PagePropCommonDocument) {
-        if (prevProps.getPageData.langId != this.props.getPageData.langId) {
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
             this.setState((state: PageState) => {
                 state.isLoading = true;
                 return state;
@@ -69,7 +68,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
     }
 
     async getSettings() {
-        let resData = await settingService.get({langId: this.props.getPageData.langId})
+        let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId})
         if (resData.status) {
             this.setState((state: PageState) => {
                 resData.data.forEach(setting => {
@@ -78,7 +77,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
                             ...staticLanguage,
                             contents: {
                                 ...staticLanguage.contents,
-                                langId: this.props.getPageData.langId
+                                langId: this.props.getStateApp.pageData.langId
                             }
                         })) ?? []
                     }
@@ -127,7 +126,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
                         _id: String.createId(),
                         langKey: "[noLangAdd]",
                         contents: {
-                            langId: self.props.getPageData.langId,
+                            langId: self.props.getStateApp.pageData.langId,
                             content: ""
                         }
                     })
@@ -171,7 +170,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
                     <ThemeFieldSet
                         legend={`${this.props.t("staticLanguages")} (#${staticLanguageProps.langKey})`}
                         legendElement={
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <i className="mdi mdi-pencil-box text-warning fs-3 cursor-pointer"
                                      onClick={() => this.StaticLanguagesEvents.onEdit(this.state.formData.staticLanguages, staticLanguageIndex)}></i>
                                 : undefined
@@ -222,7 +221,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
         return (
             <div className="row">
                 {
-                    this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                    this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                         ? <div className="col-md-7">
                             <button type={"button"} className="btn btn-gradient-success btn-lg"
                                     onClick={() => this.StaticLanguagesEvents.onCreate()}>+ {this.props.t("newStaticLanguage")}

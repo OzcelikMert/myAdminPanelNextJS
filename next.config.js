@@ -6,7 +6,6 @@ const nextConfig = {
         API_HOST: process.env.API_HOST,
         ...(process.env.API_PORT ? {API_PORT: process.env.API_PORT} : {}),
     },
-    reactStrictMode: true,
     swcMinify: true,
     images: {
         remotePatterns: [

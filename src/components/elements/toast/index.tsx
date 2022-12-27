@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import cogoToast, {CTOptions, CTReturn} from "cogo-toast";
+import {ToastContainer, toast, Id, ToastOptions, ToastContent} from "react-toastify";
 import React from "react";
 
 type PageProps = {
@@ -7,26 +7,26 @@ type PageProps = {
     borderColor?: PageProps["type"]
     content: ReactNode | string
     title?: string
-    position?: CTOptions["position"]
+    position?: ToastOptions["position"]
     timeOut?: number
 };
 
-class ThemeToast {
-    private toast: null | CTReturn = null;
-    private readonly options: CTOptions;
+export default class ThemeToast {
+    private toast: null | Id = null;
+    private readonly options:  ToastOptions<{}>;
+    private readonly content:  ToastContent<any>;
     private props: PageProps;
     public isShow: boolean;
 
     constructor(props: PageProps) {
         this.props = props;
         this.options = {
-            bar: {
-                color: this.getColor
-            },
             position: props.position ?? "top-center",
-            hideAfter: props.timeOut,
-            heading: props.title,
+            autoClose: props.timeOut,
+            pauseOnHover: true,
+            draggable: true
         }
+        this.content = this.Content();
         this.isShow = true;
         this.init();
     }
@@ -46,41 +46,47 @@ class ThemeToast {
         return color;
     }
 
+    private Content() {
+        return (
+            <div>
+                <b>{this.props.title}</b><br/>
+                <p>{this.props.content}</p>
+            </div>
+        );
+    }
+
     private init() {
         switch (this.props.type){
             case "success":
-                this.toast = cogoToast.success(this.props.content, this.options)
+                this.toast = toast.success(this.content, this.options)
                 break;
             case "info":
-                this.toast = cogoToast.info(this.props.content, this.options)
+                this.toast = toast.info(this.content, this.options)
 
                 break;
             case "warning":
-                this.toast = cogoToast.warn(this.props.content, this.options)
+                this.toast = toast.warn(this.content, this.options)
 
                 break;
             case "error":
-                this.toast = cogoToast.error(this.props.content, this.options)
+                this.toast = toast.error(this.content, this.options)
 
                 break;
             case "loading":
-                this.toast = cogoToast.loading(
-                    this.props.content,
+                this.toast = toast.loading(
+                    this.content,
                     {
                         ...this.options,
-                        hideAfter: 0
+                        autoClose: 0
                     }
                 )
                 break;
             default:
-                this.toast = cogoToast.info(
-                    this.props.content,
+                this.toast = toast.info(
+                    this.content,
                     {
                         ...this.options,
-                        hideAfter: 0,
-                        renderIcon: () => {
-                            return <div style={{"marginLeft": "-15px"}}></div>;
-                        }
+                        autoClose: 0,
                     }
                 )
                 break;
@@ -88,11 +94,9 @@ class ThemeToast {
     }
 
     hide() {
-        if(this.toast && this.toast.hide){
+        if(this.toast && toast.isActive(this.toast)){
             this.isShow = false;
-            this.toast.hide();
+            toast.dismiss(this.toast);
         }
     }
 }
-
-export default ThemeToast

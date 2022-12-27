@@ -138,8 +138,8 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                                     {
                                         (
                                             permissionUtil.checkPermission(
-                                                this.props.getSessionData.roleId,
-                                                this.props.getSessionData.permissions,
+                                                this.props.getStateApp.sessionData.roleId,
+                                                this.props.getStateApp.sessionData.permissions,
                                                 PermissionId.SubscriberEdit
                                             )
                                         ) ? <ThemeTableToggleMenu
@@ -150,7 +150,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                                                 ]
                                             }
                                             onChange={(event, statusId) => this.onDelete(event)}
-                                            langId={this.props.getSessionData.langId}
+                                            langId={this.props.getStateApp.sessionData.langId}
                                         /> : null
                                     }
                                 </div>

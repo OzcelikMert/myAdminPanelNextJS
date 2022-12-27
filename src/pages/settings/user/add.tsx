@@ -5,13 +5,13 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionGroups, Permissions, StatusId, UserRoleId, UserRoles} from "constants/index";
 import HandleForm from "library/react/handles/form";
 import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form";
-import SweetAlert from "react-sweetalert2";
 import V, {DateMask} from "library/variable";
 import userService from "services/user.service";
 import Spinner from "components/tools/spinner";
 import staticContentUtil from "utils/staticContent.util";
 import PagePaths from "constants/pagePaths";
 import {UserUpdateParamDocument} from "types/services/user";
+import Swal from "sweetalert2";
 
 type PageState = {
     formActiveKey: string
@@ -20,7 +20,6 @@ type PageState = {
     mainTitle: string,
     isSubmitting: boolean
     formData: UserUpdateParamDocument,
-    isSuccessMessage: boolean,
     isLoading: boolean
 };
 
@@ -46,7 +45,6 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 banComment: "",
                 permissions: []
             },
-            isSuccessMessage: false,
             isLoading: true
         }
     }
@@ -90,7 +88,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
 
     getRoles() {
         this.setState((state: PageState) => {
-            let findUserRole = UserRoles.findSingle("id", this.props.getSessionData.roleId);
+            let findUserRole = UserRoles.findSingle("id", this.props.getStateApp.sessionData.roleId);
             state.userRoles = staticContentUtil.getUserRolesForSelect(
                 UserRoles.map(userRole => findUserRole && (findUserRole.rank > userRole.rank) ? userRole.id : 0).filter(roleId => roleId !== 0),
                 this.props.t
@@ -148,13 +146,9 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 ? userService.update(params)
                 : userService.add(params)).then(resData => {
                 this.setState((state: PageState) => {
-                    if (resData.status) {
-                        state.isSuccessMessage = true;
-                    }
-
                     state.isSubmitting = false;
                     return state;
-                })
+                }, () => this.setMessage())
             });
         })
     }
@@ -194,25 +188,19 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
         });
     }
 
-    onCloseSuccessMessage() {
-        this.setState({
-            isSuccessMessage: false
-        });
-        this.navigateTermPage()
+    setMessage = () => {
+        Swal.fire({
+            title: this.props.t("successful"),
+            text: `${this.props.t((V.isEmpty(this.state.formData.userId)) ? "itemAdded" : "itemEdited")}!`,
+            icon: "success",
+            timer: 1000,
+            timerProgressBar: true,
+            didClose: () => this.onCloseSuccessMessage()
+        })
     }
 
-    Messages = () => {
-        return (
-            <SweetAlert
-                show={this.state.isSuccessMessage}
-                title={this.props.t("successful")}
-                text={`${this.props.t((V.isEmpty(this.state.formData.userId)) ? "itemAdded" : "itemEdited")}!`}
-                icon="success"
-                timer={1000}
-                timerProgressBar={true}
-                didClose={() => this.onCloseSuccessMessage()}
-            />
-        )
+    onCloseSuccessMessage() {
+        this.navigateTermPage()
     }
 
     TabPermissions = (props: any) => {
@@ -348,7 +336,6 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     render() {
         return this.state.isLoading ? <Spinner /> : (
             <div className="page-user">
-                <this.Messages/>
                 <div className="navigate-buttons mb-3">
                     <button className="btn btn-gradient-dark btn-lg btn-icon-text"
                             onClick={() => this.navigateTermPage()}>

@@ -3,14 +3,13 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionId, UserRoleId} from "constants/index";
 import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import permissionUtil from "utils/permission.util";
-import ThemeToast from "components/toast";
+import ThemeToast from "components/elements/toast";
 import {ComponentDocument} from "types/services/component";
 import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
-import ThemeDataTable from "components/table/dataTable";
+import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
     searchKey: string
@@ -48,7 +47,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
     }
 
     async getComponents() {
-        let components = (await componentService.get({langId: this.props.getPageData.langId})).data;
+        let components = (await componentService.get({langId: this.props.getStateApp.pageData.langId})).data;
         this.setState((state: PageState) => {
             state.components = components;
             return state;
@@ -102,7 +101,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
 
     navigateTermPage(type: "edit", itemId = "") {
         let path = PagePaths.component().edit(itemId)
-        this.props.router.navigate(path, {replace: true});
+        this.props.router.push(path);
     }
 
     get getTableColumns(): TableColumn<PageState["components"][0]>[] {
@@ -122,8 +121,8 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                 button: true,
                 width: "70px",
                 cell: row => permissionUtil.checkPermission(
-                    this.props.getSessionData.roleId,
-                    this.props.getSessionData.permissions,
+                    this.props.getStateApp.sessionData.roleId,
+                    this.props.getStateApp.sessionData.permissions,
                     PermissionId.ComponentEdit
                 ) ? (
                     <button
@@ -134,7 +133,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                 ) : null
             },
             (
-                this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                     ? {
                         name: "",
                         button: true,
@@ -148,7 +147,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                         )
                     } : {}
             )
-        ].filter(column => typeof column.name !== "undefined");
+        ];
     }
 
     render() {
@@ -159,7 +158,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                         <div className="card-body">
                             <div className="table-post">
                                 <ThemeDataTable
-                                    columns={this.getTableColumns}
+                                    columns={this.getTableColumns.filter(column => typeof column.name !== "undefined")}
                                     data={this.state.showingComponents}
                                     t={this.props.t}
                                     onSearch={searchKey => this.onSearch(searchKey)}

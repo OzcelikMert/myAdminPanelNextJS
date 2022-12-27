@@ -3,14 +3,13 @@ import {Tab, Tabs} from "react-bootstrap";
 import {PagePropCommonDocument} from "types/pageProps";
 import {LanguageKeysArray, ComponentInputTypeId, ComponentInputTypes, UserRoleId} from "constants/index";
 import HandleForm from "library/react/handles/form";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
 import SweetAlert from "react-sweetalert2";
 import V from "library/variable";
-import Thread from "library/thread";
 import Spinner from "components/tools/spinner";
 import {ComponentTypeDocument, ComponentUpdateParamDocument} from "types/services/component";
 import componentService from "services/component.service";
-import ThemeChooseImage from "components/chooseImage";
+import ThemeChooseImage from "components/elements/chooseImage";
 import imageSourceUtil from "utils/imageSource.util";
 import Swal from "sweetalert2";
 import PagePaths from "constants/pagePaths";
@@ -24,7 +23,7 @@ type PageState = {
     formData: ComponentUpdateParamDocument,
     isSuccessMessage: boolean,
     isLoading: boolean
-};
+} & {[key: string]: any};
 
 type PageProps = {} & PagePropCommonDocument;
 
@@ -38,7 +37,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             isSubmitting: false,
             mainTitle: "",
             formData: {
-                componentId: this.props.getPageData.searchParams.componentId,
+                componentId: this.props.router.query.componentId as string ?? "",
                 order: 0,
                 types: [],
                 elementId: "",
@@ -62,7 +61,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     }
 
     async componentDidUpdate(prevProps: PagePropCommonDocument) {
-        if (prevProps.getPageData.langId != this.props.getPageData.langId) {
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
             this.setState((state: PageState) => {
                 state.isLoading = true;
                 return state;
@@ -106,7 +105,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     async getComponent() {
         let resData = await componentService.get({
             componentId: this.state.formData.componentId,
-            langId: this.props.getPageData.langId,
+            langId: this.props.getStateApp.pageData.langId,
             getContents: 1
         });
         if (resData.status) {
@@ -118,13 +117,13 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         ...component,
                         types: component.types.map(type => {
                             if(type.contents){
-                                type.contents.langId = this.props.getPageData.langId;
+                                type.contents.langId = this.props.getStateApp.pageData.langId;
                             }
                             return type;
                         })
                     };
 
-                    if (this.props.getPageData.langId == this.props.getPageData.mainLangId) {
+                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
                         state.mainTitle = this.props.t(component.langKey);
                     }
 
@@ -140,7 +139,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
 
     navigateTermPage() {
         let path = PagePaths.component().list();
-        this.props.router.navigate(path, {replace: true});
+        this.props.router.push(path);
     }
 
     onSubmit(event: FormEvent) {
@@ -189,7 +188,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         langKey: "[noLangAdd]",
                         typeId: ComponentInputTypeId.Text,
                         contents: {
-                            langId: self.props.getPageData.langId,
+                            langId: self.props.getStateApp.pageData.langId,
                             content: ""
                         }
                     })
@@ -221,7 +220,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             <SweetAlert
                 show={this.state.isSuccessMessage}
                 title={this.props.t("successful")}
-                text={`${this.props.t((V.isEmpty(this.props.getPageData.searchParams.userId)) ? "itemAdded" : "itemEdited")}!`}
+                text={`${this.props.t((V.isEmpty(this.state.formData.componentId)) ? "itemAdded" : "itemEdited")}!`}
                 icon="success"
                 timer={1000}
                 timerProgressBar={true}
@@ -249,7 +248,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         <ThemeChooseImage
                             {...this.props}
                             isShow={this.state[typeProps._id]}
-                            onHide={() => this.setState((state) => {
+                            onHide={() => this.setState((state: PageState) => {
                                 state[typeProps._id] = false;
                                 return state;
                             })}
@@ -270,7 +269,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                             <button
                                 type="button"
                                 className="btn btn-gradient-warning btn-xs ms-1"
-                                onClick={() => this.setState((state) => {
+                                onClick={() => this.setState((state: PageState) => {
                                     state[typeProps._id] = true;
                                     return state;
                                 })}
@@ -322,14 +321,14 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mt-2">
                     <div className="row">
                         {
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12">
                                     <button type={"button"} className="btn btn-gradient-danger btn-lg"
                                             onClick={() => this.TabThemeEvents.onDelete(this.state.formData.types, typeIndex)}>{this.props.t("delete")}</button>
                                 </div> : null
                         }
                         {
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12 mt-3">
                                     <ThemeFormType
                                         title={`${this.props.t("elementId")}*`}
@@ -341,7 +340,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                 </div> : null
                         }
                         {
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12 mt-3">
                                     <ThemeFormSelect
                                         title={this.props.t("langKey")}
@@ -353,7 +352,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                 </div> : null
                         }
                         {
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12 mt-3">
                                     <ThemeFormSelect
                                         title={this.props.t("typeId")}
@@ -365,7 +364,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                 </div> : null
                         }
                         {
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12 mt-3">
                                     <ThemeFormType
                                         title={`${this.props.t("comment")}`}
@@ -376,7 +375,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                 </div> : null
                         }
                         {
-                            this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12 mt-3">
                                     <ThemeFormType
                                         title={`${this.props.t("order")}*`}
@@ -392,7 +391,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         </div>
                     </div>
                     {
-                        this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                        this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                             ? <hr/> : null
                     }
                 </div>
@@ -402,7 +401,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         return (
             <div className="row mb-3">
                 {
-                    this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                    this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                         ? <div className="col-md-7">
                             <button type={"button"} className="btn btn-gradient-success btn-lg"
                                     onClick={() => this.TabThemeEvents.onCreateType()}>+ {this.props.t("newType")}
@@ -485,14 +484,14 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                             className="mb-5"
                                             transition={false}>
                                             {
-                                                this.props.getSessionData.roleId == UserRoleId.SuperAdmin
+                                                this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                                     ? <Tab eventKey="general" title={this.props.t("general")}>
                                                         <this.TabGeneral/>
                                                     </Tab> : null
                                             }
                                             <Tab
-                                                eventKey={this.props.getSessionData.roleId == UserRoleId.SuperAdmin ? "types" : "general"}
-                                                title={this.props.t(this.props.getSessionData.roleId == UserRoleId.SuperAdmin ? "content" : "general")}
+                                                eventKey={this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin ? "types" : "general"}
+                                                title={this.props.t(this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin ? "content" : "general")}
                                             >
                                                 <this.TabTypes/>
                                             </Tab>
