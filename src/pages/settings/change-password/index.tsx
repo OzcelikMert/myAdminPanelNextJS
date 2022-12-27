@@ -31,6 +31,9 @@ export default class PageChangePassword extends Component<PageProps, PageState> 
 
     componentDidMount() {
         this.setPageTitle();
+        this.props.setStateApp({
+            isPageLoading: false
+        })
     }
 
     setPageTitle() {
@@ -74,7 +77,7 @@ export default class PageChangePassword extends Component<PageProps, PageState> 
     }
 
     render() {
-        return (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-settings">
                 <div className="grid-margin stretch-card">
                     <div className="card">

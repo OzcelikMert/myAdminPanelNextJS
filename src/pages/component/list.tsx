@@ -3,8 +3,7 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionId, UserRoleId} from "constants/index";
 import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
-import Spinner from "components/tools/spinner";
-import permissionUtil from "utils/permission.util";
+import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import {ComponentDocument} from "types/services/component";
 import componentService from "services/component.service";
@@ -15,7 +14,6 @@ type PageState = {
     searchKey: string
     components: ComponentDocument[]
     showingComponents: PageState["components"]
-    isLoading: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -26,16 +24,15 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         this.state = {
             searchKey: "",
             showingComponents: [],
-            components: [],
-            isLoading: true
+            components: []
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
         await this.getComponents();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -120,7 +117,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                 name: "",
                 button: true,
                 width: "70px",
-                cell: row => permissionUtil.checkPermission(
+                cell: row => permissionLib.checkPermission(
                     this.props.getStateApp.sessionData.roleId,
                     this.props.getStateApp.sessionData.permissions,
                     PermissionId.ComponentEdit
@@ -151,7 +148,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
                 <div className="grid-margin stretch-card">
                     <div className="card">

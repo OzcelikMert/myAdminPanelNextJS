@@ -6,10 +6,9 @@ import Swal from "sweetalert2";
 import UserDocument from "types/services/user";
 import ThemeUsersProfileCard from "components/elements/users/profileCard";
 import userService from "services/user.service";
-import Spinner from "components/tools/spinner";
-import imageSourceUtil from "utils/imageSource.util";
-import classNameUtil from "utils/className.util";
-import permissionUtil from "utils/permission.util";
+import imageSourceLib from "lib/imageSource.lib";
+import classNameLib from "lib/className.lib";
+import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
@@ -20,7 +19,6 @@ type PageState = {
     showingUsers: PageState["users"]
     isViewUserInfo: boolean
     selectedUserId: string
-    isLoading: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -33,16 +31,15 @@ export default class PageUserList extends Component<PageProps, PageState> {
             showingUsers: [],
             users: [],
             isViewUserInfo: false,
-            selectedUserId: "",
-            isLoading: true
+            selectedUserId: ""
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
         await this.getUsers();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -134,7 +131,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 cell: row => (
                     <div className="image mt-2 mb-2">
                         <img
-                            src={imageSourceUtil.getUploadedImageSrc(row.image)}
+                            src={imageSourceLib.getUploadedImageSrc(row.image)}
                             alt={row.name}
                         />
                         <span className={`availability-status ${row.isOnline ? "online" : "offline"}`}></span>
@@ -155,7 +152,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 selector: row => UserRoles.findSingle("id", row.roleId)?.rank ?? 0,
                 sortable: true,
                 cell: row => (
-                    <label className={`badge badge-gradient-${classNameUtil.getUserRolesClassName(row.roleId)}`}>
+                    <label className={`badge badge-gradient-${classNameLib.getUserRolesClassName(row.roleId)}`}>
                         {
                             this.props.t(UserRoles.findSingle("id", row.roleId)?.langKey ?? "[noLangAdd]")
                         }
@@ -167,7 +164,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 selector: row => Status.findSingle("id", row.statusId)?.order ?? 0,
                 sortable: true,
                 cell: row => (
-                    <label className={`badge badge-gradient-${classNameUtil.getStatusClassName(row.statusId)}`}>
+                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
                         {
                             this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
                         }
@@ -194,7 +191,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                     return (
                         (sessionUserRole && rowUserRole) &&
                         (rowUserRole.rank < sessionUserRole.rank) &&
-                        permissionUtil.checkPermission(
+                        permissionLib.checkPermission(
                             this.props.getStateApp.sessionData.roleId,
                             this.props.getStateApp.sessionData.permissions,
                             PermissionId.UserEdit
@@ -216,7 +213,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                     return (
                         (sessionUserRole && rowUserRole) &&
                         (rowUserRole.rank < sessionUserRole.rank) &&
-                        permissionUtil.checkPermission(
+                        permissionLib.checkPermission(
                             this.props.getStateApp.sessionData.roleId,
                             this.props.getStateApp.sessionData.permissions,
                             PermissionId.UserDelete
@@ -232,7 +229,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-user">
                 {
                     (() => {

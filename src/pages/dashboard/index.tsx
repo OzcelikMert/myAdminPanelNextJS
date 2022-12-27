@@ -3,15 +3,14 @@ import {PagePropCommonDocument} from "types/pageProps";
 import ThemeChartBar from "components/elements/charts/bar";
 import {TableColumn} from "react-data-table-component";
 import {PostTypeId, PostTypes, Status} from "constants/index";
-import Spinner from "components/tools/spinner";
 import PostDocument from "types/services/post";
 import postService from "services/post.service";
 //import WorldMap from "react-svg-worldmap";
 import viewService from "services/view.service";
 import {ViewNumberDocument, ViewStatisticsDocument} from "types/services/view";
-import imageSourceUtil from "utils/imageSource.util";
-import classNameUtil from "utils/className.util";
-import permissionUtil from "utils/permission.util";
+import imageSourceLib from "lib/imageSource.lib";
+import classNameLib from "lib/className.lib";
+import permissionLib from "lib/permission.lib";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 
@@ -38,7 +37,6 @@ type PageState = {
         statistics: ViewStatisticsDocument
     }
     worldMapSize: "lg" | "xl" | "xxl"
-    isLoading: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -66,7 +64,6 @@ class PageDashboard extends Component<PageProps, PageState> {
                 }
             },
             worldMapSize: "lg",
-            isLoading: true
         }
     }
 
@@ -75,8 +72,8 @@ class PageDashboard extends Component<PageProps, PageState> {
         await this.getViewNumber();
         await this.getViewStatistics();
         await this.getLastPosts();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         }, () => {
             this.chartInit();
             this.timerReportOne();
@@ -190,7 +187,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                 cell: row => (
                     <div className="image pt-2 pb-2">
                         <img
-                            src={imageSourceUtil.getUploadedImageSrc(row.contents?.image)}
+                            src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
                             alt={row.contents?.title}
                             className="post-image"
                         />
@@ -222,7 +219,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                 selector: row => row.statusId,
                 sortable: true,
                 cell: row => (
-                    <label className={`badge badge-gradient-${classNameUtil.getStatusClassName(row.statusId)}`}>
+                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
                         {
                             this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
                         }
@@ -238,10 +235,10 @@ class PageDashboard extends Component<PageProps, PageState> {
                 name: "",
                 button: true,
                 width: "70px",
-                cell: row => permissionUtil.checkPermission(
+                cell: row => permissionLib.checkPermission(
                     this.props.getStateApp.sessionData.roleId,
                     this.props.getStateApp.sessionData.permissions,
-                    permissionUtil.getPermissionIdForPostType(row.typeId, "Edit")
+                    permissionLib.getPermissionIdForPostType(row.typeId, "Edit")
                 ) ? (
                     <button
                         onClick={() => this.navigateTermPage("edit", row.typeId, row._id)}
@@ -398,7 +395,7 @@ class PageDashboard extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-dashboard">
                 <this.ReportOne/>
                 <this.ReportTwo/>

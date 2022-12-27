@@ -1,6 +1,6 @@
 import V from "library/variable";
 import {emptyImage} from "components/elements/chooseImage";
-import pathUtil from "./path.util";
+import pathUtil from "utils/path.util";
 
 export default {
     getUploadedImageSrc(imageName?: string): any {

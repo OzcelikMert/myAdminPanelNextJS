@@ -3,7 +3,6 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
 import {LanguageKeysArray, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
-import Spinner from "components/tools/spinner";
 import ThemeToast from "components/elements/toast";
 import {
     SettingStaticLanguageDocument, SettingStaticLanguageUpdateParamDocument
@@ -11,7 +10,6 @@ import {
 
 type PageState = {
     isSubmitting: boolean
-    isLoading: boolean
     langKeys: { value: string, label: string }[]
     formData: SettingStaticLanguageUpdateParamDocument,
     newStaticLanguages: SettingStaticLanguageDocument[]
@@ -24,7 +22,6 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             isSubmitting: false,
-            isLoading: true,
             langKeys: [],
             newStaticLanguages: [],
             formData: {
@@ -37,20 +34,19 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
         this.setPageTitle();
         this.getLangKeys();
         await this.getSettings();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
     async componentDidUpdate(prevProps: PagePropCommonDocument) {
         if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
-            this.setState((state: PageState) => {
-                state.isLoading = true;
-                return state;
+            this.props.setStateApp({
+                isPageLoading: true
             }, async () => {
                 await this.getSettings()
-                this.setState({
-                    isLoading: false
+                this.props.setStateApp({
+                    isPageLoading: false
                 })
             })
         }
@@ -245,7 +241,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner /> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-settings page-dashboard page-post">
                 <div className="grid-margin stretch-card">
                     <div className="card">

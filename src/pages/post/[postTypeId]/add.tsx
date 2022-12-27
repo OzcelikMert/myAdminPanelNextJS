@@ -11,9 +11,8 @@ import HandleForm from "library/react/handles/form";
 import ThemeChooseImage from "components/elements/chooseImage";
 import postTermService from "services/postTerm.service";
 import postService from "services/post.service";
-import Spinner from "components/tools/spinner";
-import staticContentUtil from "utils/staticContent.util";
-import imageSourceUtil from "utils/imageSource.util";
+import staticContentLib from "lib/staticContent.lib";
+import imageSourceLib from "lib/imageSource.lib";
 import {PostContentButtonDocument, PostUpdateParamDocument} from "types/services/post";
 import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
@@ -30,8 +29,7 @@ type PageState = {
     tagTerms: { value: string, label: string }[]
     status: { value: number, label: string }[]
     isSubmitting: boolean
-    mainTitle: string,
-    isLoading: boolean
+    mainTitle: string
     formData: Omit<PostUpdateParamDocument, "terms"> & {
         categoryTermId: string[]
         tagTermId: string[]
@@ -55,7 +53,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             components: [],
             isSubmitting: false,
             mainTitle: "",
-            isLoading: true,
             formData: {
                 postId: this.props.router.query.postId as string ?? "",
                 typeId: Number(this.props.router.query.postTypeId ?? 1),
@@ -97,20 +94,19 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         if (this.state.formData.postId) {
             await this.getPost();
         }
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
     async componentDidUpdate(prevProps: PagePropCommonDocument) {
         if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
-            this.setState((state: PageState) => {
-                state.isLoading = true;
-                return state;
+            this.props.setStateApp({
+                isPageLoading: true
             }, async () => {
                 await this.getPost()
-                this.setState({
-                    isLoading: false
+                this.props.setStateApp({
+                    isPageLoading: false
                 })
             })
         }
@@ -161,7 +157,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
 
     getStatus() {
         this.setState((state: PageState) => {
-            state.status = staticContentUtil.getStatusForSelect([
+            state.status = staticContentLib.getStatusForSelect([
                 StatusId.Active,
                 StatusId.InProgress,
                 StatusId.Pending
@@ -617,7 +613,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                                 isMulti={false}
                             />
                             <img
-                                src={imageSourceUtil.getUploadedImageSrc(this.state.formData.contents.image)}
+                                src={imageSourceLib.getUploadedImageSrc(this.state.formData.contents.image)}
                                 alt="Empty Image"
                                 className="post-image"
                             />
@@ -721,7 +717,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
                 <div className="row mb-3">
                     <div className="col-md-3">

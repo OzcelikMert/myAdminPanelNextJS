@@ -4,15 +4,13 @@ import Lightbox from "yet-another-react-lightbox";
 import {LazyLoadImage} from 'react-lazy-load-image-component';
 import Swal from "sweetalert2";
 import galleryService from "services/gallery.service";
-import Spinner from "components/tools/spinner";
 import pathUtil from "utils/path.util";
 import {TableColumn} from "react-data-table-component";
-import imageSourceUtil from "utils/imageSource.util";
+import imageSourceLib from "lib/imageSource.lib";
 import ThemeToast from "components/elements/toast";
-import permissionUtil from "utils/permission.util";
+import permissionLib from "lib/permission.lib";
 import {PermissionId} from "constants/index";
 import ThemeDataTable from "components/elements/table/dataTable";
-import ComponentHead from "components/head";
 
 type PageState = {
     images: string[]
@@ -20,7 +18,6 @@ type PageState = {
     selectedImages: PageState["images"]
     selectedImageIndex: number
     isOpenViewer: boolean
-    isLoading: boolean
     searchKey: string
 };
 
@@ -43,7 +40,6 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
             selectedImages: [],
             selectedImageIndex: 0,
             isOpenViewer: false,
-            isLoading: true,
             searchKey: "",
         }
     }
@@ -51,28 +47,13 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
     async componentDidMount() {
         this.setPageTitle()
         await this.getImages();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
     componentWillUnmount() {
         this.toast?.hide();
-    }
-
-    async getImages() {
-        let resData = await galleryService.get();
-
-        if (resData.status) {
-            if (Array.isArray(resData.data)) {
-                let images = resData.data.orderBy("", "desc");
-                this.setState({
-                    images: images
-                }, () => {
-                    this.onSearch(this.state.searchKey)
-                })
-            }
-        }
     }
 
     componentDidUpdate(prevProps: Readonly<PageProps>, prevState: Readonly<PageState>) {
@@ -90,6 +71,21 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
         }
     }
 
+    async getImages() {
+        let resData = await galleryService.get();
+
+        if (resData.status) {
+            if (Array.isArray(resData.data)) {
+                let images = resData.data.orderBy("", "desc");
+                this.setState({
+                    images: images
+                }, () => {
+                    this.onSearch(this.state.searchKey)
+                })
+            }
+        }
+    }
+
     setPageTitle() {
         this.props.setBreadCrumb([
             this.props.t("gallery"),
@@ -98,7 +94,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
     }
 
     onSelect(images: string[]) {
-        if(!this.props.isModal && !permissionUtil.checkPermission(
+        if(!this.props.isModal && !permissionLib.checkPermission(
             this.props.getStateApp.sessionData.roleId,
             this.props.getStateApp.sessionData.permissions,
             PermissionId.GalleryEdit
@@ -207,7 +203,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                             className="gallery-img"
                             effect="opacity"
                             alt={row}
-                            src={imageSourceUtil.getUploadedImageSrc(row)} // use normal <img> attributes as props
+                            src={imageSourceLib.getUploadedImageSrc(row)} // use normal <img> attributes as props
                         />
                     </div>
                 )
@@ -254,7 +250,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
 
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-gallery">
                 <this.ImageViewer/>
                 <div className="grid-margin stretch-card">

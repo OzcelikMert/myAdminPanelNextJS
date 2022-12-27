@@ -1,9 +1,11 @@
 import SearchParamDocument from "../providers";
 import {LanguageId, UserRoleId} from "constants/index";
+import LanguageDocument from "types/services/language";
 
 type AppAdminGetState = {
-    isAuth:boolean
-    permissionIsValid: boolean
+    contentLanguages: LanguageDocument[]
+    isAppLoading: boolean
+    isPageLoading: boolean
     pageData: {
         langId: string,
         mainLangId: string
@@ -20,8 +22,9 @@ type AppAdminGetState = {
 }
 
 type AppAdminSetState = {
-    isAuth?:boolean
-    permissionIsValid?: boolean
+    contentLanguages?: LanguageDocument[]
+    isAppLoading?: boolean
+    isPageLoading?: boolean
     pageData?: {
         langId?: string,
         mainLangId?: string,

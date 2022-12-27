@@ -5,7 +5,7 @@ import {Trans} from 'react-i18next';
 import {PagePropCommonDocument} from "types/pageProps";
 import authService from "services/auth.service";
 import localStorageUtil from "utils/localStorage.util";
-import imageSourceUtil from "utils/imageSource.util";
+import imageSourceLib from "lib/imageSource.lib";
 import PagePaths from "constants/pagePaths";
 import DarkModeToggle from "react-dark-mode-toggle";
 import themeUtil from "utils/theme.util";
@@ -178,7 +178,7 @@ export default class Navbar extends Component<PageProps, PageState> {
             <Dropdown.Toggle className="nav-link">
                 <div className="nav-profile-img">
                     <img
-                        src={imageSourceUtil.getUploadedImageSrc(this.props.getStateApp.sessionData.image)}
+                        src={imageSourceLib.getUploadedImageSrc(this.props.getStateApp.sessionData.image)}
                          alt={this.props.getStateApp.sessionData.name}
                     />
                     <span className="availability-status online"></span>

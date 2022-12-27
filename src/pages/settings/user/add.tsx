@@ -7,8 +7,7 @@ import HandleForm from "library/react/handles/form";
 import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form";
 import V, {DateMask} from "library/variable";
 import userService from "services/user.service";
-import Spinner from "components/tools/spinner";
-import staticContentUtil from "utils/staticContent.util";
+import staticContentLib from "lib/staticContent.lib";
 import PagePaths from "constants/pagePaths";
 import {UserUpdateParamDocument} from "types/services/user";
 import Swal from "sweetalert2";
@@ -19,8 +18,7 @@ type PageState = {
     status: { value: number, label: string }[]
     mainTitle: string,
     isSubmitting: boolean
-    formData: UserUpdateParamDocument,
-    isLoading: boolean
+    formData: UserUpdateParamDocument
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -44,8 +42,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 banDateEnd: new Date().getStringWithMask(DateMask.DATE),
                 banComment: "",
                 permissions: []
-            },
-            isLoading: true
+            }
         }
     }
 
@@ -56,8 +53,8 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
         if (this.state.formData.userId) {
             await this.getUser();
         }
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -75,7 +72,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
 
     getStatus() {
         this.setState((state: PageState) => {
-            state.status = staticContentUtil.getStatusForSelect([
+            state.status = staticContentLib.getStatusForSelect([
                 StatusId.Active,
                 StatusId.Pending,
                 StatusId.Disabled,
@@ -89,7 +86,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     getRoles() {
         this.setState((state: PageState) => {
             let findUserRole = UserRoles.findSingle("id", this.props.getStateApp.sessionData.roleId);
-            state.userRoles = staticContentUtil.getUserRolesForSelect(
+            state.userRoles = staticContentLib.getUserRolesForSelect(
                 UserRoles.map(userRole => findUserRole && (findUserRole.rank > userRole.rank) ? userRole.id : 0).filter(roleId => roleId !== 0),
                 this.props.t
             );
@@ -334,7 +331,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner /> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-user">
                 <div className="navigate-buttons mb-3">
                     <button className="btn btn-gradient-dark btn-lg btn-icon-text"

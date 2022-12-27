@@ -3,13 +3,11 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/elements/form";
 import {UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
-import Spinner from "components/tools/spinner";
 import ThemeToast from "components/elements/toast";
 import {SettingContactFormDocument, SettingContactFormUpdateParamDocument} from "types/services/setting";
 
 type PageState = {
     isSubmitting: boolean
-    isLoading: boolean
     formData: SettingContactFormUpdateParamDocument
     newContactForms: SettingContactFormDocument[]
     formActiveKey: string
@@ -22,7 +20,6 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             isSubmitting: false,
-            isLoading: true,
             formActiveKey: `general`,
             newContactForms: [],
             formData: {
@@ -34,8 +31,8 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
    async componentDidMount() {
         this.setPageTitle();
         await this.getSettings();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -254,7 +251,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner /> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-settings page-dashboard page-post">
                 <div className="grid-margin stretch-card">
                     <div className="card">

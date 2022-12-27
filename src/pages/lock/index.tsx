@@ -5,7 +5,7 @@ import {ThemeForm} from "components/elements/form";
 import HandleForm from "library/react/handles/form";
 import V from "library/variable";
 import authService from "services/auth.service";
-import imageSourceUtil from "utils/imageSource.util";
+import imageSourceLib from "lib/imageSource.lib";
 import PagePaths from "constants/pagePaths";
 
 type PageState = {
@@ -31,9 +31,19 @@ class PageLock extends Component<PageProps, PageState> {
     }
 
     componentDidMount() {
+        this.setPageTitle();
         if (V.isEmpty(this.props.getStateApp.sessionData.email)) {
-            this.props.router.push(PagePaths.login());
+            return this.props.router.push(PagePaths.login());
         }
+        this.props.setStateApp({
+            isPageLoading: false
+        })
+    }
+
+    setPageTitle() {
+        this.props.setBreadCrumb([
+            this.props.t("lock")
+        ])
     }
 
     onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -65,7 +75,7 @@ class PageLock extends Component<PageProps, PageState> {
     }
 
     render() {
-        return (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-lock">
                 <div className="content-wrapper d-flex align-items-center auth lock-full-bg h-100">
                     <div className="row w-100 align-items-center">
@@ -73,7 +83,7 @@ class PageLock extends Component<PageProps, PageState> {
                             <div className="auth-form-transparent text-left p-5 text-center">
                                 <img
                                     className="lock-profile-img"
-                                    src={imageSourceUtil.getUploadedImageSrc(this.props.getStateApp.sessionData.image)}
+                                    src={imageSourceLib.getUploadedImageSrc(this.props.getStateApp.sessionData.image)}
                                     alt={this.props.getStateApp.sessionData.name}
                                 />
                                 <h4 className="text-center text-light mb-3 mt-3">{this.props.getStateApp.sessionData.name}</h4>

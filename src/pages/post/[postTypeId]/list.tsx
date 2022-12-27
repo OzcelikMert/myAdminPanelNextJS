@@ -6,10 +6,9 @@ import {ThemeTableToggleMenu} from "components/elements/table";
 import Swal from "sweetalert2";
 import postService from "services/post.service";
 import PostDocument from "types/services/post";
-import Spinner from "components/tools/spinner";
-import imageSourceUtil from "utils/imageSource.util";
-import classNameUtil from "utils/className.util";
-import permissionUtil from "utils/permission.util";
+import imageSourceLib from "lib/imageSource.lib";
+import classNameLib from "lib/className.lib";
+import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
@@ -22,7 +21,6 @@ type PageState = {
     selectedPosts: PageState["posts"]
     listMode: "list" | "deleted"
     isShowToggleMenu: boolean
-    isLoading: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -38,21 +36,29 @@ export default class PagePostList extends Component<PageProps, PageState> {
             isShowToggleMenu: false,
             posts: [],
             showingPosts: [],
-            isLoading: true,
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
         await this.getPosts();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
-    componentDidUpdate(prevProps: Readonly<PageProps>) {
-        if (this.props.router.pathname !== prevProps.router.pathname) {
-            this.getPosts();
+    async componentDidUpdate(prevProps: Readonly<PageProps>) {
+        let typeId = Number(this.props.router.query.postTypeId ?? 1);
+        if (typeId !== this.state.typeId) {
+            this.setState({
+                typeId: typeId
+            }, async () => {
+                await this.getPosts();
+                this.props.setStateApp({
+                    isPageLoading: false
+                })
+            })
+
         }
     }
 
@@ -197,7 +203,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                         cell: row => {
                             return <div className="image pt-2 pb-2">
                                 <img
-                                    src={imageSourceUtil.getUploadedImageSrc(row.contents?.image)}
+                                    src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
                                     alt={row.contents?.title}
                                     className="post-image"
                                 />
@@ -280,7 +286,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 name: this.props.t("status"),
                 sortable: true,
                 cell: row => (
-                    <label className={`badge badge-gradient-${classNameUtil.getStatusClassName(row.statusId)}`}>
+                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
                         {
                             this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
                         }
@@ -296,10 +302,10 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 name: "",
                 width: "70px",
                 button: true,
-                cell: row => permissionUtil.checkPermission(
+                cell: row => permissionLib.checkPermission(
                     this.props.getStateApp.sessionData.roleId,
                     this.props.getStateApp.sessionData.permissions,
-                    permissionUtil.getPermissionIdForPostType(row.typeId, "Edit")
+                    permissionLib.getPermissionIdForPostType(row.typeId, "Edit")
                 ) ? (
                     <button
                         onClick={() => this.navigateTermPage("edit", row._id)}
@@ -311,7 +317,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
                 <div className="row mb-3">
                     <div className="col-md-3">
@@ -357,15 +363,15 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                 <div className={`ms-2 ${!this.state.isShowToggleMenu ? "invisible" : ""}`}>
                                     {
                                         (
-                                            permissionUtil.checkPermission(
+                                            permissionLib.checkPermission(
                                                 this.props.getStateApp.sessionData.roleId,
                                                 this.props.getStateApp.sessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.state.typeId, "Edit")
+                                                permissionLib.getPermissionIdForPostType(this.state.typeId, "Edit")
                                             ) ||
-                                            permissionUtil.checkPermission(
+                                            permissionLib.checkPermission(
                                                 this.props.getStateApp.sessionData.roleId,
                                                 this.props.getStateApp.sessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.state.typeId, "Delete")
+                                                permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
                                             )
                                         ) ? <ThemeTableToggleMenu
                                             t={this.props.t}
@@ -375,10 +381,10 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                                     StatusId.Pending,
                                                     StatusId.InProgress
                                                 ].concat(
-                                                    permissionUtil.checkPermission(
+                                                    permissionLib.checkPermission(
                                                         this.props.getStateApp.sessionData.roleId,
                                                         this.props.getStateApp.sessionData.permissions,
-                                                        permissionUtil.getPermissionIdForPostType(this.state.typeId, "Delete")
+                                                        permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
                                                     ) ? [StatusId.Deleted] : []
                                                 )
                                             }

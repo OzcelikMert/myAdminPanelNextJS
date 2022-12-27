@@ -7,8 +7,8 @@ import {
 } from "constants/index";
 import UserDocument from "types/services/user";
 import {PagePropCommonDocument} from "types/pageProps";
-import classNameUtil from "utils/className.util";
-import imageSourceUtil from "utils/imageSource.util";
+import classNameLib from "lib/className.lib";
+import imageSourceLib from "lib/imageSource.lib";
 import {ThemeFieldSet} from "../form";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 
@@ -61,7 +61,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                 <div className="col-sm-12">
                     <span className="mb-2 fw-bold">{this.props.t("role")}:
                         <label
-                            className={`badge badge-gradient-${classNameUtil.getUserRolesClassName(this.props.userInfo.roleId)} ms-1`}>
+                            className={`badge badge-gradient-${classNameLib.getUserRolesClassName(this.props.userInfo.roleId)} ms-1`}>
                             {
                                 this.props.t(UserRoles.findSingle("id", this.props.userInfo.roleId)?.langKey ?? "[noLangAdd]")
                             }
@@ -71,7 +71,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                 <div className="col-sm-12">
                     <span className="mb-2 fw-bold">{this.props.t("status")}:
                         <label
-                            className={`badge badge-gradient-${classNameUtil.getStatusClassName(this.props.userInfo.statusId)} ms-1`}>
+                            className={`badge badge-gradient-${classNameLib.getStatusClassName(this.props.userInfo.statusId)} ms-1`}>
                             {
                                 this.props.t(Status.findSingle("id", this.props.userInfo.statusId)?.langKey ?? "[noLangAdd]")
                             }
@@ -168,7 +168,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                                 <div className="card-block text-center text-light mt-5">
                                     <div className="mb-4">
                                         <img
-                                            src={imageSourceUtil.getUploadedImageSrc(this.props.userInfo.image)}
+                                            src={imageSourceLib.getUploadedImageSrc(this.props.userInfo.image)}
                                             className="user-img"
                                             alt={this.props.userInfo.name}
                                         />

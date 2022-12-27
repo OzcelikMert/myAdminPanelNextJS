@@ -3,13 +3,11 @@ import {ThemeForm, ThemeFormTags, ThemeFormType} from "components/elements/form"
 import {PagePropCommonDocument} from "types/pageProps";
 import HandleForm from "library/react/handles/form";
 import settingService from "services/setting.service";
-import Spinner from "components/tools/spinner";
 import ThemeToast from "components/elements/toast";
 import {SettingSeoUpdateParamDocument} from "types/services/setting";
 
 type PageState = {
     isSubmitting: boolean
-    isLoading: boolean
     formData: SettingSeoUpdateParamDocument
 };
 
@@ -20,7 +18,6 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             isSubmitting: false,
-            isLoading: true,
             formData: {
                 seoContents: {
                     langId: this.props.getStateApp.pageData.mainLangId,
@@ -35,20 +32,19 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
     async componentDidMount() {
         this.setPageTitle()
         await this.getSeo();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
     async componentDidUpdate(prevProps: Readonly<PageProps>) {
         if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
-            this.setState((state: PageState) => {
-                state.isLoading = true;
-                return state;
+            this.props.setStateApp({
+                isPageLoading: true
             }, async () => {
                 await this.getSeo()
-                this.setState({
-                    isLoading: false
+                this.props.setStateApp({
+                    isPageLoading: false
                 })
             })
         }
@@ -102,7 +98,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-settings">
                 <div className="grid-margin stretch-card">
                     <div className="card">

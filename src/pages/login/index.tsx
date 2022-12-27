@@ -37,6 +37,9 @@ class PageLogin extends Component<PageProps, PageState> {
 
     componentDidMount() {
         this.setPageTitle();
+        this.props.setStateApp({
+            isPageLoading: false
+        })
     }
 
     setPageTitle() {
@@ -85,7 +88,7 @@ class PageLogin extends Component<PageProps, PageState> {
     }
 
     render() {
-        return (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-login">
                 <div className="d-flex align-items-stretch auth auth-img-bg h-100">
                     <div className="row flex-grow">

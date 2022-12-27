@@ -29,6 +29,9 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
 
     componentDidMount() {
         this.setPageTitle()
+        this.props.setStateApp({
+            isPageLoading: false
+        })
     }
 
     setPageTitle() {
@@ -182,7 +185,7 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
     }
 
     render() {
-        return (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-gallery">
                 <div className="grid-margin stretch-card">
                     <div className="card">

@@ -7,18 +7,16 @@ import {
     Permissions, Status,
     UserRoleId, UserRoles
 } from "constants/index";
-import Spinner from "components/tools/spinner";
 import ThemeChooseImage from "components/elements/chooseImage";
 import userService from "services/user.service";
 import profileService from "services/profile.service";
-import classNameUtil from "utils/className.util";
-import imageSourceUtil from "utils/imageSource.util";
+import classNameLib from "lib/className.lib";
+import imageSourceLib from "lib/imageSource.lib";
 import ThemeToast from "components/elements/toast";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import {ProfileUpdateParamDocument} from "types/services/profile";
 
 type PageState = {
-    isLoading: boolean,
     isSubmitting: boolean
     isImageChanging: boolean
     isSelectionImage: boolean
@@ -37,7 +35,6 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            isLoading: true,
             isSubmitting: false,
             isImageChanging: false,
             isSelectionImage: false,
@@ -62,8 +59,8 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
     async componentDidMount() {
         this.setPageTitle();
         await this.getUser();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -173,7 +170,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                         <div className="col-sm-12">
                             <span className="mb-2 fw-bold">{this.props.t("role")}:
                                 <label
-                                    className={`badge badge-gradient-${classNameUtil.getUserRolesClassName(this.state.data.roleId)} ms-1`}>
+                                    className={`badge badge-gradient-${classNameLib.getUserRolesClassName(this.state.data.roleId)} ms-1`}>
                                     {
                                         this.props.t(UserRoles.findSingle("id", this.state.data.roleId)?.langKey ?? "[noLangAdd]")
                                     }
@@ -183,7 +180,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                         <div className="col-sm-12">
                             <span className="mb-2 fw-bold">{this.props.t("status")}:
                                 <label
-                                    className={`badge badge-gradient-${classNameUtil.getStatusClassName(this.state.data.statusId)} ms-1`}>
+                                    className={`badge badge-gradient-${classNameLib.getStatusClassName(this.state.data.statusId)} ms-1`}>
                                     {
                                         this.props.t(Status.findSingle("id", this.state.data.statusId)?.langKey ?? "[noLangAdd]")
                                     }
@@ -249,13 +246,13 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                 <div className="card-body">
                     {
                         this.state.isImageChanging
-                            ? <Spinner/>
+                            ? null
                             : <div className="d-flex flex-column align-items-center text-center">
                                 <img
                                     className="rounded-circle"
                                     width="200"
                                     height="200"
-                                    src={imageSourceUtil.getUploadedImageSrc(this.state.formData.image)}
+                                    src={imageSourceLib.getUploadedImageSrc(this.state.formData.image)}
                                     alt={this.props.getStateApp.sessionData.name}
                                 />
                                 <button
@@ -350,7 +347,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
     )
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-settings">
                 <ThemeChooseImage
                     {...this.props}

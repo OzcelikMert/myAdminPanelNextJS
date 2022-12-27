@@ -4,13 +4,11 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {LanguageKeysArray, ComponentInputTypeId, ComponentInputTypes, UserRoleId} from "constants/index";
 import HandleForm from "library/react/handles/form";
 import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
-import SweetAlert from "react-sweetalert2";
 import V from "library/variable";
-import Spinner from "components/tools/spinner";
 import {ComponentTypeDocument, ComponentUpdateParamDocument} from "types/services/component";
 import componentService from "services/component.service";
 import ThemeChooseImage from "components/elements/chooseImage";
-import imageSourceUtil from "utils/imageSource.util";
+import imageSourceLib from "lib/imageSource.lib";
 import Swal from "sweetalert2";
 import PagePaths from "constants/pagePaths";
 
@@ -21,8 +19,6 @@ type PageState = {
     isSubmitting: boolean
     mainTitle: string,
     formData: ComponentUpdateParamDocument,
-    isSuccessMessage: boolean,
-    isLoading: boolean
 } & {[key: string]: any};
 
 type PageProps = {} & PagePropCommonDocument;
@@ -42,9 +38,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 types: [],
                 elementId: "",
                 langKey: "[noLangAdd]"
-            },
-            isSuccessMessage: false,
-            isLoading: true
+            }
         }
     }
 
@@ -55,20 +49,19 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         if (this.state.formData.componentId) {
             await this.getComponent();
         }
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
     async componentDidUpdate(prevProps: PagePropCommonDocument) {
         if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
-            this.setState((state: PageState) => {
-                state.isLoading = true;
-                return state;
+            this.props.setStateApp({
+                isPageLoading: true
             }, async () => {
                 await this.getComponent()
-                this.setState({
-                    isLoading: false
+                this.props.setStateApp({
+                    isPageLoading: false
                 })
             })
         }
@@ -152,21 +145,14 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 ? componentService.update(params)
                 : componentService.add(params)).then(resData => {
                 this.setState((state: PageState) => {
-                    if (resData.status) {
-                        state.isSuccessMessage = true;
-                    }
-
                     state.isSubmitting = false;
                     return state;
-                })
+                }, () => this.setMessage())
             });
         })
     }
 
     onCloseSuccessMessage() {
-        this.setState({
-            isSuccessMessage: false
-        });
         this.navigateTermPage()
     }
 
@@ -215,18 +201,15 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         }
     }
 
-    Messages = () => {
-        return (
-            <SweetAlert
-                show={this.state.isSuccessMessage}
-                title={this.props.t("successful")}
-                text={`${this.props.t((V.isEmpty(this.state.formData.componentId)) ? "itemAdded" : "itemEdited")}!`}
-                icon="success"
-                timer={1000}
-                timerProgressBar={true}
-                didClose={() => this.onCloseSuccessMessage()}
-            />
-        )
+    setMessage() {
+        Swal.fire({
+            title: this.props.t("successful"),
+            text: `${this.props.t((V.isEmpty(this.state.formData.componentId)) ? "itemAdded" : "itemEdited")}!`,
+            icon: "success",
+            timer: 1000,
+            timerProgressBar: true,
+            didClose: () => this.onCloseSuccessMessage()
+        })
     }
 
     TabTypes = () => {
@@ -262,7 +245,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         />
                         <div>
                             <img
-                                src={imageSourceUtil.getUploadedImageSrc(typeProps.contents?.content)}
+                                src={imageSourceLib.getUploadedImageSrc(typeProps.contents?.content)}
                                 alt="Empty Image"
                                 className="post-image"
                             />
@@ -457,9 +440,8 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner /> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
-                <this.Messages/>
                 <div className="navigate-buttons mb-3">
                     <button className="btn btn-gradient-dark btn-lg btn-icon-text"
                             onClick={() => this.navigateTermPage()}>

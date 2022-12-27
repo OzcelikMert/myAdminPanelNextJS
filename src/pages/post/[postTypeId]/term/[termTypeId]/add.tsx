@@ -7,9 +7,8 @@ import V from "library/variable";
 import HandleForm from "library/react/handles/form";
 import ThemeChooseImage from "components/elements/chooseImage";
 import postTermService from "services/postTerm.service";
-import Spinner from "components/tools/spinner";
-import staticContentUtil from "utils/staticContent.util";
-import imageSourceUtil from "utils/imageSource.util";
+import staticContentLib from "lib/staticContent.lib";
+import imageSourceLib from "lib/imageSource.lib";
 import {PostTermUpdateParamDocument} from "types/services/postTerm";
 import PagePaths from "constants/pagePaths";
 import ThemeToolTip from "components/elements/tooltip";
@@ -23,7 +22,6 @@ type PageState = {
     mainTitle: string
     formData: PostTermUpdateParamDocument,
     isSelectionImage: boolean
-    isLoading: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -53,8 +51,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     seoContent: "",
                 }
             },
-            isSelectionImage: false,
-            isLoading: true
+            isSelectionImage: false
         }
     }
 
@@ -65,20 +62,19 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         if (this.state.formData.termId) {
             await this.getTerm();
         }
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
     async componentDidUpdate(prevProps: Readonly<PageProps>) {
         if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
-            this.setState((state: PageState) => {
-                state.isLoading = true;
-                return state;
+            this.props.setStateApp({
+                isPageLoading: true
             }, async () => {
                 await this.getTerm();
-                this.setState({
-                    isLoading: false
+                this.props.setStateApp({
+                    isPageLoading: false
                 })
             })
         }
@@ -98,7 +94,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     getStatus() {
         this.setState((state: PageState) => {
-            state.status = staticContentUtil.getStatusForSelect([
+            state.status = staticContentLib.getStatusForSelect([
                 StatusId.Active,
                 StatusId.InProgress,
                 StatusId.Pending
@@ -291,7 +287,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
             <div className="row">
                 <div className="col-md-7 mb-3">
                     <img
-                        src={imageSourceUtil.getUploadedImageSrc(this.state.formData.contents.image)}
+                        src={imageSourceLib.getUploadedImageSrc(this.state.formData.contents.image)}
                         alt={this.state.formData.contents.title}
                         className="post-image"
                     />
@@ -335,7 +331,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner /> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post-term">
                 <ThemeChooseImage
                     {...this.props}

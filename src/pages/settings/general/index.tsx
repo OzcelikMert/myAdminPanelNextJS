@@ -7,10 +7,9 @@ import settingService from "services/setting.service";
 import languageService from "services/language.service";
 import ServerInfoDocument from "types/services/serverInfo";
 import serverInfoService from "services/serverInfo.service";
-import Spinner from "components/tools/spinner";
 import ThemeToast from "components/elements/toast";
 import ThemeChooseImage from "components/elements/chooseImage";
-import imageSourceUtil from "utils/imageSource.util";
+import imageSourceLib from "lib/imageSource.lib";
 import {SettingGeneralUpdateParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
 import localStorageUtil from "utils/localStorage.util";
@@ -19,7 +18,6 @@ type PageState = {
     languages: { label: string, value: string }[]
     panelLanguages: { label: string, value: string }[]
     isSubmitting: boolean
-    isLoading: boolean
     serverInfo: ServerInfoDocument
     formData: Omit<SettingGeneralUpdateParamDocument, "contactForms" | "staticLanguages" | "seoContents"> & { panelLangId: string },
     formActiveKey: string
@@ -34,7 +32,6 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
             languages: [],
             panelLanguages: [],
             isSubmitting: false,
-            isLoading: true,
             formActiveKey: `general`,
             serverInfo: {
                 cpu: "0",
@@ -54,8 +51,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
         this.getPanelLanguages();
         await this.getLanguages();
         await this.getSettings();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -114,9 +111,6 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 serverInfo: resData.data
             })
         }
-        this.setState({
-            isLoading: false
-        })
     }
 
     onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -310,7 +304,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                         />
                         <div>
                             <img
-                                src={imageSourceUtil.getUploadedImageSrc(this.state.formData.logo)}
+                                src={imageSourceLib.getUploadedImageSrc(this.state.formData.logo)}
                                 alt="Empty Image"
                                 className="post-image"
                             />
@@ -342,7 +336,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                         />
                         <div>
                             <img
-                                src={imageSourceUtil.getUploadedImageSrc(this.state.formData.logoTwo)}
+                                src={imageSourceLib.getUploadedImageSrc(this.state.formData.logoTwo)}
                                 alt="Empty Image"
                                 className="post-image"
                             />
@@ -374,7 +368,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                         />
                         <div>
                             <img
-                                src={imageSourceUtil.getUploadedImageSrc(this.state.formData.icon)}
+                                src={imageSourceLib.getUploadedImageSrc(this.state.formData.icon)}
                                 alt="Empty Image"
                                 className="post-image"
                             />
@@ -458,7 +452,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-settings page-dashboard page-post">
                 <this.ServerInfo/>
                 <div className="grid-margin stretch-card">

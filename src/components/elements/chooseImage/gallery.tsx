@@ -4,7 +4,7 @@ import PageGalleryList from "pages/gallery/list";
 import PageGalleryUpload from "pages/gallery/upload";
 import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionId} from "constants/index";
-import permissionUtil from "utils/permission.util";
+import permissionLib from "lib/permission.lib";
 
 type PageState = {
     formActiveKey: string
@@ -57,7 +57,7 @@ class ThemeChooseImageGallery extends Component<PageProps, PageState> {
                                     className="mb-5"
                                     transition={false}>
                                     {
-                                        permissionUtil.checkPermission(
+                                        permissionLib.checkPermission(
                                             this.props.getStateApp.sessionData.roleId,
                                             this.props.getStateApp.sessionData.permissions,
                                             PermissionId.GalleryEdit

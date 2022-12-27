@@ -99,7 +99,7 @@ const PagePaths = {
         }
     },
     themeContent() {
-        let path = setPath("themeContent");
+        let path = setPath("theme-content");
 
         return {
             self() {
@@ -127,16 +127,16 @@ const PagePaths = {
                 return setPath(path, "profile");
             },
             changePassword() {
-                return setPath(path, "changePassword");
+                return setPath(path, "change-password");
             },
             staticLanguages() {
-                return setPath(path, "staticLanguages");
+                return setPath(path, "static-languages");
             },
             subscribers() {
                 return setPath(path, "subscribers");
             },
             contactForms() {
-                return setPath(path, "contactForms");
+                return setPath(path, "contact-forms");
             },
             user() {
                 path = setPath(path, "user");

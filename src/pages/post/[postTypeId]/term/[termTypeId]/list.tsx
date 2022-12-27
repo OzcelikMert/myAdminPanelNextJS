@@ -11,10 +11,9 @@ import {ThemeTableToggleMenu} from "components/elements/table";
 import Swal from "sweetalert2";
 import PostTermDocument from "types/services/postTerm";
 import postTermService from "services/postTerm.service";
-import Spinner from "components/tools/spinner";
-import imageSourceUtil from "utils/imageSource.util";
-import classNameUtil from "utils/className.util";
-import permissionUtil from "utils/permission.util";
+import imageSourceLib from "lib/imageSource.lib";
+import classNameLib from "lib/className.lib";
+import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
@@ -28,7 +27,6 @@ type PageState = {
     selectedPostTerms: PageState["postTerms"]
     listMode: "list" | "deleted"
     isShowToggleMenu: boolean
-    isLoading: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -44,16 +42,15 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             listMode: "list",
             isShowToggleMenu: false,
             postTerms: [],
-            showingPostTerms: [],
-            isLoading: true
+            showingPostTerms: []
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
         await this.getPostTerms();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -201,7 +198,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 cell: row => (
                     <div className="image pt-2 pb-2">
                         <img
-                            src={imageSourceUtil.getUploadedImageSrc(row.contents?.image)}
+                            src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
                             alt={row.contents?.title}
                         />
                     </div>
@@ -227,7 +224,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 sortable: true,
                 cell: row => (
                     <label
-                        className={`badge badge-gradient-${classNameUtil.getStatusClassName(row.statusId)}`}>
+                        className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
                         {
                             this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
                         }
@@ -238,10 +235,10 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 name: "",
                 width: "70px",
                 button: true,
-                cell: row => permissionUtil.checkPermission(
+                cell: row => permissionLib.checkPermission(
                     this.props.getStateApp.sessionData.roleId,
                     this.props.getStateApp.sessionData.permissions,
-                    permissionUtil.getPermissionIdForPostType(row.postTypeId, "Edit")
+                    permissionLib.getPermissionIdForPostType(row.postTypeId, "Edit")
                 ) ? (
                     <button
                         className="btn btn-gradient-warning"
@@ -253,7 +250,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post-term">
                 <div className="row">
                     <div className="col-md-3 mb-3">
@@ -266,10 +263,10 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                             </div>
                             <div className="col-6 text-end">
                                 {
-                                    permissionUtil.checkPermission(
+                                    permissionLib.checkPermission(
                                         this.props.getStateApp.sessionData.roleId,
                                         this.props.getStateApp.sessionData.permissions,
-                                        permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Add")
+                                        permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Add")
                                     ) ? <button className="btn btn-gradient-info btn-lg w-100"
                                                 onClick={() => this.navigateTermPage("add")}>
                                         + {this.props.t("addNew")}
@@ -299,15 +296,15 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                 <div className={`ms-2 ${!this.state.isShowToggleMenu ? "invisible" : ""}`}>
                                     {
                                         (
-                                            permissionUtil.checkPermission(
+                                            permissionLib.checkPermission(
                                                 this.props.getStateApp.sessionData.roleId,
                                                 this.props.getStateApp.sessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Edit")
+                                                permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Edit")
                                             ) ||
-                                            permissionUtil.checkPermission(
+                                            permissionLib.checkPermission(
                                                 this.props.getStateApp.sessionData.roleId,
                                                 this.props.getStateApp.sessionData.permissions,
-                                                permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Delete")
+                                                permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                                             )
                                         ) ? <ThemeTableToggleMenu
                                             t={this.props.t}
@@ -317,10 +314,10 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                                     StatusId.Pending,
                                                     StatusId.InProgress
                                                 ].concat(
-                                                    permissionUtil.checkPermission(
+                                                    permissionLib.checkPermission(
                                                         this.props.getStateApp.sessionData.roleId,
                                                         this.props.getStateApp.sessionData.permissions,
-                                                        permissionUtil.getPermissionIdForPostType(this.state.postTypeId, "Delete")
+                                                        permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                                                     ) ? [StatusId.Deleted] : []
                                                 )
                                             }

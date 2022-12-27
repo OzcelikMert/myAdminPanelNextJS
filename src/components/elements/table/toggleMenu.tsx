@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Dropdown} from "react-bootstrap";
 import {LanguageId, Status, StatusId} from "constants/index";
-import classNameUtil from "utils/className.util";
+import classNameLib from "lib/className.lib";
 import {PagePropCommonDocument} from "types/pageProps";
 
 type PageState = {};
@@ -26,7 +26,7 @@ class ThemeTableToggleMenu extends Component<PageProps, PageState> {
                                 return (
                                     <Dropdown.Item onClick={(event) => this.props.onChange(event, item.id)} key={index}>
                                         <button
-                                            className={`btn btn-gradient-${classNameUtil.getStatusClassName(item.id)} w-100 mb-1`}>{this.props.t(item.langKey)}</button>
+                                            className={`btn btn-gradient-${classNameLib.getStatusClassName(item.id)} w-100 mb-1`}>{this.props.t(item.langKey)}</button>
                                     </Dropdown.Item>
                                 )
                             }

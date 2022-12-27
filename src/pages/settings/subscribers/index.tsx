@@ -3,8 +3,7 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionId, StatusId} from "constants/index";
 import  {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
-import Spinner from "components/tools/spinner";
-import permissionUtil from "utils/permission.util";
+import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import {SubscriberDocument} from "types/services/subscriber";
 import subscriberService from "services/subscriber.service";
@@ -17,7 +16,6 @@ type PageState = {
     showingSubscribers: PageState["subscribers"]
     selectedSubscribers: PageState["subscribers"]
     isShowToggleMenu: boolean
-    isLoading: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -30,16 +28,15 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
             showingSubscribers: [],
             subscribers: [],
             selectedSubscribers: [],
-            isShowToggleMenu: false,
-            isLoading: true
+            isShowToggleMenu: false
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
         await this.getSubscribers();
-        this.setState({
-            isLoading: false
+        this.props.setStateApp({
+            isPageLoading: false
         })
     }
 
@@ -128,7 +125,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
     }
 
     render() {
-        return this.state.isLoading ? <Spinner/> : (
+        return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post-term">
                 <div className="grid-margin stretch-card">
                     <div className="card">
@@ -137,7 +134,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                                 <div className={`ms-2 ${!this.state.isShowToggleMenu ? "invisible" : ""}`}>
                                     {
                                         (
-                                            permissionUtil.checkPermission(
+                                            permissionLib.checkPermission(
                                                 this.props.getStateApp.sessionData.roleId,
                                                 this.props.getStateApp.sessionData.permissions,
                                                 PermissionId.SubscriberEdit
