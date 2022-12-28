@@ -115,6 +115,17 @@ class Variable {
         return (this.isSet(variable)) ? variable() : default_value;
     }
 
+    static nestedObjectAssign(target: any, source: any) {
+        Object.keys(source).forEach(sourceKey =>{
+            if (typeof target[sourceKey] !== "undefined" && typeof source[sourceKey] === "object") {
+                target[sourceKey] = this.nestedObjectAssign(target[sourceKey], source[sourceKey]);
+            } else {
+                target[sourceKey] = source[sourceKey];
+            }
+        });
+        return target;
+    }
+
     private static filterVar(variable: any, filter_type: FilterTypes): string {
         let regex;
 

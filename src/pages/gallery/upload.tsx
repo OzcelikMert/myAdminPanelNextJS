@@ -3,6 +3,7 @@ import {PagePropCommonDocument} from "types/pageProps";
 import UploadingFilesDocument from "types/pages/gallery/upload";
 import galleryService from "services/gallery.service";
 import ThemeToast from "components/elements/toast";
+import Image from "next/image"
 
 type PageState = {
     isDragging: boolean,
@@ -170,7 +171,12 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                             </span>
                         </div>
                 }
-                <img className="shadow-lg mb-1" src={URL.createObjectURL(props.file)} alt={props.file.name}/>
+                <Image
+                    className="shadow-lg mb-1 img-fluid"
+                    src={URL.createObjectURL(props.file)} alt={props.file.name}
+                    width={75}
+                    height={75}
+                />
                 {
                     (props.file.size > this.maxFileSize)
                         ? <b>{this.props.t("bigImageSize")}</b>

@@ -11,6 +11,7 @@ import classNameLib from "lib/className.lib";
 import imageSourceLib from "lib/imageSource.lib";
 import {ThemeFieldSet} from "../form";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
+import Image from "next/image"
 
 type PageState = {};
 
@@ -167,10 +168,12 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                                 </h5>
                                 <div className="card-block text-center text-light mt-5">
                                     <div className="mb-4">
-                                        <img
+                                        <Image
                                             src={imageSourceLib.getUploadedImageSrc(this.props.userInfo.image)}
-                                            className="user-img"
+                                            className="user-img img-fluid"
                                             alt={this.props.userInfo.name}
+                                            width={100}
+                                            height={100}
                                         />
                                     </div>
                                     <h4 className="fw-bold pt-3">{this.props.userInfo.name}</h4>

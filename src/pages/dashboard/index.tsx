@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+import dynamic from "next/dynamic";
 import {PagePropCommonDocument} from "types/pageProps";
 import ThemeChartBar from "components/elements/charts/bar";
 import {TableColumn} from "react-data-table-component";
 import {PostTypeId, PostTypes, Status} from "constants/index";
 import PostDocument from "types/services/post";
 import postService from "services/post.service";
-//import WorldMap from "react-svg-worldmap";
+const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 import viewService from "services/view.service";
 import {ViewNumberDocument, ViewStatisticsDocument} from "types/services/view";
 import imageSourceLib from "lib/imageSource.lib";
@@ -13,24 +14,9 @@ import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
+import Image from "next/image"
 
 type PageState = {
-    chartData: {
-        visitorStatisticsForDay: {
-            labels: string[]
-            data: {
-                label?: string,
-                borderColor?: any,
-                backgroundColor?: any,
-                hoverBackgroundColor?: any,
-                legendColor?: any,
-                pointRadius?: number,
-                fill?: boolean,
-                borderWidth?: number,
-                data: any[]
-            }[]
-        }
-    }
     lastPosts: PostDocument[]
     visitorData: {
         number: ViewNumberDocument,
@@ -42,15 +28,10 @@ type PageState = {
 type PageProps = {} & PagePropCommonDocument;
 
 class PageDashboard extends Component<PageProps, PageState> {
+    timer: any;
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            chartData: {
-                visitorStatisticsForDay: {
-                    labels: [],
-                    data: []
-                },
-            },
             lastPosts: [],
             visitorData: {
                 number: {
@@ -75,7 +56,6 @@ class PageDashboard extends Component<PageProps, PageState> {
         this.props.setStateApp({
             isPageLoading: false
         }, () => {
-            this.chartInit();
             this.timerReportOne();
         })
     }
@@ -87,8 +67,6 @@ class PageDashboard extends Component<PageProps, PageState> {
     setPageTitle() {
         this.props.setBreadCrumb([this.props.t("dashboard")])
     }
-
-    timer: any;
 
     timerReportOne() {
         if (this.timer) {
@@ -135,34 +113,6 @@ class PageDashboard extends Component<PageProps, PageState> {
         }
     }
 
-    chartInit() {
-        let ctx = (document.createElement("canvas") as HTMLCanvasElement).getContext("2d") as CanvasFillStrokeStyles;
-
-        let gradientBar = ctx.createLinearGradient(0, 0, 0, 181)
-        gradientBar.addColorStop(0, '#6e3a87')
-        gradientBar.addColorStop(1, 'rgba(154, 85, 255, 1)')
-
-        this.setState((state: PageState) => {
-            state.chartData.visitorStatisticsForDay = {
-                labels: this.state.visitorData.statistics.day.map(view => view._id),
-                data: [
-                    {
-                        borderColor: gradientBar,
-                        backgroundColor: gradientBar,
-                        hoverBackgroundColor: gradientBar,
-                        legendColor: gradientBar,
-                        pointRadius: 0,
-                        fill: false,
-                        borderWidth: 1,
-                        data: this.state.visitorData.statistics.day.map(view => view.total)
-                    }
-                ]
-            };
-
-            return state;
-        })
-    }
-
     setWorldMapSize(size: PageState["worldMapSize"]) {
         this.setState({
             worldMapSize: size
@@ -186,10 +136,12 @@ class PageDashboard extends Component<PageProps, PageState> {
                 width: "75px",
                 cell: row => (
                     <div className="image pt-2 pb-2">
-                        <img
+                        <Image
                             src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
-                            alt={row.contents?.title}
-                            className="post-image"
+                            alt={row.contents?.title ?? ""}
+                            width={75}
+                            height={75}
+                            className="post-image img-fluid"
                         />
                     </div>
                 )
@@ -329,10 +281,11 @@ class PageDashboard extends Component<PageProps, PageState> {
                                 <h4 className="card-title float-start">{this.props.t("weeklyVisitorsStatistics")}</h4>
                             </div>
                             <div className="chart-container">
-                                <ThemeChartBar data={{
-                                    datasets: this.state.chartData.visitorStatisticsForDay.data,
-                                    labels: this.state.chartData.visitorStatisticsForDay.labels
-                                }}/>
+                                <ThemeChartBar
+                                    t={this.props.t}
+                                    data={this.state.visitorData.statistics.day.map(view => view.total)}
+                                    labels={this.state.visitorData.statistics.day.map(view => view._id)}
+                                />
                             </div>
                         </div>
                     </div>
@@ -340,7 +293,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                 <div className="col-md-5 grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body overflow-auto">
-                            <h4 className="card-title">{this.props.t("weeklyVisitorsStatistics")}</h4>
+                            <h4 className="card-title">{this.props.t("weeklyVisitorsStatistics")} ({this.props.t("worldMap")})</h4>
                             <div className="row d-none d-lg-block">
                                 <div className="col-md-12 text-end">
                                     <button className="btn btn-gradient-success btn-sm" onClick={() => this.setWorldMapSize(this.state.worldMapSize == "xl" ? "xxl" : "xl")}>
@@ -352,7 +305,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                                 </div>
                             </div>
                             <div className="row overflow-auto">
-                                {/*<WorldMap
+                                <WorldMap
                                     color="#b66dff"
                                     borderColor="var(--theme-worldmap-stroke-bg)"
                                     frameColor="red"
@@ -361,10 +314,10 @@ class PageDashboard extends Component<PageProps, PageState> {
                                     value-suffix="people"
                                     size={this.state.worldMapSize}
                                     data={this.state.visitorData.statistics.country.map(view => ({
-                                        country: view._id.toLowerCase(),
+                                        country: (view._id || window.navigator.language.slice(3)).toLowerCase(),
                                         value: view.total
                                     }))}
-                                />*/}
+                                />
                             </div>
                         </div>
                     </div>

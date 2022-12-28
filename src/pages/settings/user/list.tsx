@@ -12,6 +12,7 @@ import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
+import Image from "next/image"
 
 type PageState = {
     searchKey: string
@@ -130,9 +131,12 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 width: "100px",
                 cell: row => (
                     <div className="image mt-2 mb-2">
-                        <img
+                        <Image
                             src={imageSourceLib.getUploadedImageSrc(row.image)}
                             alt={row.name}
+                            width={75}
+                            height={75}
+                            className="img-fluid"
                         />
                         <span className={`availability-status ${row.isOnline ? "online" : "offline"}`}></span>
                     </div>

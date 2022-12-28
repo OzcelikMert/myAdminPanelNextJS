@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
 import Lightbox from "yet-another-react-lightbox";
-import {LazyLoadImage} from 'react-lazy-load-image-component';
 import Swal from "sweetalert2";
 import galleryService from "services/gallery.service";
 import pathUtil from "utils/path.util";
@@ -11,6 +10,7 @@ import ThemeToast from "components/elements/toast";
 import permissionLib from "lib/permission.lib";
 import {PermissionId} from "constants/index";
 import ThemeDataTable from "components/elements/table/dataTable";
+import Image from "next/image"
 
 type PageState = {
     images: string[]
@@ -199,11 +199,12 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                 width: "105px",
                 cell: row => (
                     <div className="image pt-2 pb-2">
-                        <LazyLoadImage
-                            className="gallery-img"
-                            effect="opacity"
+                        <Image
+                            className="img-fluid"
                             alt={row}
-                            src={imageSourceLib.getUploadedImageSrc(row)} // use normal <img> attributes as props
+                            src={imageSourceLib.getUploadedImageSrc(row)}
+                            width={100}
+                            height={100}
                         />
                     </div>
                 )

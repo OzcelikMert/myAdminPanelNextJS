@@ -1,76 +1,47 @@
 import React, {Component} from "react";
 import {Bar} from "react-chartjs-2";
 import {
-    ArcElement,
     BarElement,
     CategoryScale,
-    Chart as ChartJS,
+    Chart as ChartJS, ChartData,
     LinearScale,
-    LineElement,
     Title,
     Tooltip
 } from "chart.js";
+import Spinner from "react-bootstrap/Spinner";
+import {PagePropCommonDocument} from "types/pageProps";
 
-ChartJS.register(LineElement, BarElement, ArcElement, LinearScale, Title, CategoryScale, Tooltip);
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip
+);
 
 type PageState = {
     options: any
+    data: ChartData<"bar", any[], string>
+    isLoading: boolean
 };
 
 type PageProps = {
-    data: {
-        labels: string[],
-        datasets: {
-            label?: string,
-            borderColor?: any,
-            backgroundColor?: any,
-            hoverBackgroundColor?: any,
-            legendColor?: any,
-            pointRadius?: number,
-            fill?: boolean,
-            borderWidth?: number,
-            data: any[]
-        }[]
-    }
+    labels: string[],
+    data: any[],
+    t: PagePropCommonDocument["t"]
 };
 
 class ThemeChartBar extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
+            isLoading: true,
+            data: {
+                labels: [],
+                datasets: []
+            },
             options: {
                 responsive: true,
-                scales: {
-                    yAxes: {
-                        ticks: {
-                            beginAtZero: true,
-                            display: false,
-                            min: 0,
-                            stepSize: 20,
-                            max: 80
-                        },
-                        gridLines: {
-                            drawBorder: false,
-                            color: 'rgba(235,237,242,1)',
-                            zeroLineColor: 'rgba(235,237,242,1)'
-                        }
-                    },
-                    xAxes: {
-                        gridLines: {
-                            display: false,
-                            drawBorder: false,
-                            color: 'rgba(0,0,0,1)',
-                            zeroLineColor: 'rgba(235,237,242,1)'
-                        },
-                        ticks: {
-                            padding: 20,
-                            fontColor: "#9c9fa6",
-                            autoSkip: true,
-                        },
-                        categoryPercentage: 0.5,
-                        barPercentage: 0.5
-                    }
-                },
                 legend: {
                     display: false,
                 },
@@ -83,13 +54,41 @@ class ThemeChartBar extends Component<PageProps, PageState> {
         }
     }
 
+    componentDidMount() {
+        let ctx = (document.createElement("canvas") as HTMLCanvasElement).getContext("2d") as CanvasFillStrokeStyles;
+
+        let gradientBar = ctx.createLinearGradient(0, 0, 0, 181)
+        gradientBar.addColorStop(0, '#6e3a87')
+        gradientBar.addColorStop(1, 'rgba(154, 85, 255, 1)')
+
+        this.setState({
+            data: {
+                labels: this.props.labels,
+                datasets: [
+                    {
+                        label: this.props.t("visitors"),
+                        borderColor: gradientBar,
+                        backgroundColor: gradientBar,
+                        hoverBackgroundColor: gradientBar,
+                        borderWidth: 1,
+                        data: this.props.data
+                    }
+                ]
+            }
+        }, () => {
+            this.setState({
+                isLoading: false
+            })
+        })
+    }
+
     render() {
-        return (
+        return this.state.isLoading ? <Spinner animation="border" /> : (
             <Bar
                 itemRef='chart'
                 className="chartLegendContainer"
-                data={this.props.data} options={this.state.options}
-                id="visitSaleChart"
+                data={this.state.data}
+                options={this.state.options}
             />
         )
     }

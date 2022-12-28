@@ -13,6 +13,7 @@ import {PostTermUpdateParamDocument} from "types/services/postTerm";
 import PagePaths from "constants/pagePaths";
 import ThemeToolTip from "components/elements/tooltip";
 import Swal from "sweetalert2";
+import Image from "next/image"
 
 type PageState = {
     formActiveKey: string
@@ -286,10 +287,12 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         return (
             <div className="row">
                 <div className="col-md-7 mb-3">
-                    <img
+                    <Image
                         src={imageSourceLib.getUploadedImageSrc(this.state.formData.contents.image)}
-                        alt={this.state.formData.contents.title}
-                        className="post-image"
+                        alt="Empty Image"
+                        className="post-image img-fluid"
+                        width={100}
+                        height={100}
                     />
                     <button
                         type="button"

@@ -18,6 +18,7 @@ import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
 import ThemeToolTip from "components/elements/tooltip";
 import Swal from "sweetalert2";
+import Image from "next/image"
 
 type PageState = {
     langKeys: { value: string, label: string }[]
@@ -612,10 +613,12 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                                 })}
                                 isMulti={false}
                             />
-                            <img
+                            <Image
                                 src={imageSourceLib.getUploadedImageSrc(this.state.formData.contents.image)}
                                 alt="Empty Image"
-                                className="post-image"
+                                className="post-image img-fluid"
+                                width={100}
+                                height={100}
                             />
                             <button
                                 type="button"

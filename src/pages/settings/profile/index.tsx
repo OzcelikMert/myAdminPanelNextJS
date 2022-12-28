@@ -15,6 +15,7 @@ import imageSourceLib from "lib/imageSource.lib";
 import ThemeToast from "components/elements/toast";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import {ProfileUpdateParamDocument} from "types/services/profile";
+import Image from "next/image"
 
 type PageState = {
     isSubmitting: boolean
@@ -248,10 +249,10 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                         this.state.isImageChanging
                             ? null
                             : <div className="d-flex flex-column align-items-center text-center">
-                                <img
-                                    className="rounded-circle"
-                                    width="200"
-                                    height="200"
+                                <Image
+                                    className="rounded-circle img-fluid"
+                                    width={200}
+                                    height={200}
                                     src={imageSourceLib.getUploadedImageSrc(this.state.formData.image)}
                                     alt={this.props.getStateApp.sessionData.name}
                                 />

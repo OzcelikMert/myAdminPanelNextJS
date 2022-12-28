@@ -12,6 +12,7 @@ import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
+import Image from "next/image"
 
 type PageState = {
     typeId: PostTypeId
@@ -202,10 +203,12 @@ export default class PagePostList extends Component<PageProps, PageState> {
                         width: "75px",
                         cell: row => {
                             return <div className="image pt-2 pb-2">
-                                <img
+                                <Image
                                     src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
-                                    alt={row.contents?.title}
-                                    className="post-image"
+                                    alt={row.contents?.title ?? ""}
+                                    className="post-image img-fluid"
+                                    width={75}
+                                    height={75}
                                 />
                             </div>
                         }

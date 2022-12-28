@@ -1,4 +1,6 @@
 {
+  "worldMap": "World Map",
+  "visitors": "Visitors",
   "contentLanguage": "Content Language",
   "imageUploadedWithName": "has been uploaded successfully!",
   "loginPanel": "Login Panel",

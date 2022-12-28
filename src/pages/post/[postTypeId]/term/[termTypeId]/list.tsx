@@ -17,6 +17,7 @@ import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
+import Image from "next/image"
 
 type PageState = {
     typeId: PostTermTypeId
@@ -197,9 +198,12 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 width: "75px",
                 cell: row => (
                     <div className="image pt-2 pb-2">
-                        <img
+                        <Image
                             src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
-                            alt={row.contents?.title}
+                            alt={row.contents?.title ?? ""}
+                            width={75}
+                            height={75}
+                            className="img-fluid"
                         />
                     </div>
                 )

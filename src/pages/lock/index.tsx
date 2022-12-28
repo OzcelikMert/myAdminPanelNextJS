@@ -7,6 +7,7 @@ import V from "library/variable";
 import authService from "services/auth.service";
 import imageSourceLib from "lib/imageSource.lib";
 import PagePaths from "constants/pagePaths";
+import Image from "next/image"
 
 type PageState = {
     isSubmitting: boolean
@@ -32,6 +33,7 @@ class PageLock extends Component<PageProps, PageState> {
 
     componentDidMount() {
         this.setPageTitle();
+        console.log(this.props.getStateApp.sessionData)
         if (V.isEmpty(this.props.getStateApp.sessionData.email)) {
             return this.props.router.push(PagePaths.login());
         }
@@ -81,10 +83,12 @@ class PageLock extends Component<PageProps, PageState> {
                     <div className="row w-100 align-items-center">
                         <div className="col-lg-4 mx-auto">
                             <div className="auth-form-transparent text-left p-5 text-center">
-                                <img
-                                    className="lock-profile-img"
+                                <Image
+                                    className="lock-profile-img img-fluid"
                                     src={imageSourceLib.getUploadedImageSrc(this.props.getStateApp.sessionData.image)}
                                     alt={this.props.getStateApp.sessionData.name}
+                                    width={75}
+                                    height={75}
                                 />
                                 <h4 className="text-center text-light mb-3 mt-3">{this.props.getStateApp.sessionData.name}</h4>
                                 <ThemeForm

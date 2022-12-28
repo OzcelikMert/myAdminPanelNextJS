@@ -9,6 +9,9 @@ import imageSourceLib from "lib/imageSource.lib";
 import PagePaths from "constants/pagePaths";
 import DarkModeToggle from "react-dark-mode-toggle";
 import themeUtil from "utils/theme.util";
+import Logo from "assets/images/ozcelikLogo.png"
+import LogoMini from "assets/images/ozcelikLogoMini.png"
+import Image from "next/image"
 
 type PageState = {
     isDarkTheme: boolean
@@ -37,39 +40,40 @@ export default class Navbar extends Component<PageProps, PageState> {
         })
     }
 
-    profileEvents(event: "profile" | "lock" | "signOut" | "changePassword") {
+    async profileEvents(event: "profile" | "lock" | "signOut" | "changePassword") {
+        let resData: any;
         switch(event) {
             case "profile":
-                this.props.router.push(PagePaths.settings().profile())
+                await this.props.router.push(PagePaths.settings().profile())
                 break;
             case "changePassword":
-                this.props.router.push(PagePaths.settings().changePassword())
+                await this.props.router.push(PagePaths.settings().changePassword())
                 break;
             case "lock":
-                authService.logOut().then(resData => {
-                    if(resData.status) {
-                        this.props.setStateApp({
-                            sessionData: {
-                                id: ""
-                            }
-                        }, () => {
-                            this.props.router.push(PagePaths.lock())
-                        })
-                    }
-                })
+                resData = await authService.logOut();
+                if(resData.status) {
+                    this.props.setStateApp({
+                        isPageLoading: true,
+                        sessionData: {
+                            id: ""
+                        }
+                    }, () => {
+                        this.props.router.push(PagePaths.lock())
+                    })
+                }
                 break;
             case "signOut":
-                authService.logOut().then(resData => {
-                    if(resData.status) {
-                        this.props.setStateApp({
-                            sessionData: {
-                                id: ""
-                            }
-                        }, () => {
-                            this.props.router.push(PagePaths.login())
-                        })
-                    }
-                })
+                resData = await authService.logOut();
+                if(resData.status) {
+                    this.props.setStateApp({
+                        isPageLoading: true,
+                        sessionData: {
+                            id: ""
+                        }
+                    }, () => {
+                        this.props.router.push(PagePaths.login())
+                    })
+                }
                 break;
         }
     }
@@ -177,9 +181,12 @@ export default class Navbar extends Component<PageProps, PageState> {
         <Dropdown align={"end"}>
             <Dropdown.Toggle className="nav-link">
                 <div className="nav-profile-img">
-                    <img
+                    <Image
                         src={imageSourceLib.getUploadedImageSrc(this.props.getStateApp.sessionData.image)}
-                         alt={this.props.getStateApp.sessionData.name}
+                        alt={this.props.getStateApp.sessionData.name}
+                        width={30}
+                        height={30}
+                        className="img-fluid"
                     />
                     <span className="availability-status online"></span>
                 </div>
@@ -217,10 +224,24 @@ export default class Navbar extends Component<PageProps, PageState> {
         return (
             <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
                 <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                    <Link className="navbar-brand brand-logo" href="/"><img
-                        src={require('images/ozcelikLogo.png')} alt="logo"/></Link>
-                    <Link className="navbar-brand brand-logo-mini" href="/"><img
-                        src={require('images/ozcelikLogoMini.png')} alt="logo"/></Link>
+                    <Link className="navbar-brand brand-logo" href="/">
+                        <Image
+                            src={Logo.src}
+                            alt="logo"
+                            width={100}
+                            height={75}
+                            className="img-fluid"
+                        />
+                    </Link>
+                    <Link className="navbar-brand brand-logo-mini" href="/">
+                        <Image
+                            src={LogoMini.src}
+                            alt="logo"
+                            width={50}
+                            height={50}
+                            className="img-fluid"
+                        />
+                    </Link>
                 </div>
                 <div className="navbar-menu-wrapper d-flex align-items-stretch">
                    

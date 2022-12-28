@@ -7,6 +7,9 @@ import HandleForm from "library/react/handles/form";
 import authService from "services/auth.service";
 import UserDocument from "types/services/user";
 import PagePaths from "constants/pagePaths";
+import Image from "next/image"
+
+import Logo from "assets/images/ozcelikLogo.png"
 
 type PageState = {
     isSubmitting: boolean
@@ -181,7 +184,13 @@ class PageLogin extends Component<PageProps, PageState> {
                         </div>
                         <div className="col-lg-6 login-half-bg d-flex flex-row">
                             <div className="brand-logo">
-                                <img src={require('assets/images/ozcelikLogo.png')} alt="logo" />
+                                <Image
+                                    src={Logo.src}
+                                    alt="Özçelik Software"
+                                    width={150}
+                                    height={100}
+                                    className="img-fluid"
+                                />
                             </div>
                         </div>
                     </div>

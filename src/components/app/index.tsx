@@ -16,6 +16,7 @@ import {useTranslation} from "react-i18next";
 import ProviderAuth from "components/providers/auth.provider";
 import ProviderPermission from "components/providers/permission.provider";
 import ProviderAppInit from "components/providers/app.init.provider";
+import Variable from "library/variable";
 
 type PageState = {
     contentLanguages: LanguageDocument[],
@@ -36,7 +37,7 @@ class AppAdmin extends Component<PageProps, PageState> {
             breadCrumbTitle: "",
             contentLanguages: [],
             isAppLoading: true,
-            isPageLoading: false,
+            isPageLoading: true,
             pageData: {
                 langId: "",
                 mainLangId: "",
@@ -89,7 +90,7 @@ class AppAdmin extends Component<PageProps, PageState> {
 
     setStateApp(data: AppAdminSetState, callBack?: () => void) {
         this.setState((state: PageState) => {
-            state = Object.assign(state, data);
+            state = Variable.nestedObjectAssign(Object.create(state), data);
             return state;
         }, () => {
             if (callBack) {
@@ -107,7 +108,7 @@ class AppAdmin extends Component<PageProps, PageState> {
             PagePaths.login(),
             PagePaths.lock()
         ];
-        let isFullPageLayout = fullPageLayoutRoutes.includes(this.props.router.pathname) || this.state.sessionData.id.length <= 0;
+        let isFullPageLayout = fullPageLayoutRoutes.includes(this.props.router.pathname) || this.state.sessionData.id.length <= 0 || this.state.isAppLoading;
 
         const commonProps: PagePropCommonDocument = {
             router: this.props.router,
@@ -124,7 +125,7 @@ class AppAdmin extends Component<PageProps, PageState> {
                     {!isFullPageLayout ? <Navbar {...commonProps}/> : null}
                     <div className={`container-fluid page-body-wrapper ${isFullPageLayout ? "full-page-wrapper" : ""}`}>
                         {!isFullPageLayout ? <Sidebar {...commonProps}/> : null}
-                        {this.state.isPageLoading ? <Spinner isFullPage={isFullPageLayout || this.state.isAppLoading}/> : null}
+                        {this.state.isPageLoading || this.state.isAppLoading ? <Spinner isFullPage={isFullPageLayout}/> : null}
                         <ProviderAuth {...commonProps}>
                             <ProviderPermission {...commonProps}>
                                 <ProviderAppInit  {...commonProps}>

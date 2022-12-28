@@ -13,6 +13,8 @@ import imageSourceLib from "lib/imageSource.lib";
 import {SettingGeneralUpdateParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
 import localStorageUtil from "utils/localStorage.util";
+import Spinner from "react-bootstrap/Spinner";
+import Image from "next/image"
 
 type PageState = {
     languages: { label: string, value: string }[]
@@ -21,6 +23,7 @@ type PageState = {
     serverInfo: ServerInfoDocument
     formData: Omit<SettingGeneralUpdateParamDocument, "contactForms" | "staticLanguages" | "seoContents"> & { panelLangId: string },
     formActiveKey: string
+    isServerInfoLoading: boolean
 } & {[key: string]: any};
 
 type PageProps = {} & PagePropCommonDocument;
@@ -29,6 +32,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
     constructor(props: PageProps) {
         super(props);
         this.state = {
+            isServerInfoLoading: true,
             languages: [],
             panelLanguages: [],
             isSubmitting: false,
@@ -47,7 +51,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
 
     async componentDidMount() {
         this.setPageTitle();
-        await this.getServerDetails();
+        this.getServerDetails();
         this.getPanelLanguages();
         await this.getLanguages();
         await this.getSettings();
@@ -108,7 +112,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
         let resData = await serverInfoService.get();
         if (resData.status) {
             this.setState({
-                serverInfo: resData.data
+                serverInfo: resData.data,
+                isServerInfoLoading: false
             })
         }
     }
@@ -303,10 +308,12 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             isMulti={false}
                         />
                         <div>
-                            <img
+                            <Image
                                 src={imageSourceLib.getUploadedImageSrc(this.state.formData.logo)}
                                 alt="Empty Image"
-                                className="post-image"
+                                className="post-image img-fluid"
+                                width={100}
+                                height={100}
                             />
                             <button
                                 type="button"
@@ -335,10 +342,12 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             isMulti={false}
                         />
                         <div>
-                            <img
+                            <Image
                                 src={imageSourceLib.getUploadedImageSrc(this.state.formData.logoTwo)}
                                 alt="Empty Image"
-                                className="post-image"
+                                className="post-image img-fluid"
+                                width={100}
+                                height={100}
                             />
                             <button
                                 type="button"
@@ -367,10 +376,12 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             isMulti={false}
                         />
                         <div>
-                            <img
+                            <Image
                                 src={imageSourceLib.getUploadedImageSrc(this.state.formData.icon)}
                                 alt="Empty Image"
-                                className="post-image"
+                                className="post-image img-fluid"
+                                width={100}
+                                height={100}
                             />
                             <button
                                 type="button"
@@ -411,7 +422,9 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                     <div className="wrapper text-center text-sm-end">
                                         <p className="card-text mb-0 text-dark">{this.props.t("storage")}</p>
                                         <div className="fluid-container">
-                                            <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.storage}%</h3>
+                                            {
+                                                this.state.isServerInfoLoading ? <Spinner /> : <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.storage}%</h3>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -425,7 +438,9 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                     <div className="wrapper text-center text-sm-end">
                                         <p className="card-text mb-0 text-dark">{this.props.t("memory")}</p>
                                         <div className="fluid-container">
-                                            <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.memory}%</h3>
+                                            {
+                                                this.state.isServerInfoLoading ? <Spinner /> : <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.memory}%</h3>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -439,7 +454,9 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                     <div className="wrapper text-center text-sm-end">
                                         <p className="card-text mb-0 text-dark">{this.props.t("processor")}</p>
                                         <div className="fluid-container">
-                                            <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.cpu}%</h3>
+                                            {
+                                                this.state.isServerInfoLoading ? <Spinner /> : <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.cpu}%</h3>
+                                            }
                                         </div>
                                     </div>
                                 </div>

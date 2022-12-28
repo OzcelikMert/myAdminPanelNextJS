@@ -4,6 +4,7 @@ import {ThemeFormSelect} from "components/elements/form";
 import {PagePropCommonDocument} from "types/pageProps";
 import LanguageDocument from "types/services/language";
 import pathUtil from "utils/path.util";
+import Image from "next/image"
 
 type PageState = {};
 
@@ -19,7 +20,13 @@ export default class ThemeContentLanguage extends Component<PageProps, PageState
     Item = (props: LanguageDocument) => (
         <div className="row p-0">
             <div className="col-6 text-end">
-                <img width="35" src={pathUtil.uploads.flags + props.image} alt={props.shortKey}/>
+                <Image
+                    className="img-fluid"
+                    width={35}
+                    height={45}
+                    src={pathUtil.uploads.flags + props.image}
+                    alt={props.shortKey}
+                />
             </div>
             <div className="col-6 text-start content-language-title">
                 <h6>{props.title}</h6>

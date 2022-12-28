@@ -1,4 +1,6 @@
 export const LanguageKeysArray = [
+    "worldMap",
+    "visitors",
     "contentLanguage",
     "imageUploadedWithName",
     "loginPanel",

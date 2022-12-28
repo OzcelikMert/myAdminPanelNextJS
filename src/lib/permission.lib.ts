@@ -28,6 +28,7 @@ export default {
         return true;
     },
     checkPermission(userRoleId: number, userPermissions: number[], permissionId: number | number[]) {
+        if(typeof userPermissions === "undefined") return false;
         if(Array.isArray(permissionId)) {
             for (const permId of permissionId) {
                 if(!this.checkPermission(userRoleId, userPermissions, permId)){

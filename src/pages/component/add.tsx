@@ -11,6 +11,7 @@ import ThemeChooseImage from "components/elements/chooseImage";
 import imageSourceLib from "lib/imageSource.lib";
 import Swal from "sweetalert2";
 import PagePaths from "constants/pagePaths";
+import Image from "next/image"
 
 type PageState = {
     langKeys: { value: string, label: string }[]
@@ -244,10 +245,12 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                             isMulti={false}
                         />
                         <div>
-                            <img
+                            <Image
                                 src={imageSourceLib.getUploadedImageSrc(typeProps.contents?.content)}
                                 alt="Empty Image"
-                                className="post-image"
+                                className="post-image img-fluid"
+                                width={100}
+                                height={100}
                             />
                             <button
                                 type="button"
