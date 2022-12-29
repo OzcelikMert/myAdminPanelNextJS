@@ -44,35 +44,22 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
 
     async uploadFiles() {
         let uploadedImages: string[] = [];
-        for (const [index, uploadingFile] of this.state.uploadingFiles.entries()) {
+        for (const uploadingFile of this.state.uploadingFiles) {
             if (
-                uploadingFile.progressValue === 100
+                uploadingFile.progressValue === 100 ||
+                uploadingFile.file.size > this.maxFileSize ||
+                !uploadingFile.status
             ) continue;
-
-            if (uploadingFile.file.size > this.maxFileSize) {
-                await new Promise(resolve => {
-                    this.setState((state: PageState) => {
-                        state.uploadingFiles[index].progressValue = 100;
-                        return state;
-                    }, () => resolve(true));
-                });
-                new ThemeToast({
-                    type: "error",
-                    title: this.props.t("error"),
-                    content: `${uploadingFile.file.name} ${this.props.t("bigImageSize")}`,
-                    position: "top-right",
-                    timeOut: 5
-                })
-                continue;
-            }
 
             const formData = new FormData();
             formData.append("file", uploadingFile.file, uploadingFile.file.name);
 
             let resData = await galleryService.add(formData, (e, percent) => {
-                console.log(e, percent)
                 this.setState((state: PageState) => {
-                    state.uploadingFiles[index].progressValue = percent ?? 100;
+                    let findIndex = state.uploadingFiles.indexOfKey("id", uploadingFile.id);
+                    if(findIndex > -1){
+                        state.uploadingFiles[findIndex].progressValue = percent ?? 100;
+                    }
                     return state;
                 })
             });
@@ -97,8 +84,7 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
         }
     }
 
-    onChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        let files = event.target.files;
+    setUploadingFiles(files: FileList | null) {
         this.setState((state: PageState) => {
             if (files != null && files.length > 0) {
                 for (let i = 0; i < files.length; i++) {
@@ -106,13 +92,19 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                     state.uploadingFiles.push({
                         id: String.createId(),
                         file: file,
-                        progressValue: 0
+                        progressValue: file.size < this.maxFileSize ? 0 : 100,
+                        status: file.size < this.maxFileSize
                     });
                 }
             }
             state.isDragging = false;
             return state;
         }, this.uploadFiles);
+    }
+
+    onChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        let files = event.target.files;
+        this.setUploadingFiles(files)
     }
 
     onDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -128,64 +120,61 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
     onDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         let files = event.dataTransfer.files;
-        if (files.length > 0) {
-            this.setState((state: PageState) => {
-                for (let i = 0; i < files.length; i++) {
-                    let file = files[i];
-                    state.uploadingFiles.push({
-                        id: String.createId(),
-                        file: file,
-                        progressValue: 0
-                    });
-                }
-                state.isDragging = false;
-                return state;
-            }, this.uploadFiles);
-        }
+        this.setUploadingFiles(files);
     }
 
-    onRemoveImageInList(id: string) {
+    onClearUploadedImages() {
         this.setState((state: PageState) => {
-            let findIndex = state.uploadingFiles.indexOfKey("id", id);
-            state.uploadingFiles.remove(findIndex);
+            state.uploadingFiles = state.uploadingFiles.filter(uploadingFile => uploadingFile.progressValue < 100 && uploadingFile.status)
             return state;
         });
     }
 
     UploadingItem = (props: UploadingFilesDocument) => {
-        return (
-            <div
-                className={`col-md-2 uploading-item bg-gradient-${(props.file.size > 1024000) ? "danger" : "secondary"}`}>
-                {
-                    (props.progressValue >= 100)
-                        ? <div className="uploading-item-remove">
+        /*{
+            (props.progressValue >= 100)
+                ? <div className="uploading-item-remove">
                             <span onClick={() => this.onRemoveImageInList(props.id)}>
                                 <i className="mdi mdi-close"></i>
                             </span>
-                        </div>
-                        : <div className="uploading-item-loader">
+                </div>
+                : <div className="uploading-item-loader">
                             <span>
                                 <div className="loader-demo-box">
                                     <div className="circle-loader"></div>
                                 </div>
                             </span>
+                </div>
+        }*/
+        return (
+            <div className="col-md-3 mt-1 mt-lg-2">
+                <div className="row">
+                    <div className="col-4">
+                        <Image
+                            className="shadow-lg mb-1 img-fluid"
+                            src={URL.createObjectURL(props.file)} alt={props.file.name}
+                            width={75}
+                            height={75}
+                        />
+                    </div>
+                    <div className="col-8">
+                        <div className="row">
+                            <div className="col-md-12" title={props.file.name}>
+                                {props.file.name.length > 15 ? `${props.file.name.slice(0, 15)}...`: props.file.name.length}
+                            </div>
+                            <div className="col-md-12 mt-2">
+                                {
+                                    (props.file.size > this.maxFileSize)
+                                        ? <b>{this.props.t("bigImageSize")}</b>
+                                        : <div className="progress-lg progress">
+                                            <div role="progressbar" className="progress-bar bg-gradient-info" style={{width: `${props.progressValue}%`}}>{props.progressValue}%</div>
+                                        </div>
+                                }
+                            </div>
                         </div>
-                }
-                <Image
-                    className="shadow-lg mb-1 img-fluid"
-                    src={URL.createObjectURL(props.file)} alt={props.file.name}
-                    width={75}
-                    height={75}
-                />
-                {
-                    (props.file.size > this.maxFileSize)
-                        ? <b>{this.props.t("bigImageSize")}</b>
-                        : null
-                }
-                <div className="progress-lg progress">
-                    <div role="progressbar" className="progress-bar bg-gradient-info" style={{width: `${props.progressValue}%`}}>{props.progressValue}%
                     </div>
                 </div>
+
             </div>
         );
     }
@@ -200,8 +189,7 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                                  onDragOver={(event) => this.onDragOver(event)}
                                  onDragLeave={(event) => this.onDragEnd(event)}
                                  onDrop={(event) => this.onDrop(event)}>
-                                <div
-                                    className={`border-container text-center ${this.state.isDragging ? `bg-gradient-dark` : ``}`}>
+                                <div className={`border-container text-center ${this.state.isDragging ? `bg-gradient-dark` : ``}`}>
                                     <input
                                         type="file"
                                         ref={this.refInputFile}
@@ -211,35 +199,31 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                                         name="image[]"
                                         accept=".jpg,.png,.gif,.webp"
                                     />
-                                    {
-                                        this.state.uploadingFiles.length > 0
-                                            ? (
-                                                <div className="row">
-                                                    {
-                                                        this.state.uploadingFiles.map((file, index) =>
-                                                            <this.UploadingItem {...file} key={index}/>
-                                                        )
-                                                    }
-                                                </div>
-                                            ) : (
-                                                <span>
-                                                    <div className="icons">
-                                                      <i className="mdi mdi-image"></i>
-                                                      <i className="mdi mdi-file"></i>
-                                                      <i className="mdi mdi-file-cloud"></i>
-                                                    </div>
-                                                </span>
-                                            )
-                                    }
-                                    <p
-                                        className="cursor-pointer"
-                                        onClick={() => this.refInputFile.current?.click()}>
-                                        {
-                                            this.props.t("dragAndDropHere")
-                                        }
-                                    </p>
+                                    <div className="icons">
+                                      <i className="mdi mdi-image"></i>
+                                      <i className="mdi mdi-file"></i>
+                                      <i className="mdi mdi-file-cloud"></i>
+                                    </div>
+                                    <p className="cursor-pointer" onClick={() => this.refInputFile.current?.click()}>{this.props.t("dragAndDropHere")}</p>
                                 </div>
                             </div>
+                            {
+                                this.state.uploadingFiles.length > 0
+                                    ? (
+                                        <div className="row mt-5 ms-1">
+                                            <div className="col-md-12">
+                                                <b className="text-danger cursor-pointer" onClick={() => this.onClearUploadedImages()}>
+                                                    <i className="mdi mdi-trash-can"></i> Listeyi Temizle
+                                                </b>
+                                            </div>
+                                            {
+                                                this.state.uploadingFiles.map((file, index) =>
+                                                    <this.UploadingItem {...file} key={index}/>
+                                                )
+                                            }
+                                        </div>
+                                    ) : null
+                            }
                         </div>
                     </div>
                 </div>
