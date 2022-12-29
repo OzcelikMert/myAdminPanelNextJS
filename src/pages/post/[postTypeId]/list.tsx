@@ -202,7 +202,9 @@ export default class PagePostList extends Component<PageProps, PageState> {
                         name: this.props.t("image"),
                         width: "75px",
                         cell: row => {
-                            return <div className="image pt-2 pb-2">
+                            return Boolean(row.contents && row.contents.icon && row.contents.icon.length > 0)
+                                ? <small>{row.contents?.icon}</small>
+                                : <div className="image pt-2 pb-2">
                                 <Image
                                     src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
                                     alt={row.contents?.title ?? ""}

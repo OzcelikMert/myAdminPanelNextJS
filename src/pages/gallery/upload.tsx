@@ -131,21 +131,6 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
     }
 
     UploadingItem = (props: UploadingFilesDocument) => {
-        /*{
-            (props.progressValue >= 100)
-                ? <div className="uploading-item-remove">
-                            <span onClick={() => this.onRemoveImageInList(props.id)}>
-                                <i className="mdi mdi-close"></i>
-                            </span>
-                </div>
-                : <div className="uploading-item-loader">
-                            <span>
-                                <div className="loader-demo-box">
-                                    <div className="circle-loader"></div>
-                                </div>
-                            </span>
-                </div>
-        }*/
         return (
             <div className="col-md-3 mt-1 mt-lg-2">
                 <div className="row">
@@ -165,7 +150,7 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                             <div className="col-md-12 mt-2">
                                 {
                                     (props.file.size > this.maxFileSize)
-                                        ? <b>{this.props.t("bigImageSize")}</b>
+                                        ? <b className="text-danger">{this.props.t("bigImageSize")}</b>
                                         : <div className="progress-lg progress">
                                             <div role="progressbar" className="progress-bar bg-gradient-info" style={{width: `${props.progressValue}%`}}>{props.progressValue}%</div>
                                         </div>
@@ -211,11 +196,6 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                                 this.state.uploadingFiles.length > 0
                                     ? (
                                         <div className="row mt-5 ms-1">
-                                            <div className="col-md-12">
-                                                <b className="text-danger cursor-pointer" onClick={() => this.onClearUploadedImages()}>
-                                                    <i className="mdi mdi-trash-can"></i> Listeyi Temizle
-                                                </b>
-                                            </div>
                                             {
                                                 this.state.uploadingFiles.map((file, index) =>
                                                     <this.UploadingItem {...file} key={index}/>

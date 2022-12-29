@@ -12,6 +12,7 @@ export interface PostContentButtonDocument {
 export interface PostContentDocument {
     langId: string
     image?: string,
+    icon?: string
     title: string,
     content?: string,
     shortContent?: string,

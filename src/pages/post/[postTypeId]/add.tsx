@@ -1,6 +1,6 @@
 import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
-import JoditEditor from "jodit-react";
+const JoditEditor = dynamic(() => import('jodit-react').then((module) => module.default), {ssr: false});
 import moment from "moment";
 import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form"
 import {LanguageKeysArray, PageTypes, PostTermTypeId, PostTypeId, PostTypes, StatusId} from "constants/index";
@@ -19,6 +19,7 @@ import PagePaths from "constants/pagePaths";
 import ThemeToolTip from "components/elements/tooltip";
 import Swal from "sweetalert2";
 import Image from "next/image"
+import dynamic from "next/dynamic";
 
 type PageState = {
     langKeys: { value: string, label: string }[]
@@ -36,6 +37,7 @@ type PageState = {
         tagTermId: string[]
     },
     isSelectionImage: boolean
+    isIconActive: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -74,7 +76,8 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                     seoContent: "",
                 },
             },
-            isSelectionImage: false
+            isSelectionImage: false,
+            isIconActive: false
         }
     }
 
@@ -260,6 +263,8 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                     if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
                         state.mainTitle = state.formData.contents.title;
                     }
+
+                    state.isIconActive = Boolean(post.contents && post.contents.icon && post.contents.icon.length > 0);
 
                     return state;
                 }, () => {
@@ -600,7 +605,34 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         return (
             <div className="row">
                 {
-                    ![PostTypeId.Navigate].includes(Number(this.state.formData.typeId))
+                    [PostTypeId.Service].includes(Number(this.state.formData.typeId))
+                        ? <div className="col-md-7 mb-3">
+                            <div className="form-switch">
+                                <input
+                                    checked={this.state.isIconActive}
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="flexSwitchCheckDefault"
+                                    onChange={(e) => this.setState({isIconActive: !this.state.isIconActive})}
+                                />
+                                <label className="form-check-label ms-2" htmlFor="flexSwitchCheckDefault">{this.props.t("icon")}</label>
+                            </div>
+                        </div> : null
+                }
+                {
+                    [PostTypeId.Service].includes(Number(this.state.formData.typeId)) && this.state.isIconActive
+                        ? <div className="col-md-7 mb-3">
+                            <ThemeFormType
+                                title={`${this.props.t("icon")}`}
+                                name="contents.icon"
+                                type="text"
+                                value={this.state.formData.contents.icon}
+                                onChange={e => HandleForm.onChangeInput(e, this)}
+                            />
+                        </div> : null
+                }
+                {
+                    ![PostTypeId.Navigate].includes(Number(this.state.formData.typeId)) && !this.state.isIconActive
                         ? <div className="col-md-7 mb-3">
                             <ThemeChooseImage
                                 {...this.props}
