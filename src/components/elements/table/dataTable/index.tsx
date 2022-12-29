@@ -16,7 +16,7 @@ type PageProps<T> = {
     isSearchable?: boolean
     isSelectable?: boolean
     isAllSelectable?: boolean
-    isMultiSelectable?: false
+    isMultiSelectable?: boolean
     selectedRows?: T[]
 } & TableProps<T>;
 

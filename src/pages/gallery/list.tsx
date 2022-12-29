@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import Lightbox from "yet-another-react-lightbox";
 import Swal from "sweetalert2";
 import galleryService from "services/gallery.service";
 import pathUtil from "utils/path.util";
@@ -17,7 +16,6 @@ type PageState = {
     showingImages: string[]
     selectedImages: PageState["images"]
     selectedImageIndex: number
-    isOpenViewer: boolean
     searchKey: string
 };
 
@@ -39,7 +37,6 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
             showingImages: [],
             selectedImages: [],
             selectedImageIndex: 0,
-            isOpenViewer: false,
             searchKey: "",
         }
     }
@@ -117,19 +114,13 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                                     <i className="mdi mdi-trash-can btn-icon-prepend"></i> {this.props.t("delete")}
                                 </button>
                         ),
-                        borderColor: this.props.isModal ? "success" : "error"
+                        borderColor: this.props.isModal ? "success" : "error",
+                        position: "bottom-center"
                     })
                 }
             } else {
                 this.toast?.hide();
             }
-        })
-    }
-
-    onShow(image: string) {
-        this.setState({
-            selectedImageIndex: this.state.showingImages.indexOfKey("", image),
-            isOpenViewer: true
         })
     }
 
@@ -145,6 +136,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
             if (result.isConfirmed) {
                 this.toast?.hide();
                 const loadingToast = new ThemeToast({
+                    title: this.props.t("loading"),
                     content: this.props.t("deleting"),
                     type: "loading"
                 });
@@ -161,6 +153,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                         }, () => {
                             this.onSearch(this.state.searchKey);
                             new ThemeToast({
+                                title: this.props.t("itemDeleted"),
                                 content: this.props.t("itemDeleted"),
                                 type: "success",
                                 timeOut: 3
@@ -177,12 +170,6 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
             this.toast?.hide();
             this.props.onSubmit(this.state.selectedImages);
         }
-    }
-
-    onCloseViewer() {
-        this.setState({
-            isOpenViewer: false
-        })
     }
 
     onSearch(searchKey: string) {
@@ -219,41 +206,19 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                 width: "70px",
                 button: true,
                 cell: row => (
-                    <button
+                    <a
                         className="btn btn-gradient-info btn-icon-text"
-                        onClick={() => this.onShow(row)}
-                    ><i className="mdi mdi-eye"></i></button>
+                        href={pathUtil.uploads.images + row}
+                        target="_blank"
+                    ><i className="mdi mdi-eye"></i></a>
                 )
             }
         ];
     }
 
-    ImageViewer = () => {
-        let images: PageState["images"] = this.state.showingImages;
-        let index = this.state.selectedImageIndex;
-
-        if(this.props.isModal){
-            images = [this.state.showingImages[this.state.selectedImageIndex]];
-            index = 0;
-        }
-
-        return this.state.isOpenViewer ? (
-                <Lightbox
-                    index={index}
-                    open={this.state.isOpenViewer}
-                    close={() => this.onCloseViewer()}
-                    slides={images.map(image => ({
-                        src: pathUtil.uploads.images + image
-                    }))}
-                />
-            ) : null
-    }
-
-
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-gallery">
-                <this.ImageViewer/>
                 <div className="grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body">
@@ -266,7 +231,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                                 t={this.props.t}
                                 isSelectable={true}
                                 isAllSelectable={!(this.props.isModal && !this.props.isMulti)}
-                                isMultiSelectable={false}
+                                isMultiSelectable={!(this.props.isModal && !this.props.isMulti)}
                                 isSearchable={true}
                             />
                         </div>

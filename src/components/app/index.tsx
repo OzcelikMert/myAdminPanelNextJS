@@ -17,6 +17,7 @@ import ProviderAuth from "components/providers/auth.provider";
 import ProviderPermission from "components/providers/permission.provider";
 import ProviderAppInit from "components/providers/app.init.provider";
 import Variable from "library/variable";
+import {ToastContainer} from "react-toastify";
 
 type PageState = {
     contentLanguages: LanguageDocument[],
@@ -122,6 +123,7 @@ class AppAdmin extends Component<PageProps, PageState> {
             <div>
                 <ComponentHead title={this.state.breadCrumbTitle}/>
                 <div className="container-scroller">
+                    <ToastContainer />
                     {!isFullPageLayout ? <Navbar {...commonProps}/> : null}
                     <div className={`container-fluid page-body-wrapper ${isFullPageLayout ? "full-page-wrapper" : ""}`}>
                         {!isFullPageLayout ? <Sidebar {...commonProps}/> : null}

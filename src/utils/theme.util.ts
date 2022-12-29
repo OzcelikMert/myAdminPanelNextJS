@@ -60,5 +60,6 @@ export default class ThemeUtil {
         this.setColor("profile-card-text-color");
         this.setColor("table-pagination-btn-color");
         this.setColor("table-pagination-btn-disable-color");
+        this.setColor("box-shadow");
     }
 }

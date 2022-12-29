@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import dynamic from "next/dynamic";
 import {PagePropCommonDocument} from "types/pageProps";
-import ThemeChartBar from "components/elements/charts/bar";
 import {TableColumn} from "react-data-table-component";
 import {PostTypeId, PostTypes, Status} from "constants/index";
 import PostDocument from "types/services/post";
@@ -15,6 +14,7 @@ import permissionLib from "lib/permission.lib";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
+import ThemeChartArea from "components/elements/charts/area";
 
 type PageState = {
     lastPosts: PostDocument[]
@@ -281,8 +281,8 @@ class PageDashboard extends Component<PageProps, PageState> {
                                 <h4 className="card-title float-start">{this.props.t("weeklyVisitorsStatistics")}</h4>
                             </div>
                             <div className="chart-container">
-                                <ThemeChartBar
-                                    t={this.props.t}
+                                <ThemeChartArea
+                                    toolTipLabel={this.props.t("visitors")}
                                     data={this.state.visitorData.statistics.day.map(view => view.total)}
                                     labels={this.state.visitorData.statistics.day.map(view => view._id)}
                                 />
@@ -309,7 +309,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                                     color="#b66dff"
                                     borderColor="var(--theme-worldmap-stroke-bg)"
                                     frameColor="red"
-                                    strokeOpacity={0.3}
+                                    strokeOpacity={0.4}
                                     backgroundColor="var(--theme-bg)"
                                     value-suffix="people"
                                     size={this.state.worldMapSize}

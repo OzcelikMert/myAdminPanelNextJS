@@ -1,37 +1,44 @@
 import React, {Component} from "react";
-import {Bar, ChartProps} from "react-chartjs-2";
+import {ChartProps, Line} from "react-chartjs-2";
 import {
-    BarElement,
+    Chart as ChartJS,
     CategoryScale,
-    Chart as ChartJS, ChartData,
     LinearScale,
+    PointElement,
+    LineElement,
     Title,
-    Tooltip
-} from "chart.js";
+    Tooltip,
+    Filler,
+    Legend, ChartData,
+} from 'chart.js';
 import Spinner from "react-bootstrap/Spinner";
 import {PagePropCommonDocument} from "types/pageProps";
+import {TypedChartComponent} from "react-chartjs-2/dist/types";
 
 ChartJS.register(
     CategoryScale,
     LinearScale,
-    BarElement,
+    PointElement,
+    LineElement,
     Title,
-    Tooltip
+    Tooltip,
+    Filler,
+    Legend
 );
 
 type PageState = {
-    options: ChartProps<"bar">["options"]
-    data: ChartData<"bar">
+    options: ChartProps<"line">["options"]
+    data: ChartData<"line">
     isLoading: boolean
 };
 
 type PageProps = {
-    labels: string[],
+    labels?: string[],
     data: any[],
-    t: PagePropCommonDocument["t"]
+    toolTipLabel?: string
 };
 
-class ThemeChartBar extends Component<PageProps, PageState> {
+export default class ThemeChartLine extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
@@ -42,9 +49,17 @@ class ThemeChartBar extends Component<PageProps, PageState> {
             },
             options: {
                 responsive: true,
-                elements: {
-                    point: {
-                        radius: 0
+                elements:{
+                  line: {
+                      tension: 0.4
+                  }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        displayColors: false
                     }
                 }
             }
@@ -52,22 +67,17 @@ class ThemeChartBar extends Component<PageProps, PageState> {
     }
 
     componentDidMount() {
-        let ctx = (document.createElement("canvas") as HTMLCanvasElement).getContext("2d") as CanvasFillStrokeStyles;
-
-        let gradientBar = ctx.createLinearGradient(0, 0, 0, 181)
-        gradientBar.addColorStop(0, '#6e3a87')
-        gradientBar.addColorStop(1, 'rgba(154, 85, 255, 1)')
+        let borderColor = "#1863d3";
 
         this.setState({
             data: {
                 labels: this.props.labels,
                 datasets: [
                     {
-                        label: this.props.t("visitors"),
-                        borderColor: gradientBar,
-                        backgroundColor: gradientBar,
-                        hoverBackgroundColor: gradientBar,
-                        borderWidth: 1,
+                        pointBorderWidth: 0,
+                        label: this.props.toolTipLabel,
+                        borderColor: borderColor,
+                        borderWidth: 5,
                         data: this.props.data
                     }
                 ]
@@ -81,14 +91,13 @@ class ThemeChartBar extends Component<PageProps, PageState> {
 
     render() {
         return this.state.isLoading ? <Spinner animation="border" /> : (
-            <Bar
+            <Line
                 itemRef='chart'
                 className="chartLegendContainer"
                 data={this.state.data}
                 options={this.state.options}
+                redraw={true}
             />
         )
     }
 }
-
-export default ThemeChartBar;

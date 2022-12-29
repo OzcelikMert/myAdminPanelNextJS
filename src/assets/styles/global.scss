@@ -3,7 +3,6 @@
 /* === Plugin styles === */
 @import '~react-bootstrap-typeahead/css/Typeahead';
 @import '~react-datepicker/dist/react-datepicker.css';
-
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
@@ -12,8 +11,7 @@
 @import "~compass-mixins/lib/compass";
 @import "~compass-mixins/lib/animate";
 @import "~bootstrap/scss/bootstrap";
-
-
+@import '~react-toastify/dist/ReactToastify.css';
 
 /* === Icon fonts === */
 @import "~@mdi/font/scss/materialdesignicons";
@@ -69,6 +67,7 @@
 @import "components/widgets";
 @import "components/table/toggleMenu";
 @import "components/table/dataTable/index";
+@import "components/toast";
 /*@import "./components/forms";
 @import "components/breadcrumbs";
 @import "./components/icons";

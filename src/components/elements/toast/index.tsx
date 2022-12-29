@@ -22,9 +22,15 @@ export default class ThemeToast {
         this.props = props;
         this.options = {
             position: props.position ?? "top-center",
-            autoClose: props.timeOut,
+            autoClose: props.timeOut ? (Number(props.timeOut) * 1000) : false,
+            draggable: !!props.timeOut,
+            hideProgressBar: false,
+            progress: undefined,
             pauseOnHover: true,
-            draggable: true
+            closeOnClick: !!props.timeOut,
+            closeButton: false,
+            className: "theme-toast",
+            ...(props.borderColor ? {style: {border: 0, borderColor: this.getColor, borderStyle: "solid", borderTopWidth: 2}} : {})
         }
         this.content = this.Content();
         this.isShow = true;
@@ -49,8 +55,12 @@ export default class ThemeToast {
     private Content() {
         return (
             <div>
-                <b>{this.props.title}</b><br/>
-                <p>{this.props.content}</p>
+                {
+                    this.props.title ? <b className="d-block">{this.props.title}</b> : null
+                }
+                {
+                    React.isValidElement(this.props.content) ? this.props.content : <small>{this.props.content}</small>
+                }
             </div>
         );
     }
@@ -75,19 +85,13 @@ export default class ThemeToast {
             case "loading":
                 this.toast = toast.loading(
                     this.content,
-                    {
-                        ...this.options,
-                        autoClose: 0
-                    }
+                    this.options
                 )
                 break;
             default:
-                this.toast = toast.info(
+                this.toast = toast(
                     this.content,
-                    {
-                        ...this.options,
-                        autoClose: 0,
-                    }
+                    this.options
                 )
                 break;
         }
