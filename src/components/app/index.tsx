@@ -18,6 +18,7 @@ import ProviderPermission from "components/providers/permission.provider";
 import ProviderAppInit from "components/providers/app.init.provider";
 import Variable from "library/variable";
 import {ToastContainer} from "react-toastify";
+import {loadRequireHook} from "next/dist/build/webpack/require-hook";
 
 type PageState = {
     contentLanguages: LanguageDocument[],
@@ -61,6 +62,10 @@ class AppAdmin extends Component<PageProps, PageState> {
             this.pathname = this.props.router.asPath;
             await this.onRouteChanged()
         }
+        if(prevState.isPageLoading && !this.state.isPageLoading){
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+        }
     }
 
     async onRouteChanged() {
@@ -72,8 +77,6 @@ class AppAdmin extends Component<PageProps, PageState> {
                     ...this.state.pageData,
                     langId: this.state.pageData.mainLangId
                 }
-            }, () => {
-                window.scrollTo(0, 0);
             })
         })
     }
