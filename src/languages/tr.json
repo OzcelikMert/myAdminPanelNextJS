@@ -1,4 +1,5 @@
 {
+  "outGoingEmail": "Giden E-posta",
   "worldMap": "Dünya Haritası",
   "visitors": "Ziyaretçiler",
   "contentLanguage": "İçerik Dili",
@@ -168,8 +169,8 @@
   "newContactForm": "Yeni İletişim Formu",
   "contactForm": "İletişim Formu",
   "key": "Anahtar",
-  "outGoingServer": "Out Going Server",
-  "inComingServer": "In Coming Server",
+  "outGoingServer": "Giden Sunucu",
+  "inComingServer": "Gelen Sunucu",
   "port": "Port",
   "companyName": "Şirket İsimi",
   "budget": "Bütçe",

@@ -1,4 +1,5 @@
 export const LanguageKeysArray = [
+    "outGoingEmail",
     "worldMap",
     "visitors",
     "contentLanguage",

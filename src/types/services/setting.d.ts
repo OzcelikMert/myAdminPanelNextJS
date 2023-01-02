@@ -24,6 +24,7 @@ export interface SettingContactFormDocument {
     _id?: string
     name: string
     key: string
+    outGoingEmail: string
     email: string
     password: string
     outGoingServer: string

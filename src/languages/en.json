@@ -1,4 +1,5 @@
 {
+  "outGoingEmail": "Outgoing Email",
   "worldMap": "World Map",
   "visitors": "Visitors",
   "contentLanguage": "Content Language",
@@ -168,8 +169,8 @@
   "newContactForm": "New Contact Form",
   "contactForm": "Contact Form",
   "key": "Key",
-  "outGoingServer": "Giden Sunucu",
-  "inComingServer": "Gelen Sunucu",
+  "outGoingServer": "Outgoing Server",
+  "inComingServer": "Incoming Server",
   "port": "Port",
   "companyName": "Company Name",
   "budget": "Budget",

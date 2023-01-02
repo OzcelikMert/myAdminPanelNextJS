@@ -28,7 +28,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
         }
     }
 
-   async componentDidMount() {
+    async componentDidMount() {
         this.setPageTitle();
         await this.getSettings();
         this.props.setStateApp({
@@ -60,7 +60,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
             isSubmitting: true
         }, () => {
             settingService.updateContactForm(this.state.formData).then(resData => {
-                if(resData.status){
+                if (resData.status) {
                     new ThemeToast({
                         type: "success",
                         title: this.props.t("successful"),
@@ -93,6 +93,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                         port: 465,
                         outGoingServer: "",
                         inComingServer: "",
+                        outGoingEmail: "",
                         name: "",
                         password: "",
                         email: ""
@@ -155,9 +156,17 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                             <div className="col-md-12 mt-4">
                                 <ThemeFormType
                                     type="text"
-                                    title={this.props.t("email")}
+                                    title={this.props.t("outGoingEmail")}
                                     value={contactFormProps.email}
                                     onChange={e => this.TabContactFormEvents.onInputChange(contactFormProps, "email", e.target.value)}
+                                />
+                            </div>
+                            <div className="col-md-12 mt-4">
+                                <ThemeFormType
+                                    type="text"
+                                    title={this.props.t("email")}
+                                    value={contactFormProps.outGoingEmail}
+                                    onChange={e => this.TabContactFormEvents.onInputChange(contactFormProps, "outGoingEmail", e.target.value)}
                                 />
                             </div>
                             <div className="col-md-12 mt-4">
@@ -263,7 +272,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                                 isSubmitting={this.state.isSubmitting}
                                 formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
                             >
-                                <this.ContactForms />
+                                <this.ContactForms/>
                             </ThemeForm>
                         </div>
                     </div>
