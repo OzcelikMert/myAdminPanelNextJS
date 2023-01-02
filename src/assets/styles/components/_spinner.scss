@@ -1,5 +1,6 @@
 .spinner-main {
   position: relative;
+  z-index: 1;
   .spinner-bg {
     position: fixed;
     top: 0;
@@ -11,6 +12,9 @@
   .spinner-wrapper {
     top: 50%;
     left: calc(50% + 90px);
+    @media(max-width: 990px) {
+      left: calc(50% - 26px);
+    }
     position: fixed;
     &.spinner-full-page {
       top: calc(50% - 25px);
