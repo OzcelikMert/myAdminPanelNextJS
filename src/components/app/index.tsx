@@ -18,7 +18,6 @@ import ProviderPermission from "components/providers/permission.provider";
 import ProviderAppInit from "components/providers/app.init.provider";
 import Variable from "library/variable";
 import {ToastContainer} from "react-toastify";
-import {loadRequireHook} from "next/dist/build/webpack/require-hook";
 
 type PageState = {
     contentLanguages: LanguageDocument[],
@@ -58,7 +57,6 @@ class AppAdmin extends Component<PageProps, PageState> {
 
     async componentDidUpdate(prevProps: Readonly<PageProps>, prevState: Readonly<PageState>) {
         if (this.pathname !== this.props.router.asPath) {
-            console.log(this.pathname, this.props.router.pathname)
             this.pathname = this.props.router.asPath;
             await this.onRouteChanged()
         }
@@ -108,6 +106,11 @@ class AppAdmin extends Component<PageProps, PageState> {
             return null;
         }
 
+        if(this.props.router.asPath === "/" || typeof this.props.pageProps.statusCode !== "undefined"){
+            this.props.router.push(PagePaths.dashboard());
+            return null;
+        }
+
         const fullPageLayoutRoutes = [
             PagePaths.login(),
             PagePaths.lock()
@@ -134,40 +137,40 @@ class AppAdmin extends Component<PageProps, PageState> {
                         <ProviderAuth {...commonProps}>
                             <ProviderPermission {...commonProps}>
                                 <ProviderAppInit  {...commonProps}>
-                                    <div className="main-panel">
-                                        <div className="content-wrapper">
-                                            {
-                                                !isFullPageLayout ?
-                                                    <div className="page-header">
-                                                        <div className="row w-100 m-0">
-                                                            <div className="col-md-8 p-0">
-                                                                <ThemeBreadCrumb
-                                                                    breadCrumbs={this.state.breadCrumbTitle.split(" - ")}/>
+                                        <div className="main-panel">
+                                            <div className="content-wrapper">
+                                                {
+                                                    !isFullPageLayout ?
+                                                        <div className="page-header">
+                                                            <div className="row w-100 m-0">
+                                                                <div className="col-md-8 p-0">
+                                                                    <ThemeBreadCrumb
+                                                                        breadCrumbs={this.state.breadCrumbTitle.split(" - ")}/>
+                                                                </div>
+                                                                <div className="col-md-4 p-0 content-language">
+                                                                    <ThemeContentLanguage
+                                                                        t={commonProps.t}
+                                                                        router={this.props.router}
+                                                                        options={this.state.contentLanguages}
+                                                                        value={this.state.contentLanguages.findSingle("_id", this.state.pageData.langId)}
+                                                                        onChange={(item, e) => this.setState((state: PageState) => {
+                                                                            return {
+                                                                                ...state,
+                                                                                pageData: {
+                                                                                    ...state.pageData,
+                                                                                    langId: item.value
+                                                                                }
+                                                                            };
+                                                                        })}
+                                                                    />
+                                                                </div>
                                                             </div>
-                                                            <div className="col-md-4 p-0 content-language">
-                                                                <ThemeContentLanguage
-                                                                    t={commonProps.t}
-                                                                    router={this.props.router}
-                                                                    options={this.state.contentLanguages}
-                                                                    value={this.state.contentLanguages.findSingle("_id", this.state.pageData.langId)}
-                                                                    onChange={(item, e) => this.setState((state: PageState) => {
-                                                                        return {
-                                                                            ...state,
-                                                                            pageData: {
-                                                                                ...state.pageData,
-                                                                                langId: item.value
-                                                                            }
-                                                                        };
-                                                                    })}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div> : null
-                                            }
-                                            <this.props.Component {...commonProps}/>
+                                                        </div> : null
+                                                }
+                                                <this.props.Component {...commonProps}/>
+                                            </div>
+                                            {!isFullPageLayout ? <Footer/> : ''}
                                         </div>
-                                        {!isFullPageLayout ? <Footer/> : ''}
-                                    </div>
                                 </ProviderAppInit>
                             </ProviderPermission>
                         </ProviderAuth>

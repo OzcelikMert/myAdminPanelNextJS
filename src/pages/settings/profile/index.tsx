@@ -354,7 +354,6 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                     {...this.props}
                     isShow={this.state.isSelectionImage}
                     onHide={() => this.setState({isSelectionImage: false})}
-                    result={this.state.formData.image}
                     onSelected={images => this.onChangeImage(images[0])}
                     isMulti={false}
                 />

@@ -340,7 +340,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     {...this.props}
                     isShow={this.state.isSelectionImage}
                     onHide={() => this.setState({ isSelectionImage: false })}
-                    result={this.state.formData.contents.image}
                     onSelected={images => this.setState((state: PageState) => {
                         state.formData.contents.image = images[0];
                         return state

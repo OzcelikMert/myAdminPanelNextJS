@@ -5,7 +5,6 @@ import {TableColumn} from "react-data-table-component";
 import {PostTypeId, PostTypes, Status} from "constants/index";
 import PostDocument from "types/services/post";
 import postService from "services/post.service";
-const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 import viewService from "services/view.service";
 import {ViewNumberDocument, ViewStatisticsDocument} from "types/services/view";
 import imageSourceLib from "lib/imageSource.lib";
@@ -15,6 +14,8 @@ import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
 import ThemeChartArea from "components/elements/charts/area";
+
+const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 
 type PageState = {
     lastPosts: PostDocument[]

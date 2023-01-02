@@ -33,7 +33,6 @@ class PageLock extends Component<PageProps, PageState> {
 
     componentDidMount() {
         this.setPageTitle();
-        console.log(this.props.getStateApp.sessionData)
         if (V.isEmpty(this.props.getStateApp.sessionData.email)) {
             return this.props.router.push(PagePaths.login());
         }

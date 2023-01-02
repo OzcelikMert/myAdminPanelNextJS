@@ -19,6 +19,7 @@ import AppAdmin from "components/app";
 import English from "languages/en.json"
 import Turkish from "languages/tr.json"
 import ProviderNoSSR from "components/providers/noSSR.provider";
+import PagePaths from "constants/pagePaths";
 
 if(typeof window !== "undefined") {
     const language = i18n.use(initReactI18next);
