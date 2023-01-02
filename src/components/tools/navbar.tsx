@@ -224,7 +224,7 @@ export default class Navbar extends Component<PageProps, PageState> {
         return (
             <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
                 <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                    <Link className="navbar-brand brand-logo" href="/">
+                    <Link className="navbar-brand brand-logo" href={PagePaths.dashboard()}>
                         <Image
                             src={Logo.src}
                             alt="logo"
@@ -233,7 +233,7 @@ export default class Navbar extends Component<PageProps, PageState> {
                             className="img-fluid"
                         />
                     </Link>
-                    <Link className="navbar-brand brand-logo-mini" href="/">
+                    <Link className="navbar-brand brand-logo-mini" href={PagePaths.dashboard()}>
                         <Image
                             src={LogoMini.src}
                             alt="logo"
