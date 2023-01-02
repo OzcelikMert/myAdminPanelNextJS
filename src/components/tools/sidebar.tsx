@@ -64,10 +64,10 @@ class Sidebar extends Component<PageProps, PageState> {
         function HasChild(_props: SideBarPath) {
             if (!permissionLib.checkPermissionPath(_props.path, self.props.getStateApp.sessionData.roleId, self.props.getStateApp.sessionData.permissions)) return null;
             return (
-                <p className={`nav-link ${self.isPathActive(_props.path) ? 'active' : ''}`} onClick={() => routeLib.change(self.props.router, _props.path ?? PagePaths.dashboard())}>
+                <span className={`nav-link ${self.isPathActive(_props.path) ? 'active' : ''}`} onClick={() => routeLib.change(self.props.router, _props.path ?? PagePaths.dashboard())}>
                     <span className={`menu-title text-capitalize ${self.isPathActive(_props.path) ? 'active' : ''}`}>{self.props.t(_props.title)}</span>
                     <i className={`mdi mdi-${_props.icon} menu-icon`}></i>
-                </p>
+                </span>
             );
         }
 
