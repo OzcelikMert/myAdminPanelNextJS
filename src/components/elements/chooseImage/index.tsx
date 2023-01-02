@@ -8,7 +8,6 @@ type PageState = {};
 
 type PageProps = {
     isShow: boolean
-    result?: string
     onSelected: (images: string[]) => void
     isMulti?: boolean
     onHide: () => void

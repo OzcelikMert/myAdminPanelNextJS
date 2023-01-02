@@ -1,6 +1,5 @@
 import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
-const JoditEditor = dynamic(() => import('jodit-react').then((module) => module.default), {ssr: false});
 import moment from "moment";
 import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form"
 import {LanguageKeysArray, PageTypes, PostTermTypeId, PostTypeId, PostTypes, StatusId} from "constants/index";
@@ -20,6 +19,7 @@ import ThemeToolTip from "components/elements/tooltip";
 import Swal from "sweetalert2";
 import Image from "next/image"
 import dynamic from "next/dynamic";
+const ThemeRichTextBox = dynamic(() => import("components/elements/richTextBox").then((module) => module.default), {ssr: false});
 
 type PageState = {
     langKeys: { value: string, label: string }[]
@@ -309,7 +309,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         })
     }
 
-    onChangeJoeEditor(newContent: string) {
+    onChangeContent(newContent: string) {
         this.setState((state: PageState) => {
             state.formData.contents.content = newContent;
             return state;
@@ -523,26 +523,13 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     TabContent = () => {
-       /* config={{
-            uploader:{insertImageAsBase64URI: true},
-            showXPathInStatusbar: false,
-                showCharsCounter: false,
-                showWordsCounter: false,
-                toolbarAdaptive: true,
-                askBeforePasteFromWord: false,
-                askBeforePasteHTML: false,
-                defaultActionOnPaste: "insert_clear_html",
-                placeholder: this.props.t("content")
-        }}*/
         return (
             <div className="row">
                 <div className="col-md-7 mb-3">
-                    <JoditEditor
+                    <ThemeRichTextBox
                         value={this.state.formData.contents.content || ""}
-                        config={{
-                            defaultActionOnPaste: "insert_clear_html",
-                        }}
-                        onBlur={newContent => this.onChangeJoeEditor(newContent)}
+                        onChange={newContent => this.onChangeContent(newContent)}
+                        {...this.props}
                     />
                 </div>
             </div>
@@ -638,7 +625,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                                 {...this.props}
                                 isShow={this.state.isSelectionImage}
                                 onHide={() => this.setState({isSelectionImage: false})}
-                                result={this.state.formData.contents.image || ""}
                                 onSelected={images => this.setState((state: PageState) => {
                                     state.formData.contents.image = images[0];
                                     return state

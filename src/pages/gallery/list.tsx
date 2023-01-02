@@ -208,7 +208,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                 cell: row => (
                     <a
                         className="btn btn-gradient-info btn-icon-text"
-                        href={pathUtil.uploads.images + row}
+                        href={imageSourceLib.getUploadedImageSrc(row)}
                         target="_blank"
                     ><i className="mdi mdi-eye"></i></a>
                 )
