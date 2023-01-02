@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import JoditEditor, {IJoditEditorProps, Jodit} from "jodit-react";
-import {IJodit, IViewBased, IViewOptions} from "jodit/index";
+import JoditEditor, {Jodit} from "jodit-react";
+import {IJodit} from "jodit/index";
 import ThemeChooseImage from "components/elements/chooseImage";
 import {PagePropCommonDocument} from "types/pageProps";
 import {Config} from "jodit/types/config";

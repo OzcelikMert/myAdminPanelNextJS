@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
 import Swal from "sweetalert2";
 import galleryService from "services/gallery.service";
-import pathUtil from "utils/path.util";
 import {TableColumn} from "react-data-table-component";
 import imageSourceLib from "lib/imageSource.lib";
 import ThemeToast from "components/elements/toast";

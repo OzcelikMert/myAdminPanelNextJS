@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import {ToastContainer, toast, Id, ToastOptions, ToastContent} from "react-toastify";
+import {toast, Id, ToastOptions, ToastContent} from "react-toastify";
 import React from "react";
 
 type PageProps = {

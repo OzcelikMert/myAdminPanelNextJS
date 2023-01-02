@@ -1,4 +1,4 @@
-import React, {Component, ComponentState} from "react";
+import React, {Component} from "react";
 
 class HandleForm {
     static onChangeInput(event: React.ChangeEvent<any>, component: Component) {

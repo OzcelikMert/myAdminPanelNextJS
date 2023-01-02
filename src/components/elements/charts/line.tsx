@@ -12,8 +12,6 @@ import {
     Legend, ChartData,
 } from 'chart.js';
 import Spinner from "react-bootstrap/Spinner";
-import {PagePropCommonDocument} from "types/pageProps";
-import {TypedChartComponent} from "react-chartjs-2/dist/types";
 
 ChartJS.register(
     CategoryScale,
