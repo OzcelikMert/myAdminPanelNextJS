@@ -22,12 +22,12 @@ export default class ThemeToast {
         this.props = props;
         this.options = {
             position: props.position ?? "top-center",
-            autoClose: props.timeOut ? (Number(props.timeOut) * 1000) : false,
-            draggable: !!props.timeOut,
+            autoClose: props.timeOut ? (Number(props.timeOut) * 1000) : props.type === "loading" ? false : 4000,
+            draggable: !!props.timeOut || props.type !== "loading",
             hideProgressBar: false,
             progress: undefined,
             pauseOnHover: true,
-            closeOnClick: !!props.timeOut,
+            closeOnClick: !!props.timeOut || props.type !== "loading",
             closeButton: false,
             className: "theme-toast",
             ...(props.borderColor ? {style: {border: 0, borderColor: this.getColor, borderStyle: "solid", borderTopWidth: 2}} : {})
@@ -83,16 +83,10 @@ export default class ThemeToast {
 
                 break;
             case "loading":
-                this.toast = toast.loading(
-                    this.content,
-                    this.options
-                )
+                this.toast = toast.loading(this.content, this.options)
                 break;
             default:
-                this.toast = toast(
-                    this.content,
-                    this.options
-                )
+                this.toast = toast(this.content, this.options)
                 break;
         }
     }

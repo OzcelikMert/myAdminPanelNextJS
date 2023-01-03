@@ -16,7 +16,7 @@ const nextConfig = {
     reactStrictMode: false,
     swcMinify: true,
     images: {
-        unoptimized: true,
+        //unoptimized: true,
         remotePatterns: [
             {
                 protocol: process.env.API_PROTOCOL,
