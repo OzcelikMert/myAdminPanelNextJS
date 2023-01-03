@@ -157,16 +157,16 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                                 <ThemeFormType
                                     type="text"
                                     title={this.props.t("outGoingEmail")}
-                                    value={contactFormProps.email}
-                                    onChange={e => this.TabContactFormEvents.onInputChange(contactFormProps, "email", e.target.value)}
+                                    value={contactFormProps.outGoingEmail}
+                                    onChange={e => this.TabContactFormEvents.onInputChange(contactFormProps, "outGoingEmail", e.target.value)}
                                 />
                             </div>
                             <div className="col-md-12 mt-4">
                                 <ThemeFormType
                                     type="text"
                                     title={this.props.t("email")}
-                                    value={contactFormProps.outGoingEmail}
-                                    onChange={e => this.TabContactFormEvents.onInputChange(contactFormProps, "outGoingEmail", e.target.value)}
+                                    value={contactFormProps.email}
+                                    onChange={e => this.TabContactFormEvents.onInputChange(contactFormProps, "email", e.target.value)}
                                 />
                             </div>
                             <div className="col-md-12 mt-4">
