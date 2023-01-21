@@ -14,6 +14,7 @@ import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
 import ThemeChartArea from "components/elements/charts/area";
+import PostLib from "lib/post.lib";
 
 const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 
@@ -121,7 +122,7 @@ class PageDashboard extends Component<PageProps, PageState> {
     }
 
     async navigateTermPage(type: "termEdit" | "edit" | "listPost", postTypeId: number, itemId = "", termTypeId = 0) {
-        let pagePath = postTypeId == PostTypeId.Page ? PagePaths.post(postTypeId) : PagePaths.themeContent().post(postTypeId);
+        let pagePath = PostLib.getPagePath(postTypeId);
         let path = (type === "edit")
             ? pagePath.edit(itemId)
             : (type === "listPost")

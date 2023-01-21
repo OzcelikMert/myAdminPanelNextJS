@@ -10,6 +10,10 @@ const nextConfig = {
             {
                 source: "/theme-content/:path*",
                 destination: "/:path*"
+            },
+            {
+                source: "/e-commerce/:path*",
+                destination: "/:path*"
             }
         ]
     },

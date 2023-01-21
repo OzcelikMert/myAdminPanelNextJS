@@ -99,7 +99,7 @@ class PageLock extends Component<PageProps, PageState> {
                                             <ThemeInputType
                                                 title={this.props.t("password")}
                                                 type="password"
-                                                name="password"
+                                                name="formData.password"
                                                 required={true}
                                                 value={this.state.formData.password}
                                                 onChange={e => HandleForm.onChangeInput(e, this)}

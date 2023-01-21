@@ -3,6 +3,69 @@ import {PopulateAuthorIdDocument} from "./user";
 import {PageTypeId, PostTypeId, StatusId} from "constants/index";
 import {ComponentDocument} from "./component";
 
+export interface PostECommerceVariationContentDocument {
+    _id?: string
+    langId: string
+    image?: string
+    content?: string,
+    shortContent?: string,
+}
+
+export interface PostECommerceVariationSelectedDocument {
+    _id?: string
+    attributeId: string
+    variationId: string
+}
+
+export interface PostECommerceVariationDocument {
+    _id?: string
+    order: number
+    selectedVariations: PostECommerceVariationSelectedDocument[]
+    images: string[]
+    contents?: PostECommerceVariationContentDocument
+    inventory: PostECommerceInventoryDocument
+    shipping: PostECommerceShippingDocument
+    pricing: PostECommercePricingDocument
+}
+
+export interface PostECommerceAttributeDocument {
+    _id?: string
+    attributeId: string
+    variations: string[]
+    typeId: number
+}
+
+export interface PostECommerceShippingDocument {
+    width: number
+    height: number
+    depth: number
+    weight: number
+}
+
+export interface PostECommerceInventoryDocument {
+    sku: string
+    isManageStock: boolean
+    quantity: number
+}
+
+export interface PostECommercePricingDocument {
+    taxRate: number
+    taxExcluded: number
+    taxIncluded: number
+    compared: number
+    shipping: number
+}
+
+export interface PostECommerceDocument {
+    typeId?: number
+    pricing?: PostECommercePricingDocument
+    inventory?: PostECommerceInventoryDocument
+    shipping?: PostECommerceShippingDocument
+    attributes?: PostECommerceAttributeDocument[]
+    variations?: PostECommerceVariationDocument[]
+    variationDefaults?: PostECommerceVariationSelectedDocument[]
+}
+
 export interface PostContentButtonDocument {
     _id?: string
     title: string,
@@ -45,6 +108,7 @@ export default interface PostDocument {
     terms: (PopulateTermsDocument | undefined)[]
     contents?: PostContentDocument,
     components?: ComponentDocument[]
+    eCommerce?: PostECommerceDocument
 }
 
 export interface PostGetParamDocument {

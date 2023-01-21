@@ -115,7 +115,7 @@ export default class ThemeRichTextBox extends Component<PageProps, PageState> {
 
     render() {
         return this.state.isLoading ? <Spinner animation="border" /> : (
-            <div>
+            <div id={`themeRichTextBox_${String.createId()}`}>
                 <ThemeChooseImage
                     {...this.props}
                     isShow={this.state.isGalleryShow}

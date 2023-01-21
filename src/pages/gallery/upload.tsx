@@ -181,7 +181,7 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                                         hidden={true}
                                         onChange={(event) => this.onChangeFile(event)}
                                         multiple={true}
-                                        name="image[]"
+                                        name="formData.image[]"
                                         accept=".jpg,.png,.gif,.webp"
                                     />
                                     <div className="icons">

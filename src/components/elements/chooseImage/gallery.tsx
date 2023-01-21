@@ -16,6 +16,7 @@ type PageProps = {
     isShow: boolean
     onSubmit: (images: string[]) => void
     isMulti?: boolean
+    selectedImages?: string[]
 } & PagePropCommonDocument;
 
 class ThemeChooseImageGallery extends Component<PageProps, PageState> {
@@ -61,7 +62,7 @@ class ThemeChooseImageGallery extends Component<PageProps, PageState> {
                                             this.props.getStateApp.sessionData.roleId,
                                             this.props.getStateApp.sessionData.permissions,
                                             PermissionId.GalleryEdit
-                                        ) ? <Tab eventKey="upload" title={"Upload"}>
+                                        ) ? <Tab eventKey="upload" title={this.props.t("upload")}>
                                             <PageGalleryUpload
                                                 {...this.props}
                                                 uploadedImages={uploadedImages => this.setState({uploadedImages: uploadedImages})}
@@ -69,7 +70,7 @@ class ThemeChooseImageGallery extends Component<PageProps, PageState> {
                                             />
                                         </Tab> : null
                                     }
-                                    <Tab eventKey="list" title={"List"}>
+                                    <Tab eventKey="list" title={this.props.t("list")}>
                                         <PageGalleryList
                                             {...this.props}
                                             isModal

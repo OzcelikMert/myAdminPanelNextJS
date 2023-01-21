@@ -2,12 +2,16 @@ import {PostTermTypeDocument} from "types/constants";
 
 enum PostTermTypeId {
     Category = 1,
-    Tag
+    Tag,
+    Attributes,
+    Variations
 }
 
 const PostTermTypes: Array<PostTermTypeDocument> = [
     {id: PostTermTypeId.Category, order: 1, langKey: "category"},
     {id: PostTermTypeId.Tag, order: 2, langKey: "tag"},
+    {id: PostTermTypeId.Attributes, order: 1, langKey: "category"},
+    {id: PostTermTypeId.Variations, order: 2, langKey: "tag"},
 ]
 
 export {PostTermTypes, PostTermTypeId};

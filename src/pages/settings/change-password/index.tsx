@@ -93,7 +93,7 @@ export default class PageChangePassword extends Component<PageProps, PageState> 
                                     <div className="col-md-7 mb-3">
                                         <ThemeFormType
                                             title={`${this.props.t("password")}*`}
-                                            name="password"
+                                            name="formData.password"
                                             type="password"
                                             autoComplete={"new-password"}
                                             required={true}
@@ -104,7 +104,7 @@ export default class PageChangePassword extends Component<PageProps, PageState> 
                                     <div className="col-md-7 mb-3">
                                         <ThemeFormType
                                             title={`${this.props.t("newPassword")}*`}
-                                            name="newPassword"
+                                            name="formData.newPassword"
                                             type="password"
                                             autoComplete={"new-password"}
                                             required={true}
@@ -115,7 +115,7 @@ export default class PageChangePassword extends Component<PageProps, PageState> 
                                     <div className="col-md-7 mb-3">
                                         <ThemeFormType
                                             title={`${this.props.t("confirmPassword")}*`}
-                                            name="confirmPassword"
+                                            name="formData.confirmPassword"
                                             type="password"
                                             autoComplete={"new-password"}
                                             required={true}

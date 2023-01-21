@@ -163,7 +163,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("head")}
-                        name="head"
+                        name="formData.head"
                         type="textarea"
                         value={this.state.formData.head}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -172,7 +172,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("script")}
-                        name="script"
+                        name="formData.script"
                         type="textarea"
                         value={this.state.formData.script}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -188,7 +188,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title="Facebook"
-                        name="contact.facebook"
+                        name="formData.contact.facebook"
                         type="url"
                         value={this.state.formData.contact?.facebook}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -197,7 +197,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title="Instagram"
-                        name="contact.instagram"
+                        name="formData.contact.instagram"
                         type="url"
                         value={this.state.formData.contact?.instagram}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -206,7 +206,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title="Twitter"
-                        name="contact.twitter"
+                        name="formData.contact.twitter"
                         type="url"
                         value={this.state.formData.contact?.twitter}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -215,7 +215,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title="Linkedin"
-                        name="contact.linkedin"
+                        name="formData.contact.linkedin"
                         type="url"
                         value={this.state.formData.contact?.linkedin}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -224,7 +224,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title="Google"
-                        name="contact.google"
+                        name="formData.contact.google"
                         type="url"
                         value={this.state.formData.contact?.google}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -240,7 +240,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("email")}
-                        name="contact.email"
+                        name="formData.contact.email"
                         type="email"
                         value={this.state.formData.contact?.email}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -249,7 +249,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("phone")}
-                        name="contact.phone"
+                        name="formData.contact.phone"
                         type="tel"
                         value={this.state.formData.contact?.phone}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -258,7 +258,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("address")}
-                        name="contact.address"
+                        name="formData.contact.address"
                         type="text"
                         value={this.state.formData.contact?.address}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -268,7 +268,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("addressMap")}
-                        name="contact.addressMap"
+                        name="formData.contact.addressMap"
                         type="text"
                         value={this.state.formData.contact?.addressMap}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -284,7 +284,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("websiteMainLanguage").toCapitalizeCase()}
-                        name="defaultLangId"
+                        name="formData.defaultLangId"
                         isMulti={false}
                         isSearchable={false}
                         options={this.state.languages}
@@ -397,7 +397,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("adminPanelLanguage").toCapitalizeCase()}
-                        name="panelLangId"
+                        name="formData.panelLangId"
                         isMulti={false}
                         isSearchable={false}
                         options={this.state.panelLanguages}

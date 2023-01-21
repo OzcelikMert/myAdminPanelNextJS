@@ -53,7 +53,6 @@ export default class ThemeContentLanguage extends Component<PageProps, PageState
         return isShow ? (
             <ThemeFormSelect
                 title={this.props.t("contentLanguage")}
-                name="contentLanguageId"
                 isSearchable={false}
                 options={this.props.options.map(option => ({label: <this.Item {...option} />, value: option._id}))}
                 value={ this.props.value ? {label: <this.Item {...this.props.value} />, value: this.props.value._id} : undefined }

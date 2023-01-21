@@ -160,6 +160,27 @@ const SidebarNav: SideBarPath[] = [
         ]
     },
     {
+        path: PagePaths.eCommerce().self(),
+        icon: `market`,
+        title: "eCommerce",
+        state: `eCommerce`,
+        subPaths: [
+            {
+                path: PagePaths.eCommerce().post(PostTypeId.Product).self(),
+                title: "product",
+                state: `eCommerceProduct`,
+                subPaths: [
+                    {
+                        path: PagePaths.eCommerce().post(PostTypeId.Product).add(),
+                        title: "add",
+                        permId: PermissionId.ProductAdd,
+                    },
+                    {path: PagePaths.eCommerce().post(PostTypeId.Product).list(), title: "list"}
+                ]
+            },
+        ]
+    },
+    {
         path: PagePaths.settings().self(),
         icon: `cog`,
         title: "settings",

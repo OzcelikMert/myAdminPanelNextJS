@@ -195,7 +195,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
                             <div className="col-md-12">
                                 <ThemeFormSelect
                                     title={`${this.props.t("key")}*`}
-                                    name="langKey"
+                                    name="formData.langKey"
                                     placeholder={this.props.t("langKey")}
                                     options={this.state.langKeys}
                                     value={this.state.langKeys?.findSingle("value", staticLanguageProps.langKey)}

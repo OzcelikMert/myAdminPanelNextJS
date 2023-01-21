@@ -1,5 +1,29 @@
 import React, {Component} from "react";
 
+function setDataWithKeys(data: any, keys: string[], value: any, isArrayPush: boolean = false) {
+    let key = keys[0];
+
+    if (keys.length === 1){
+        if(isArrayPush){
+            if(Array.isArray(data[key])){
+                data[key].push(value)
+            }else {
+                data[key] = [value];
+            }
+        }else {
+            data[key] = value;
+        }
+    }else{
+        if(typeof data[key] === "undefined"){
+            data[key] = {};
+        }
+
+        data[key] = setDataWithKeys(data[key], keys.slice(1), value);
+    }
+
+    return data;
+}
+
 class HandleForm {
     static onChangeInput(event: React.ChangeEvent<any>, component: Component) {
         component.setState((state: any) => {
@@ -9,7 +33,7 @@ class HandleForm {
             }else{
                 value = event.target.value;
             }
-            eval(`state.formData${event.target.name.split(".").map((name: any) => `['${name}']`).join("")} = value`);
+            state = setDataWithKeys(state, event.target.name.split("."), value);
             return state;
         })
     }
@@ -17,13 +41,13 @@ class HandleForm {
     static onChangeSelect(key: any, value: any, component: Component) {
         component.setState((state: any) => {
             if(Array.isArray(value)){
-                eval(`state.formData${key.split(".").map((name: any) => `['${name}']`).join("")}=[]`);
+                state = setDataWithKeys(state, key.split("."), []);
                 value.forEach(item => {
                     let data = (typeof item.value !== "undefined") ? item.value : item;
-                    eval(`state.formData${key.split(".").map((name: any) => `['${name}']`).join("")}.push(data)`);
+                    state = setDataWithKeys(state, key.split("."), data, true);
                 })
             }else {
-                eval(`state.formData${key.split(".").map((name: any) => `['${name}']`).join("")} = value`);
+                state = setDataWithKeys(state, key.split("."), value);
             }
             return state;
         });

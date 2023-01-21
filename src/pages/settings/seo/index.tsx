@@ -115,7 +115,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
                                         <ThemeFormType
                                             title={this.props.t("websiteTitle")}
                                             type="text"
-                                            name="seoContents.title"
+                                            name="formData.seoContents.title"
                                             required={true}
                                             maxLength={50}
                                             value={this.state.formData.seoContents.title}
@@ -126,7 +126,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
                                         <ThemeFormType
                                             title={this.props.t("websiteDescription")}
                                             type="textarea"
-                                            name="seoContents.content"
+                                            name="formData.seoContents.content"
                                             required={true}
                                             maxLength={120}
                                             value={this.state.formData.seoContents.content}
@@ -137,7 +137,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
                                         <ThemeFormTags
                                             title={this.props.t("websiteTags")}
                                             placeHolder={this.props.t("writeAndPressEnter")}
-                                            name="seoContents.tags"
+                                            name="formData.seoContents.tags"
                                             value={this.state.formData.seoContents.tags ?? []}
                                             onChange={(value, name) => HandleForm.onChangeSelect(name, value, this)}
                                         />

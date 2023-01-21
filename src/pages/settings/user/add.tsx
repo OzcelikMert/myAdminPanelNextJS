@@ -206,7 +206,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 <div className="col-md-12 mb-3">
                     <ThemeFormCheckBox
                         title={this.props.t("selectAll")}
-                        name="permAll"
+                        name="formData.permAll"
                         checked={Permissions.length === this.state.formData.permissions.length}
                         onChange={e => this.onPermissionAllSelected(e.target.checked)}
                     />
@@ -224,7 +224,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                                             <ThemeFormCheckBox
                                                 key={index}
                                                 title={this.props.t(perm.langKey)}
-                                                name="permissions"
+                                                name="formData.permissions"
                                                 checked={this.state.formData.permissions.includes(perm.id)}
                                                 onChange={e => this.onPermissionSelected(e.target.checked, perm.id)}
                                             />
@@ -245,7 +245,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("status")}
-                        name="statusId"
+                        name="formData.statusId"
                         options={this.state.status}
                         value={this.state.status?.findSingle("value", this.state.formData.statusId)}
                         onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item.value, this)}
@@ -258,7 +258,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                                 <ThemeFormType
                                     title={`${this.props.t("banDateEnd")}*`}
                                     type="date"
-                                    name="banDateEnd"
+                                    name="formData.banDateEnd"
                                     value={moment(this.state.formData.banDateEnd).format("YYYY-MM-DD")}
                                     onChange={(event) => HandleForm.onChangeInput(event, this)}
                                 />
@@ -266,7 +266,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                             <div className="mb-3">
                                 <ThemeFormType
                                     title={this.props.t("banComment")}
-                                    name="banComment"
+                                    name="formData.banComment"
                                     type="textarea"
                                     value={this.state.formData.banComment}
                                     onChange={e => HandleForm.onChangeInput(e, this)}
@@ -284,7 +284,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={`${this.props.t("name")}*`}
-                        name="name"
+                        name="formData.name"
                         type="text"
                         required={true}
                         value={this.state.formData.name}
@@ -294,7 +294,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={`${this.props.t("email")}*`}
-                        name="email"
+                        name="formData.email"
                         type="email"
                         required={true}
                         autoComplete={"new-password"}
@@ -305,7 +305,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={`${this.props.t("password")}*`}
-                        name="password"
+                        name="formData.password"
                         type="password"
                         autoComplete={"new-password"}
                         required={V.isEmpty(this.state.formData.userId)}
@@ -316,7 +316,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("role")}
-                        name="roleId"
+                        name="formData.roleId"
                         placeholder={this.props.t("chooseRole")}
                         options={this.state.userRoles}
                         value={this.state.userRoles?.findSingle("value", this.state.formData.roleId)}

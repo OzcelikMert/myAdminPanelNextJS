@@ -411,7 +411,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={`${this.props.t("elementId")}*`}
-                        name="elementId"
+                        name="formData.elementId"
                         type="text"
                         required={true}
                         value={this.state.formData.elementId}
@@ -421,7 +421,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("langKey")}
-                        name="langKey"
+                        name="formData.langKey"
                         placeholder={this.props.t("langKey")}
                         options={this.state.langKeys}
                         value={this.state.langKeys?.findSingle("value", this.state.formData.langKey)}
@@ -431,7 +431,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={`${this.props.t("order")}*`}
-                        name="order"
+                        name="formData.order"
                         type="number"
                         required={true}
                         value={this.state.formData.order}

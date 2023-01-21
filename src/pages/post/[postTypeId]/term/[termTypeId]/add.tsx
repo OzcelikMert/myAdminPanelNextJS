@@ -10,10 +10,10 @@ import postTermService from "services/postTerm.service";
 import staticContentLib from "lib/staticContent.lib";
 import imageSourceLib from "lib/imageSource.lib";
 import {PostTermUpdateParamDocument} from "types/services/postTerm";
-import PagePaths from "constants/pagePaths";
 import ThemeToolTip from "components/elements/tooltip";
 import Swal from "sweetalert2";
 import Image from "next/image"
+import PostLib from "lib/post.lib";
 
 type PageState = {
     formActiveKey: string
@@ -107,7 +107,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     async getTerms() {
         let resData = await postTermService.get({
-            typeId: this.state.formData.typeId,
+            typeId: this.state.formData.typeId == PostTermTypeId.Variations ? PostTermTypeId.Attributes : this.state.formData.typeId,
             postTypeId: this.state.formData.postTypeId,
             langId: this.props.getStateApp.pageData.mainLangId,
             statusId: StatusId.Active
@@ -131,6 +131,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     async getTerm() {
         let resData = await postTermService.get({
+            termId: this.state.formData.termId,
             typeId: this.state.formData.typeId,
             postTypeId: this.state.formData.postTypeId,
             langId: this.props.getStateApp.pageData.langId
@@ -167,8 +168,8 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     navigateTermPage() {
         let postTypeId = this.state.formData.postTypeId;
         let postTermTypeId = this.state.formData.typeId;
-        let pagePath = [PostTypeId.Page, PostTypeId.Navigate].includes(Number(postTypeId)) ? PagePaths.post(postTypeId).term(postTermTypeId) : PagePaths.themeContent().post(postTypeId).term(postTermTypeId);
-        let path = pagePath.list()
+        let pagePath = PostLib.getPagePath(postTypeId);
+        let path = pagePath.term(postTermTypeId).list()
         this.props.router.push(path);
     }
 
@@ -221,7 +222,11 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         })
     }
 
-    onCloseSuccessMessage() {}
+    onCloseSuccessMessage() {
+        if (this.state.formData.termId) {
+            this.navigateTermPage();
+        }
+    }
 
     TabSEO = () => {
         return (
@@ -229,7 +234,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("url")}
-                        name="contents.url"
+                        name="formData.contents.url"
                         type="text"
                         value={this.state.formData.contents.url}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -238,7 +243,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("title")}
-                        name="contents.seoTitle"
+                        name="formData.contents.seoTitle"
                         type="text"
                         value={this.state.formData.contents.seoTitle}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -247,7 +252,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("content")}
-                        name="contents.seoContent"
+                        name="formData.contents.seoContent"
                         type="textarea"
                         value={this.state.formData.contents.seoContent}
                         onChange={e => HandleForm.onChangeInput(e, this)}
@@ -263,7 +268,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("status")}
-                        name="statusId"
+                        name="formData.statusId"
                         options={this.state.status}
                         value={this.state.status?.findSingle("value", this.state.formData.statusId)}
                         onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item.value, this)}
@@ -272,7 +277,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={this.props.t("order")}
-                        name="order"
+                        name="formData.order"
                         type="number"
                         required={true}
                         value={this.state.formData.order}
@@ -305,7 +310,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
                         title={`${this.props.t("title")}*`}
-                        name="contents.title"
+                        name="formData.contents.title"
                         type="text"
                         required={true}
                         value={this.state.formData.contents.title}
@@ -313,14 +318,14 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     />
                 </div>
                 {
-                    this.state.formData.typeId == PostTermTypeId.Category
+                    [PostTermTypeId.Category, PostTermTypeId.Variations, PostTermTypeId.Attributes].includes(Number(this.state.formData.typeId))
                         ? <div className="col-md-7 mb-3">
                             <ThemeFormSelect
                                 title={`
                                     ${this.props.t("main")} 
                                     ${this.props.t((this.state.formData.typeId == PostTermTypeId.Category) ? "category" : "tag")}
                                 `}
-                                name="mainId"
+                                name="formData.mainId"
                                 placeholder={this.props.t("chooseMainCategory")}
                                 options={this.state.postTerms}
                                 value={this.state.postTerms.findSingle("value", this.state.formData.mainId || "")}

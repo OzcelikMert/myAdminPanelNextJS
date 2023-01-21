@@ -110,6 +110,18 @@ const PagePaths = {
             }
         }
     },
+    eCommerce() {
+        let path = setPath("e-commerce");
+
+        return {
+            self() {
+                return setPath(path);
+            },
+            post(typeId?: number) {
+                return PagePaths.post(typeId, path);
+            }
+        }
+    },
     settings() {
         let path = setPath("settings");
 

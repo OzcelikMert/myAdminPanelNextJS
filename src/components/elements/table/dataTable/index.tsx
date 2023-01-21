@@ -82,7 +82,6 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
                 name: !this.props.isAllSelectable ? null : (
                     <div>
                         <ThemeFormCheckBox
-                            name="selectAll"
                             checked={this.isCheckedSelectAll}
                             onChange={e => this.onSelectAll()}
                         />

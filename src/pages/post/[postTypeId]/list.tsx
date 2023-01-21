@@ -13,6 +13,7 @@ import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
+import PostLib from "lib/post.lib";
 
 type PageState = {
     typeId: PostTypeId
@@ -185,7 +186,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
 
     navigateTermPage(type: "termEdit" | "edit", itemId = "", termTypeId = 0) {
         let postTypeId = this.state.typeId;
-        let pagePath = [PostTypeId.Page, PostTypeId.Navigate].includes(Number(postTypeId)) ? PagePaths.post(postTypeId) : PagePaths.themeContent().post(postTypeId);
+        let pagePath = PostLib.getPagePath(postTypeId);
         let path = (type === "edit")
             ? pagePath.edit(itemId)
             : (type === "termEdit" && itemId)
@@ -345,6 +346,18 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                         </button>
                                     </div> : null
                             }
+                            <div className="col-6 text-end">
+                                <button className="btn btn-gradient-primary btn-edit-tag btn-lg w-100"
+                                        onClick={() => this.navigateTermPage("termEdit", "", PostTermTypeId.Attributes)}>
+                                    <i className="fa fa-pencil-square-o"></i> Attributes
+                                </button>
+                            </div>
+                            <div className="col-6 text-end">
+                                <button className="btn btn-gradient-primary btn-edit-tag btn-lg w-100"
+                                        onClick={() => this.navigateTermPage("termEdit", "", PostTermTypeId.Variations)}>
+                                    <i className="fa fa-pencil-square-o"></i> Variations
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="col-md-9 text-end">

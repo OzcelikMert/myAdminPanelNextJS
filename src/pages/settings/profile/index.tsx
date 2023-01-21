@@ -286,7 +286,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                                     <div className="col-md-12 mb-3">
                                         <ThemeFormType
                                             title={`${this.props.t("name")}*`}
-                                            name="name"
+                                            name="formData.name"
                                             type="text"
                                             required={true}
                                             value={this.state.formData.name}
@@ -296,7 +296,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                                     <div className="col-md-12 mb-3">
                                         <ThemeFormType
                                             title={this.props.t("comment")}
-                                            name="comment"
+                                            name="formData.comment"
                                             type="textarea"
                                             value={this.state.formData.comment}
                                             onChange={e => HandleForm.onChangeInput(e, this)}
@@ -305,7 +305,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                                     <div className="col-md-12 mb-3">
                                         <ThemeFormType
                                             title={`${this.props.t("phone")}`}
-                                            name="phone"
+                                            name="formData.phone"
                                             type="text"
                                             value={this.state.formData.phone}
                                             onChange={e => HandleForm.onChangeInput(e, this)}
@@ -314,7 +314,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                                     <div className="col-md-12 mb-3">
                                         <ThemeFormType
                                             title="Facebook"
-                                            name="facebook"
+                                            name="formData.facebook"
                                             type="url"
                                             value={this.state.formData.facebook}
                                             onChange={e => HandleForm.onChangeInput(e, this)}
@@ -323,7 +323,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                                     <div className="col-md-12 mb-3">
                                         <ThemeFormType
                                             title="Instagram"
-                                            name="instagram"
+                                            name="formData.instagram"
                                             type="url"
                                             value={this.state.formData.instagram}
                                             onChange={e => HandleForm.onChangeInput(e, this)}
@@ -332,7 +332,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                                     <div className="col-md-12 mb-3">
                                         <ThemeFormType
                                             title="Twitter"
-                                            name="twitter"
+                                            name="formData.twitter"
                                             type="url"
                                             value={this.state.formData.twitter}
                                             onChange={e => HandleForm.onChangeInput(e, this)}

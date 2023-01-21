@@ -11,6 +11,7 @@ type PageProps = {
     onSelected: (images: string[]) => void
     isMulti?: boolean
     onHide: () => void
+    selectedImages?: string[]
 } & PagePropCommonDocument;
 
 class ThemeChooseImage extends Component<PageProps, PageState> {
@@ -20,7 +21,7 @@ class ThemeChooseImage extends Component<PageProps, PageState> {
     }
 
     onSelected(images: string[]) {
-        this.props.onSelected(images)
+        this.props.onSelected(images);
         this.props.onHide();
     }
 

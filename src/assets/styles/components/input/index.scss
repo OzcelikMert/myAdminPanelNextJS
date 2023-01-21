@@ -4,6 +4,7 @@
 .theme-input {
   position: relative;
   width: 100%;
+  background: var(--theme-bg);
   &.static {
     .label {
       transform: translate(.25rem, -65%) scale(.7);

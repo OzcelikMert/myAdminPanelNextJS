@@ -34,7 +34,10 @@ enum PermissionId {
     TestimonialDelete,
     SubscriberEdit,
     ComponentEdit,
-    StaticLanguage
+    StaticLanguage,
+    ProductAdd,
+    ProductEdit,
+    ProductDelete,
 }
 
 const Permissions: Array<PermissionDocument> = [
@@ -71,6 +74,9 @@ const Permissions: Array<PermissionDocument> = [
     {id: PermissionId.SubscriberEdit, groupId: PermissionGroupId.Subscriber, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.ComponentEdit, groupId: PermissionGroupId.Component, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.StaticLanguage, groupId: PermissionGroupId.StaticLanguage, defaultRoleRank: 2, langKey: "edit"},
+    {id: PermissionId.ProductAdd, groupId: PermissionGroupId.Product, defaultRoleRank: 2, langKey: "add"},
+    {id: PermissionId.ProductEdit, groupId: PermissionGroupId.Product, defaultRoleRank: 3, langKey: "edit"},
+    {id: PermissionId.ProductDelete, groupId: PermissionGroupId.Product, defaultRoleRank: 3, langKey: "delete"},
 ]
 
 export {Permissions, PermissionId};

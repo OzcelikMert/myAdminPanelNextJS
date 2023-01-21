@@ -18,6 +18,7 @@ import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
+import PostLib from "lib/post.lib";
 
 type PageState = {
     typeId: PostTermTypeId
@@ -182,7 +183,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     navigateTermPage(type: "add" | "back" | "edit", postTermId = "") {
         let postTypeId = this.state.postTypeId;
         let postTermTypeId = this.state.typeId;
-        let pagePath = [PostTypeId.Page, PostTypeId.Navigate].includes(Number(postTypeId)) ? PagePaths.post(postTypeId) : PagePaths.themeContent().post(postTypeId);
+        let pagePath = PostLib.getPagePath(postTypeId);
         let path = (type === "add")
             ? pagePath.term(postTermTypeId).add()
             : (type === "edit")

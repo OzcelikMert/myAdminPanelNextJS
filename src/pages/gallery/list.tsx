@@ -23,6 +23,7 @@ type PageProps = {
     isMulti?: boolean
     onSubmit?: (images: string[]) => void
     uploadedImages?: string[]
+    selectedImages?: string[]
 } & PagePropCommonDocument;
 
 export default class PageGalleryList extends Component<PageProps, PageState> {
@@ -69,12 +70,22 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
 
     async getImages() {
         let resData = await galleryService.get();
-
         if (resData.status) {
             if (Array.isArray(resData.data)) {
                 let images = resData.data.orderBy("", "desc");
-                this.setState({
-                    images: images
+                this.setState((state: PageState) => {
+                    if(this.props.selectedImages && this.props.selectedImages.length > 0){
+                        state.selectedImages = state.selectedImages.concat(this.props.selectedImages);
+                        images.sort((a, b) => {
+                            if(this.props.selectedImages?.includes(a)){
+                                return -1;
+                            }else{
+                                return 1;
+                            }
+                        })
+                    }
+                    state.images = images;
+                    return state;
                 }, () => {
                     this.onSearch(this.state.searchKey)
                 })
