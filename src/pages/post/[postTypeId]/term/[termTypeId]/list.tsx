@@ -15,7 +15,6 @@ import imageSourceLib from "lib/imageSource.lib";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
-import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
@@ -24,9 +23,9 @@ type PageState = {
     typeId: PostTermTypeId
     postTypeId: PostTypeId
     searchKey: string
-    postTerms: PostTermDocument[],
-    showingPostTerms: PageState["postTerms"]
-    selectedPostTerms: PageState["postTerms"]
+    items: PostTermDocument[],
+    showingItems: PageState["items"]
+    selectedItems: PageState["items"]
     listMode: "list" | "deleted"
     isShowToggleMenu: boolean
 };
@@ -40,17 +39,17 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             typeId: Number(this.props.router.query.termTypeId ?? 1),
             postTypeId: Number(this.props.router.query.postTypeId ?? 1),
             searchKey: "",
-            selectedPostTerms: [],
+            selectedItems: [],
             listMode: "list",
             isShowToggleMenu: false,
-            postTerms: [],
-            showingPostTerms: []
+            items: [],
+            showingItems: []
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
-        await this.getPostTerms();
+        await this.getItems();
         this.props.setStateApp({
             isPageLoading: false
         })
@@ -63,21 +62,21 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         ])
     }
 
-    async getPostTerms() {
-        let postTerms = (await postTermService.get({
+    async getItems() {
+        let items = (await postTermService.get({
             typeId: this.state.typeId,
             postTypeId: this.state.postTypeId,
             langId: this.props.getStateApp.pageData.mainLangId
         })).data;
         this.setState({
-            postTerms: postTerms,
-            showingPostTerms: postTerms.filter(value => value.statusId !== StatusId.Deleted)
+            items: items,
+            showingItems: items.filter(item => item.statusId !== StatusId.Deleted)
         })
     }
 
-    onChangeStatus(event: any, statusId: number) {
+    async onChangeStatus(event: any, statusId: number) {
         event.preventDefault();
-        let selectedPostTermId = this.state.selectedPostTerms.map(postTerm => postTerm._id);
+        let selectedItemId = this.state.selectedItems.map(item => item._id);
 
         if (statusId === StatusId.Deleted && this.state.listMode === "deleted") {
             Swal.fire({
@@ -87,33 +86,33 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 cancelButtonText: this.props.t("no"),
                 icon: "question",
                 showCancelButton: true
-            }).then(result => {
+            }).then(async result => {
                 if (result.isConfirmed) {
                     const loadingToast = new ThemeToast({
                         content: this.props.t("deleting"),
                         type: "loading"
                     });
 
-                    postTermService.delete({
-                        termId: selectedPostTermId,
+                    let resData = await postTermService.delete({
+                        _id: selectedItemId,
                         typeId: this.state.typeId,
                         postTypeId: this.state.postTypeId
-                    }).then(resData => {
-                        loadingToast.hide();
-                        if (resData.status) {
-                            this.setState((state: PageState) => {
-                                state.postTerms = state.postTerms.filter(item => !selectedPostTermId.includes(item._id))
-                                return state;
-                            }, () => {
-                                new ThemeToast({
-                                    type: "success",
-                                    title: this.props.t("successful"),
-                                    content: this.props.t("itemDeleted")
-                                })
-                                this.onChangeListMode(this.state.listMode);
-                            })
-                        }
                     })
+
+                    loadingToast.hide();
+                    if (resData.status) {
+                        this.setState((state: PageState) => {
+                            state.items = state.items.filter(item => !selectedItemId.includes(item._id))
+                            return state;
+                        }, () => {
+                            new ThemeToast({
+                                type: "success",
+                                title: this.props.t("successful"),
+                                content: this.props.t("itemDeleted")
+                            })
+                            this.onChangeListMode(this.state.listMode);
+                        })
+                    }
                 }
             })
         } else {
@@ -122,37 +121,37 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 type: "loading"
             });
 
-            postTermService.updateStatus({
-                termId: selectedPostTermId,
+            let resData = await postTermService.updateStatus({
+                _id: selectedItemId,
                 typeId: this.state.typeId,
                 postTypeId: this.state.postTypeId,
                 statusId: statusId
-            }).then(resData => {
-                loadingToast.hide();
-                if (resData.status) {
-                    this.setState((state: PageState) => {
-                        state.postTerms.map((item, index) => {
-                            if (selectedPostTermId.includes(item._id)) {
-                                item.statusId = statusId;
-                            }
-                        })
-                        return state;
-                    }, () => {
-                        new ThemeToast({
-                            type: "success",
-                            title: this.props.t("successful"),
-                            content: this.props.t("statusUpdated")
-                        })
-                        this.onChangeListMode(this.state.listMode);
+            });
+
+            loadingToast.hide();
+            if (resData.status) {
+                this.setState((state: PageState) => {
+                    state.items.map((item, index) => {
+                        if (selectedItemId.includes(item._id)) {
+                            item.statusId = statusId;
+                        }
                     })
-                }
-            })
+                    return state;
+                }, () => {
+                    new ThemeToast({
+                        type: "success",
+                        title: this.props.t("successful"),
+                        content: this.props.t("statusUpdated")
+                    })
+                    this.onChangeListMode(this.state.listMode);
+                })
+            }
         }
     }
 
-    onSelect(selectedRows: PageState["showingPostTerms"]) {
+    onSelect(selectedRows: PageState["showingItems"]) {
         this.setState((state: PageState) => {
-            state.selectedPostTerms = selectedRows;
+            state.selectedItems = selectedRows;
             state.isShowToggleMenu = selectedRows.length > 0;
             return state;
         })
@@ -161,38 +160,39 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     onSearch(searchKey: string) {
         this.setState({
             searchKey: searchKey,
-            showingPostTerms: this.state.showingPostTerms.filter(postTerm => (postTerm.contents?.title ?? "").toLowerCase().search(searchKey) > -1)
+            showingItems: this.state.showingItems.filter(item => (item.contents?.title ?? "").toLowerCase().search(searchKey) > -1)
         })
     }
 
     onChangeListMode(mode: PageState["listMode"]) {
         this.setState((state: PageState) => {
             state.listMode = mode;
-            state.showingPostTerms = [];
-            state.selectedPostTerms = [];
+            state.showingItems = [];
+            state.selectedItems = [];
             state.isShowToggleMenu = false;
             if (mode === "list") {
-                state.showingPostTerms = state.postTerms.findMulti("statusId", StatusId.Deleted, false);
+                state.showingItems = state.items.findMulti("statusId", StatusId.Deleted, false);
             } else {
-                state.showingPostTerms = state.postTerms.findMulti("statusId", StatusId.Deleted);
+                state.showingItems = state.items.findMulti("statusId", StatusId.Deleted);
             }
             return state;
         }, () => this.onSearch(this.state.searchKey))
     }
 
-    navigateTermPage(type: "add" | "back" | "edit", postTermId = "") {
+    navigatePage(type: "add" | "back" | "edit", postTermId = "") {
         let postTypeId = this.state.postTypeId;
         let postTermTypeId = this.state.typeId;
         let pagePath = PostLib.getPagePath(postTypeId);
-        let path = (type === "add")
-            ? pagePath.term(postTermTypeId).add()
-            : (type === "edit")
-                ? pagePath.term(postTermTypeId).edit(postTermId)
-                : pagePath.list();
+        let path = "";
+        switch(type){
+            case "add": path = pagePath.term(postTermTypeId).add(); break;
+            case "edit": path = pagePath.term(postTermTypeId).edit(postTermId); break;
+            case "back": path = pagePath.list(); break;
+        }
         this.props.router.push(path);
     }
 
-    get getTableColumns(): TableColumn<PageState["showingPostTerms"][0]>[] {
+    get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
                 name: this.props.t("image"),
@@ -220,11 +220,6 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 sortable: true
             },
             {
-                name: this.props.t("views"),
-                selector: row => row.views,
-                sortable: true
-            },
-            {
                 name: this.props.t("status"),
                 sortable: true,
                 cell: row => (
@@ -247,7 +242,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 ) ? (
                     <button
                         className="btn btn-gradient-warning"
-                        onClick={() => this.navigateTermPage("edit", row._id)}
+                        onClick={() => this.navigatePage("edit", row._id)}
                     ><i className="fa fa-pencil-square-o"></i></button>
                 ) : null
             }
@@ -262,7 +257,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                         <div className="row">
                             <div className="col-6">
                                 <button className="btn btn-gradient-dark btn-lg w-100"
-                                        onClick={() => this.navigateTermPage("back")}>
+                                        onClick={() => this.navigatePage("back")}>
                                     <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
                                 </button>
                             </div>
@@ -273,7 +268,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                         this.props.getStateApp.sessionData.permissions,
                                         permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Add")
                                     ) ? <button className="btn btn-gradient-info btn-lg w-100"
-                                                onClick={() => this.navigateTermPage("add")}>
+                                                onClick={() => this.navigatePage("add")}>
                                         + {this.props.t("addNew")}
                                     </button> : null
                                 }
@@ -285,11 +280,11 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                             this.state.listMode === "list"
                                 ? <button className="btn btn-gradient-danger btn-lg list-mode-btn"
                                           onClick={() => this.onChangeListMode("deleted")}>
-                                    <i className="mdi mdi-delete"></i> {this.props.t("trash")} ({this.state.postTerms.findMulti("statusId", StatusId.Deleted).length})
+                                    <i className="mdi mdi-delete"></i> {this.props.t("trash")} ({this.state.items.findMulti("statusId", StatusId.Deleted).length})
                                 </button>
                                 : <button className="btn btn-gradient-success btn-lg list-mode-btn"
                                           onClick={() => this.onChangeListMode("list")}>
-                                    <i className="mdi mdi-view-list"></i> {this.props.t("list")} ({this.state.postTerms.findMulti("statusId", StatusId.Deleted, false).length})
+                                    <i className="mdi mdi-view-list"></i> {this.props.t("list")} ({this.state.items.findMulti("statusId", StatusId.Deleted, false).length})
                                 </button>
                         }
                     </div>
@@ -333,10 +328,10 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                 </div>
                                 <ThemeDataTable
                                     columns={this.getTableColumns}
-                                    data={this.state.showingPostTerms}
+                                    data={this.state.showingItems}
                                     onSelect={rows => this.onSelect(rows)}
                                     onSearch={searchKey => this.onSearch(searchKey)}
-                                    selectedRows={this.state.selectedPostTerms}
+                                    selectedRows={this.state.selectedItems}
                                     t={this.props.t}
                                     isSelectable={true}
                                     isAllSelectable={true}

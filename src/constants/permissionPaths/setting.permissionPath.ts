@@ -31,5 +31,13 @@ export default [
     {
         path: PagePaths.settings().user().edit(),
         permissionId: PermissionId.ComponentEdit
-    }
+    },
+    {
+        path: PagePaths.settings().socialMedia(),
+        permissionId: PermissionId.SettingEdit
+    },
+    {
+        path: PagePaths.eCommerce().settings(),
+        userRoleId: UserRoleId.Admin
+    },
 ] as PermissionPathDocument[]

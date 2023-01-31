@@ -9,7 +9,8 @@ const ServicePages = {
     serverInfo: "serverInfo",
     view: "view",
     subscriber: "subscriber",
-    component: "component"
+    component: "component",
+    navigation: "navigation"
 }
 
 export default ServicePages;

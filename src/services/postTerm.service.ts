@@ -12,7 +12,7 @@ export default {
     get(params: PostTermGetParamDocument): Promise<ServiceResultDocument<PostTermDocument[]>> {
         let typeId = Array.isArray(params.typeId) ? [] : [params.typeId?.toString()]
         return Api.get({
-            url: [ServicePages.postTerm, params.postTypeId.toString(), ...typeId, params.termId?.toString()],
+            url: [ServicePages.postTerm, params.postTypeId.toString(), ...typeId, params._id?.toString()],
             data: params
         });
     },
@@ -24,7 +24,7 @@ export default {
     },
     update(params: PostTermUpdateParamDocument) {
         return Api.put({
-            url: [ServicePages.postTerm, params.postTypeId.toString(), params.typeId.toString(), params.termId.toString()],
+            url: [ServicePages.postTerm, params.postTypeId.toString(), params.typeId.toString(), params._id.toString()],
             data: params
         });
     },

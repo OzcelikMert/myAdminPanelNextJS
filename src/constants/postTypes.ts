@@ -8,9 +8,7 @@ enum PostTypeId {
     Reference,
     Service,
     Testimonial,
-    Navigate,
     Product,
-    ProductVariation
 }
 
 const PostTypes: Array<PostTypeDocument> = [
@@ -21,9 +19,7 @@ const PostTypes: Array<PostTypeDocument> = [
     {id: PostTypeId.Reference, order: 5, langKey: "references"},
     {id: PostTypeId.Service, order: 6, langKey: "services"},
     {id: PostTypeId.Testimonial, order: 7, langKey: "testimonials"},
-    {id: PostTypeId.Navigate, order: 8, langKey: "navigates"},
     {id: PostTypeId.Product, order: 9, langKey: "product"},
-    {id: PostTypeId.ProductVariation, order: 10, langKey: "product"}
 ]
 
 export {PostTypes, PostTypeId};

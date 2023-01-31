@@ -11,7 +11,7 @@ import {
 export default {
     get(params: ComponentGetParamDocument): Promise<ServiceResultDocument<ComponentDocument[]>> {
         return Api.get({
-            url: [ServicePages.component, params.componentId?.toString()],
+            url: [ServicePages.component, params._id?.toString()],
             data: params,
         });
     },
@@ -23,7 +23,7 @@ export default {
     },
     update(params: ComponentUpdateParamDocument) {
         return Api.put({
-            url: [ServicePages.component, params.componentId.toString()],
+            url: [ServicePages.component, params._id.toString()],
             data: params,
         });
     },

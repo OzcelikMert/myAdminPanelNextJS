@@ -2,17 +2,8 @@ import {PermissionId} from "./permissions";
 import {PostTypeId} from "./postTypes";
 import {UserRoleId} from "./userRoles";
 import PagePaths from "./pagePaths";
-import LanguageKeys from "types/languages";
-
-export interface SideBarPath {
-    path: string,
-    title: LanguageKeys,
-    icon?: string,
-    state?: string,
-    subPaths?: SideBarPath[]
-    permId?: PermissionId
-    roleId?: UserRoleId
-}
+import {SideBarPath} from "types/constants/sidebarNavs";
+import {PostTermTypeId} from "constants/postTermTypes";
 
 const SidebarNav: SideBarPath[] = [
     {path: PagePaths.dashboard(), icon: `home`, title: "dashboard"},
@@ -32,17 +23,17 @@ const SidebarNav: SideBarPath[] = [
         ]
     },
     {
-        path: PagePaths.post(PostTypeId.Navigate).self(),
+        path: PagePaths.navigation().self(),
         icon: `navigation-variant`,
         title: "navigates",
         state: `navigates`,
         subPaths: [
             {
-                path: PagePaths.post(PostTypeId.Navigate).add(),
+                path: PagePaths.navigation().add(),
                 title: "add",
-                permId: PermissionId.NavigateAdd
+                permId: PermissionId.NavigationAdd
             },
-            {path: PagePaths.post(PostTypeId.Navigate).list(), title: "list"}
+            {path: PagePaths.navigation().list(), title: "list"}
         ]
     },
     {
@@ -164,19 +155,33 @@ const SidebarNav: SideBarPath[] = [
         icon: `market`,
         title: "eCommerce",
         state: `eCommerce`,
+        permId: PermissionId.ECommerce,
         subPaths: [
             {
-                path: PagePaths.eCommerce().post(PostTypeId.Product).self(),
+                path: PagePaths.eCommerce().product().self(),
                 title: "product",
                 state: `eCommerceProduct`,
                 subPaths: [
                     {
-                        path: PagePaths.eCommerce().post(PostTypeId.Product).add(),
+                        path: PagePaths.eCommerce().product().add(),
                         title: "add",
                         permId: PermissionId.ProductAdd,
                     },
-                    {path: PagePaths.eCommerce().post(PostTypeId.Product).list(), title: "list"}
+                    {path: PagePaths.eCommerce().product().list(), title: "list"}
                 ]
+            },
+            {
+                path: PagePaths.eCommerce().product().term(PostTermTypeId.Attributes).list(),
+                title: "attributes",
+            },
+            {
+                path: PagePaths.eCommerce().product().term(PostTermTypeId.Variations).list(),
+                title: "variations",
+            },
+            {
+                path: PagePaths.eCommerce().settings(),
+                title: "settings",
+                roleId: UserRoleId.Admin
             },
         ]
     },
@@ -225,6 +230,11 @@ const SidebarNav: SideBarPath[] = [
                 path: PagePaths.settings().staticLanguages(),
                 title: "staticLanguages",
                 permId: PermissionId.StaticLanguage
+            },
+            {
+                path: PagePaths.settings().socialMedia(),
+                title: "socialMedia",
+                permId: PermissionId.SettingEdit
             },
         ]
     },

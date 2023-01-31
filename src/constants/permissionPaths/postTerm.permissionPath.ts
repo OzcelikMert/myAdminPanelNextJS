@@ -13,10 +13,6 @@ export default [
         permissionId: PermissionId.SliderAdd
     },
     {
-        path: PagePaths.themeContent().post(PostTypeId.Navigate).term(undefined).self(),
-        permissionId: PermissionId.NavigateAdd
-    },
-    {
         path: PagePaths.themeContent().post(PostTypeId.Service).term(undefined).self(),
         permissionId: PermissionId.ServiceAdd
     },
@@ -35,5 +31,9 @@ export default [
     {
         path: PagePaths.themeContent().post(PostTypeId.Testimonial).term(undefined).self(),
         permissionId: PermissionId.TestimonialAdd
+    },
+    {
+        path: PagePaths.eCommerce().product().term(undefined).self(),
+        permissionId: PermissionId.ProductAdd
     }
 ] as PermissionPathDocument[]

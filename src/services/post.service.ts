@@ -5,12 +5,12 @@ import PostDocument, {
     PostDeleteParamDocument,
     PostGetParamDocument,
     PostAddParamDocument,
-    PostUpdateParamDocument, PostUpdateStatusParamDocument
+    PostUpdateParamDocument, PostUpdateStatusParamDocument, PostUpdateViewParamDocument
 } from "types/services/post";
 
 export default {
     get(params: PostGetParamDocument): Promise<ServiceResultDocument<PostDocument[]>> {
-        let url = Array.isArray(params.typeId) ? [] : [params.typeId?.toString(), params.postId?.toString()]
+        let url = Array.isArray(params.typeId) ? [] : [params.typeId?.toString(), params._id?.toString()]
         return Api.get({
             url: [ServicePages.post, ...url],
             data: params
@@ -24,13 +24,19 @@ export default {
     },
     update(params: PostUpdateParamDocument) {
         return Api.put({
-            url: [ServicePages.post, params.typeId.toString(), params.postId.toString()],
+            url: [ServicePages.post, params.typeId.toString(), params._id.toString()],
             data: params
         });
     },
-    updateStatus(params: PostUpdateStatusParamDocument) {
+    updateStatus(params: PostUpdateViewParamDocument) {
         return Api.put({
             url: [ServicePages.post, params.typeId.toString()],
+            data: params
+        });
+    },
+    updateView(params: PostUpdateStatusParamDocument) {
+        return Api.put({
+            url: [ServicePages.post, "view", params.typeId.toString(), params._id.toString()],
             data: params
         });
     },

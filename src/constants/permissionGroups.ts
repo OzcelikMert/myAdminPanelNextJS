@@ -8,14 +8,15 @@ enum PermissionGroupId {
     Gallery,
     User,
     Page,
-    Navigate,
+    Navigation,
     Settings,
     Service,
     Testimonial,
     Subscriber,
     Component,
     StaticLanguage,
-    Product
+    Product,
+    ECommerce
 }
 
 const PermissionGroups: Array<PermissionGroupDocument> = [
@@ -26,14 +27,15 @@ const PermissionGroups: Array<PermissionGroupDocument> = [
     {id: PermissionGroupId.Gallery, order: 5, langKey: "gallery"},
     {id: PermissionGroupId.User, order: 6, langKey: "users"},
     {id: PermissionGroupId.Page, order: 7, langKey: "pages"},
-    {id: PermissionGroupId.Navigate, order: 8, langKey: "navigates"},
+    {id: PermissionGroupId.Navigation, order: 8, langKey: "navigates"},
     {id: PermissionGroupId.Settings, order: 9, langKey: "settings"},
     {id: PermissionGroupId.Service, order: 10, langKey: "services"},
     {id: PermissionGroupId.Testimonial, order: 11, langKey: "testimonials"},
-    {id: PermissionGroupId.Subscriber, order: 13, langKey: "subscribers"},
-    {id: PermissionGroupId.Component, order: 14, langKey: "components"},
+    {id: PermissionGroupId.Subscriber, order: 12, langKey: "subscribers"},
+    {id: PermissionGroupId.Component, order: 13, langKey: "components"},
     {id: PermissionGroupId.StaticLanguage, order: 14, langKey: "staticLanguages"},
-    {id: PermissionGroupId.Product, order: 15, langKey: "product"}
+    {id: PermissionGroupId.ECommerce, order: 15, langKey: "eCommerce"},
+    {id: PermissionGroupId.Product, order: 16, langKey: "product"},
 ]
 
 export {PermissionGroups, PermissionGroupId}

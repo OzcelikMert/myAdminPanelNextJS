@@ -11,10 +11,10 @@ import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
 
 type PageState = {
-    images: string[]
-    showingImages: string[]
-    selectedImages: PageState["images"]
-    selectedImageIndex: number
+    items: string[]
+    showingItems: string[]
+    selectedItems: string[]
+    selectedItemIndex: number
     searchKey: string
 };
 
@@ -33,17 +33,17 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            images: [],
-            showingImages: [],
-            selectedImages: [],
-            selectedImageIndex: 0,
+            items: [],
+            showingItems: [],
+            selectedItems: [],
+            selectedItemIndex: 0,
             searchKey: "",
         }
     }
 
     async componentDidMount() {
         this.setPageTitle()
-        await this.getImages();
+        await this.getItems();
         this.props.setStateApp({
             isPageLoading: false
         })
@@ -59,8 +59,8 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
             JSON.stringify(this.props.uploadedImages) !== JSON.stringify(prevProps.uploadedImages)
         ) {
             this.setState((state: PageState) => {
-                state.images = state.images.concat(this.props.uploadedImages || []).orderBy("", "desc");
-                state.images = state.images.filter((image, index) => state.images.indexOfKey("", image) === index);
+                state.items = state.items.concat(this.props.uploadedImages || []).orderBy("", "desc");
+                state.items = state.items.filter((item, index) => state.items.indexOfKey("", item) === index);
                 return state;
             }, () => {
                 this.onSearch(this.state.searchKey);
@@ -68,15 +68,15 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
         }
     }
 
-    async getImages() {
+    async getItems() {
         let resData = await galleryService.get();
         if (resData.status) {
             if (Array.isArray(resData.data)) {
-                let images = resData.data.orderBy("", "desc");
+                let items = resData.data.orderBy("", "desc");
                 this.setState((state: PageState) => {
                     if(this.props.selectedImages && this.props.selectedImages.length > 0){
-                        state.selectedImages = state.selectedImages.concat(this.props.selectedImages);
-                        images.sort((a, b) => {
+                        state.selectedItems = state.selectedItems.concat(this.props.selectedImages);
+                        items.sort((a, b) => {
                             if(this.props.selectedImages?.includes(a)){
                                 return -1;
                             }else{
@@ -84,7 +84,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                             }
                         })
                     }
-                    state.images = images;
+                    state.items = items;
                     return state;
                 }, () => {
                     this.onSearch(this.state.searchKey)
@@ -108,9 +108,9 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
         )) return;
 
         this.setState({
-            selectedImages: images
+            selectedItems: images
         }, () => {
-            if (this.state.selectedImages.length > 0) {
+            if (this.state.selectedItems.length > 0) {
                 if (!this.toast || !this.toast.isShow) {
                     this.toast = new ThemeToast({
                         content: (
@@ -152,13 +152,13 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                 });
 
                 galleryService.delete({
-                    images: this.state.selectedImages
+                    images: this.state.showingItems
                 }).then(resData => {
                     loadingToast.hide();
                     if (resData.status) {
                         this.setState((state: PageState) => {
-                            state.images = state.images.filter(image => !state.selectedImages.includes(image));
-                            state.selectedImages = [];
+                            state.items = state.items.filter(item => !state.selectedItems.includes(item));
+                            state.selectedItems = [];
                             return state;
                         }, () => {
                             this.onSearch(this.state.searchKey);
@@ -178,18 +178,18 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
     onSubmit() {
         if (this.props.onSubmit) {
             this.toast?.hide();
-            this.props.onSubmit(this.state.selectedImages);
+            this.props.onSubmit(this.state.selectedItems);
         }
     }
 
     onSearch(searchKey: string) {
         this.setState({
             searchKey: searchKey,
-            showingImages: this.state.images.filter(image => image.toLowerCase().search(searchKey) > -1)
+            showingItems: this.state.items.filter(item => item.toLowerCase().search(searchKey) > -1)
         })
     }
 
-    get getTableColumns(): TableColumn<PageState["images"][0]>[] {
+    get getTableColumns(): TableColumn<PageState["items"][0]>[] {
         return [
             {
                 name: this.props.t("image"),
@@ -234,10 +234,10 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                         <div className="card-body">
                             <ThemeDataTable
                                 columns={this.getTableColumns}
-                                data={this.state.showingImages}
+                                data={this.state.showingItems}
                                 onSelect={rows => this.onSelect(rows)}
                                 onSearch={searchKey => this.onSearch(searchKey)}
-                                selectedRows={this.state.selectedImages}
+                                selectedRows={this.state.selectedItems}
                                 t={this.props.t}
                                 isSelectable={true}
                                 isAllSelectable={!(this.props.isModal && !this.props.isMulti)}

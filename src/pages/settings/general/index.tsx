@@ -22,9 +22,12 @@ type PageState = {
     isSubmitting: boolean
     serverInfo: ServerInfoDocument
     formData: Omit<SettingGeneralUpdateParamDocument, "contactForms" | "staticLanguages" | "seoContents"> & { panelLangId: string },
-    formActiveKey: string
+    mainTabActiveKey: string
     isServerInfoLoading: boolean
-} & {[key: string]: any};
+    isLogoSelection: boolean
+    isLogoSecondSelection: boolean
+    isIconSelection: boolean
+}
 
 type PageProps = {} & PagePropCommonDocument;
 
@@ -32,11 +35,14 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
     constructor(props: PageProps) {
         super(props);
         this.state = {
+            isIconSelection: false,
+            isLogoSecondSelection: false,
+            isLogoSelection: false,
             isServerInfoLoading: true,
             languages: [],
             panelLanguages: [],
             isSubmitting: false,
-            formActiveKey: `general`,
+            mainTabActiveKey: `general`,
             serverInfo: {
                 cpu: "0",
                 storage: "0",
@@ -182,58 +188,6 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
         );
     }
 
-    TabSocialMedia = () => {
-        return (
-            <div className="row">
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title="Facebook"
-                        name="formData.contact.facebook"
-                        type="url"
-                        value={this.state.formData.contact?.facebook}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title="Instagram"
-                        name="formData.contact.instagram"
-                        type="url"
-                        value={this.state.formData.contact?.instagram}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title="Twitter"
-                        name="formData.contact.twitter"
-                        type="url"
-                        value={this.state.formData.contact?.twitter}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title="Linkedin"
-                        name="formData.contact.linkedin"
-                        type="url"
-                        value={this.state.formData.contact?.linkedin}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title="Google"
-                        name="formData.contact.google"
-                        type="url"
-                        value={this.state.formData.contact?.google}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-            </div>
-        );
-    }
-
     TabContact = () => {
         return (
             <div className="row">
@@ -296,11 +250,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                     <ThemeFieldSet legend={this.props.t("logo")}>
                         <ThemeChooseImage
                             {...this.props}
-                            isShow={this.state["logo"]}
-                            onHide={() => this.setState((state: PageState) => {
-                                state["logo"] = false;
-                                return state;
-                            })}
+                            isShow={this.state.isLogoSelection}
+                            onHide={() => this.setState({isLogoSelection: false})}
                             onSelected={images => this.setState((state: PageState) => {
                                 state.formData.logo = images[0];
                                 return state;
@@ -318,10 +269,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             <button
                                 type="button"
                                 className="btn btn-gradient-warning btn-xs ms-1"
-                                onClick={() => this.setState((state: PageState) => {
-                                    state["logo"] = true;
-                                    return state;
-                                })}
+                                onClick={() => this.setState({isLogoSelection: true})}
                             ><i className="fa fa-pencil-square-o"></i></button>
                         </div>
                     </ThemeFieldSet>
@@ -330,11 +278,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                     <ThemeFieldSet legend={this.props.t("logo") + " - 2"}>
                         <ThemeChooseImage
                             {...this.props}
-                            isShow={this.state["logoTwo"]}
-                            onHide={() => this.setState((state: PageState) => {
-                                state["logoTwo"] = false;
-                                return state;
-                            })}
+                            isShow={this.state.isLogoSecondSelection}
+                            onHide={() => this.setState({isLogoSecondSelection: false})}
                             onSelected={images => this.setState((state: PageState) => {
                                 state.formData.logoTwo = images[0];
                                 return state;
@@ -352,10 +297,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             <button
                                 type="button"
                                 className="btn btn-gradient-warning btn-xs ms-1"
-                                onClick={() => this.setState((state: PageState) => {
-                                    state["logoTwo"] = true;
-                                    return state;
-                                })}
+                                onClick={() => this.setState({isLogoSecondSelection: true})}
                             ><i className="fa fa-pencil-square-o"></i></button>
                         </div>
                     </ThemeFieldSet>
@@ -364,11 +306,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                     <ThemeFieldSet legend={this.props.t("icon")}>
                         <ThemeChooseImage
                             {...this.props}
-                            isShow={this.state["icon"]}
-                            onHide={() => this.setState((state: PageState) => {
-                                state["icon"] = false;
-                                return state;
-                            })}
+                            isShow={this.state.isIconSelection}
+                            onHide={() => this.setState({isIconSelection: false})}
                             onSelected={images => this.setState((state: PageState) => {
                                 state.formData.icon = images[0];
                                 return state;
@@ -386,10 +325,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             <button
                                 type="button"
                                 className="btn btn-gradient-warning btn-xs ms-1"
-                                onClick={() => this.setState((state: PageState) => {
-                                    state["icon"] = true;
-                                    return state;
-                                })}
+                                onClick={() => this.setState({isIconSelection: true})}
                             ><i className="fa fa-pencil-square-o"></i></button>
                         </div>
                     </ThemeFieldSet>
@@ -484,8 +420,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                             >
                                 <div className="theme-tabs">
                                     <Tabs
-                                        onSelect={(key: any) => this.setState({formActiveKey: key})}
-                                        activeKey={this.state.formActiveKey}
+                                        onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                        activeKey={this.state.mainTabActiveKey}
                                         className="mb-5"
                                         transition={false}>
                                         <Tab eventKey="general" title={this.props.t("general")}>
@@ -493,9 +429,6 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                         </Tab>
                                         <Tab eventKey="contact" title={this.props.t("contact")}>
                                             <this.TabContact/>
-                                        </Tab>
-                                        <Tab eventKey="socialMedia" title={this.props.t("socialMedia")}>
-                                            <this.TabSocialMedia/>
                                         </Tab>
                                         {
                                             this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin

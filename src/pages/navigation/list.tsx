@@ -1,36 +1,32 @@
 import React, {Component} from 'react'
-import {PageTypeId, PageTypes, PostTermTypeId, PostTypeId, PostTypes, Status, StatusId} from "constants/index";
+import {PermissionId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
 import {ThemeTableToggleMenu} from "components/elements/table";
 import Swal from "sweetalert2";
-import postService from "services/post.service";
-import PostDocument from "types/services/post";
-import imageSourceLib from "lib/imageSource.lib";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import ThemeDataTable from "components/elements/table/dataTable";
-import Image from "next/image"
-import PostLib from "lib/post.lib";
+import {NavigationDocument} from "types/services/navigation";
+import navigationService from "services/navigation.service";
+import PagePaths from "constants/pagePaths";
 
 type PageState = {
-    typeId: PostTypeId
     searchKey: string
-    items: PostDocument[],
-    showingItems: PageState["items"]
-    selectedItems: PageState["items"]
+    items: NavigationDocument[],
+    showingItems: NavigationDocument[]
+    selectedItems: NavigationDocument[]
     listMode: "list" | "deleted"
     isShowToggleMenu: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
 
-export default class PagePostList extends Component<PageProps, PageState> {
+export default class PageNavigationList extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            typeId: Number(this.props.router.query.postTypeId ?? 1),
             searchKey: "",
             selectedItems: [],
             listMode: "list",
@@ -48,33 +44,15 @@ export default class PagePostList extends Component<PageProps, PageState> {
         })
     }
 
-    async componentDidUpdate(prevProps: Readonly<PageProps>) {
-        let typeId = Number(this.props.router.query.postTypeId ?? 1);
-        if (typeId !== this.state.typeId) {
-            this.setState({
-                typeId: typeId
-            }, async () => {
-                await this.getItems();
-                this.props.setStateApp({
-                    isPageLoading: false
-                })
-            })
-
-        }
-    }
-
     setPageTitle() {
         this.props.setBreadCrumb([
-            this.props.t(PostTypes.findSingle("id", this.state.typeId)?.langKey ?? "[noLangAdd]"),
+            this.props.t("navigates"),
             this.props.t("list")
         ])
     }
 
     async getItems() {
-        let items = (await postService.get({
-            typeId: this.state.typeId,
-            langId: this.props.getStateApp.pageData.langId
-        })).data;
+        let items = (await navigationService.get({langId: this.props.getStateApp.pageData.langId})).data;
         this.setState((state: PageState) => {
             state.items = items;
             state.showingItems = items.filter(item => item.statusId !== StatusId.Deleted);
@@ -100,7 +78,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                         type: "loading"
                     });
 
-                    let resData = await postService.delete({_id: selectedItemId, typeId: this.state.typeId})
+                    let resData = await navigationService.delete({_id: selectedItemId});
                     loadingToast.hide();
                     if (resData.status) {
                         this.setState((state: PageState) => {
@@ -122,16 +100,11 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 content: this.props.t("updating"),
                 type: "loading"
             });
-
-            let resData = await postService.updateStatus({
-                _id: selectedItemId,
-                typeId: this.state.typeId,
-                statusId: statusId
-            })
+            let resData = await navigationService.updateStatus({_id: selectedItemId, statusId: statusId});
             loadingToast.hide();
             if (resData.status) {
                 this.setState((state: PageState) => {
-                    state.items.map((item, index) => {
+                    state.items.map(item => {
                         if (selectedItemId.includes(item._id)) {
                             item.statusId = statusId;
                         }
@@ -179,14 +152,11 @@ export default class PagePostList extends Component<PageProps, PageState> {
         }, () => this.onSearch(this.state.searchKey))
     }
 
-    navigatePage(type: "termEdit" | "edit" | "termList", itemId = "", termTypeId = 0) {
-        let postTypeId = this.state.typeId;
-        let pagePath = PostLib.getPagePath(postTypeId);
+    navigatePage(type: "edit", itemId = "") {
+        let pagePath = PagePaths.navigation();
         let path = "";
         switch(type){
-            case "edit": path = pagePath.edit(itemId); break;
-            case "termEdit": path = pagePath.term(termTypeId).edit(itemId); break;
-            case "termList": path = pagePath.term(termTypeId).list(); break;
+            case "edit": pagePath.edit(itemId); break;
         }
         this.props.router.push(path);
     }
@@ -194,85 +164,21 @@ export default class PagePostList extends Component<PageProps, PageState> {
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
-                name: this.props.t("image"),
-                width: "75px",
-                cell: row => {
-                    return Boolean(row.contents && row.contents.icon && row.contents.icon.length > 0)
-                        ? <small>{row.contents?.icon}</small>
-                        : <div className="image pt-2 pb-2">
-                            <Image
-                                src={imageSourceLib.getUploadedImageSrc(row.contents?.image)}
-                                alt={row.contents?.title ?? ""}
-                                className="post-image img-fluid"
-                                width={75}
-                                height={75}
-                            />
-                        </div>
-                }
-            },
-            {
                 name: this.props.t("title"),
                 selector: row => row.contents?.title || this.props.t("[noLangAdd]"),
                 cell: row => (
                     <div className="row w-100">
-                        <div className="col-md-8">{row.contents?.title || this.props.t("[noLangAdd]")}</div>
-                        <div className="col-md-4">
-                            {
-                                row.isFixed
-                                    ? <i className="mdi mdi-pin text-success fs-5"></i>
-                                    : null
-                            }
-                        </div>
+                        <div className="col-md-12">{row.contents?.title || this.props.t("[noLangAdd]")}</div>
                     </div>
                 ),
                 width: "250px",
                 sortable: true
             },
-            (
-                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial].includes(this.state.typeId)
-                    ? {
-                        name: this.props.t("category"),
-                        cell: row => row.terms.findMulti("typeId", PostTermTypeId.Category).length > 0
-                            ? row.terms.map(item => {
-                                    if(typeof item === "undefined"){
-                                        return <label
-                                            className={`badge badge-gradient-danger me-1`}
-                                        >{this.props.t("deleted")}</label>
-                                    } else if (item.typeId == PostTermTypeId.Category) {
-                                        return <label
-                                            onClick={() => this.navigatePage("termEdit", item._id, row.typeId)}
-                                            className={`badge badge-gradient-success me-1 cursor-pointer`}
-                                        >{item.contents?.title || this.props.t("[noLangAdd]")}</label>
-                                    }
-                                    return null;
-                                }
-                            ) : this.props.t("notSelected")
-
-                    } : {}
-            ),
-            (
-                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Service].includes(this.state.typeId)
-                    ? {
-                        name: this.props.t("views"),
-                        selector: row => row.views,
-                        sortable: true
-                    } : {}
-            ),
-            (
-                [PostTypeId.Page].includes(this.state.typeId)
-                    ? {
-                        name: this.props.t("pageType"),
-                        selector: row => this.props.t(PageTypes.findSingle("id", (row.pageTypeId ? row.pageTypeId : PageTypeId.Default))?.langKey ?? "[noLangAdd]"),
-                        sortable: true,
-                        cell: row => (
-                            <label className={`badge badge-gradient-dark`}>
-                                {
-                                    this.props.t(PageTypes.findSingle("id", (row.pageTypeId ? row.pageTypeId : PageTypeId.Default))?.langKey ?? "[noLangAdd]")
-                                }
-                            </label>
-                        )
-                    } : {}
-            ),
+            {
+                name: this.props.t("main"),
+                selector: row => row.mainId ? row.mainId.contents?.title || this.props.t("[noLangAdd]") : this.props.t("notSelected"),
+                sortable: true
+            },
             {
                 name: this.props.t("status"),
                 sortable: true,
@@ -296,7 +202,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 cell: row => permissionLib.checkPermission(
                     this.props.getStateApp.sessionData.roleId,
                     this.props.getStateApp.sessionData.permissions,
-                    permissionLib.getPermissionIdForPostType(row.typeId, "Edit")
+                    PermissionId.NavigationEdit
                 ) ? (
                     <button
                         onClick={() => this.navigatePage("edit", row._id)}
@@ -311,28 +217,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
                 <div className="row mb-3">
-                    <div className="col-md-3">
-                        <div className="row">
-                            {
-                                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
-                                    ? <div className="col-6">
-                                        <button className="btn btn-gradient-info btn-lg w-100"
-                                                onClick={() => this.navigatePage("termList", "", PostTermTypeId.Category)}>
-                                            <i className="fa fa-pencil-square-o"></i> {this.props.t("editCategories").toCapitalizeCase()}
-                                        </button>
-                                    </div> : null
-                            }
-                            {
-                                ![PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
-                                    ? <div className="col-6 text-end">
-                                        <button className="btn btn-gradient-primary btn-edit-tag btn-lg w-100"
-                                                onClick={() => this.navigatePage("termList", "", PostTermTypeId.Tag)}>
-                                            <i className="fa fa-pencil-square-o"></i> {this.props.t("editTags").toCapitalizeCase()}
-                                        </button>
-                                    </div> : null
-                            }
-                        </div>
-                    </div>
+                    <div className="col-md-3"></div>
                     <div className="col-md-9 text-end">
                         {
                             this.state.listMode === "list"
@@ -357,12 +242,12 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                             permissionLib.checkPermission(
                                                 this.props.getStateApp.sessionData.roleId,
                                                 this.props.getStateApp.sessionData.permissions,
-                                                permissionLib.getPermissionIdForPostType(this.state.typeId, "Edit")
+                                                PermissionId.NavigationEdit
                                             ) ||
                                             permissionLib.checkPermission(
                                                 this.props.getStateApp.sessionData.roleId,
                                                 this.props.getStateApp.sessionData.permissions,
-                                                permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
+                                                PermissionId.NavigationDelete
                                             )
                                         ) ? <ThemeTableToggleMenu
                                             t={this.props.t}
@@ -375,7 +260,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                                     permissionLib.checkPermission(
                                                         this.props.getStateApp.sessionData.roleId,
                                                         this.props.getStateApp.sessionData.permissions,
-                                                        permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
+                                                        PermissionId.NavigationDelete
                                                     ) ? [StatusId.Deleted] : []
                                                 )
                                             }

@@ -16,10 +16,10 @@ import Image from "next/image"
 
 type PageState = {
     searchKey: string
-    users: UserDocument[]
-    showingUsers: PageState["users"]
-    isViewUserInfo: boolean
-    selectedUserId: string
+    items: UserDocument[]
+    showingItems: PageState["items"]
+    isViewItemInfo: boolean
+    selectedItemId: string
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -29,16 +29,16 @@ export default class PageUserList extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             searchKey: "",
-            showingUsers: [],
-            users: [],
-            isViewUserInfo: false,
-            selectedUserId: ""
+            showingItems: [],
+            items: [],
+            isViewItemInfo: false,
+            selectedItemId: ""
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
-        await this.getUsers();
+        await this.getItems();
         this.props.setStateApp({
             isPageLoading: false
         })
@@ -52,54 +52,52 @@ export default class PageUserList extends Component<PageProps, PageState> {
         ])
     }
 
-    async getUsers() {
-        let users = (await userService.get({})).data;
+    async getItems() {
+        let items = (await userService.get({})).data;
         this.setState((state: PageState) => {
-            state.users = state.users.sort(user => {
+            state.items = state.items.sort(item => {
                 let sort = 0;
-                if (user._id == this.props.getStateApp.sessionData.id) {
+                if (item._id == this.props.getStateApp.sessionData.id) {
                     sort = 1;
                 }
                 return sort;
             })
-            state.users = users.filter(user => user.roleId != UserRoleId.SuperAdmin);
+            state.items = items.filter(item => item.roleId != UserRoleId.SuperAdmin);
             return state;
         }, () => this.onSearch(this.state.searchKey));
     }
 
     onDelete(userId: string) {
-        let user = this.state.users.findSingle("_id", userId);
-        if (user) {
+        let item = this.state.items.findSingle("_id", userId);
+        if (item) {
             Swal.fire({
                 title: this.props.t("deleteAction"),
-                html: `<b>'${user.name}'</b> ${this.props.t("deleteItemQuestionWithItemName")}`,
+                html: `<b>'${item.name}'</b> ${this.props.t("deleteItemQuestionWithItemName")}`,
                 confirmButtonText: this.props.t("yes"),
                 cancelButtonText: this.props.t("no"),
                 icon: "question",
                 showCancelButton: true
-            }).then(result => {
+            }).then(async result => {
                 if (result.isConfirmed) {
                     const loadingToast = new ThemeToast({
                         content: this.props.t("deleting"),
                         type: "loading"
                     });
-                    userService.delete({
-                        userId: userId
-                    }).then(resData => {
-                        loadingToast.hide();
-                        if (resData.status) {
-                            this.setState((state: PageState) => {
-                                state.users = state.users.filter(item => userId !== item._id);
-                                return state;
-                            }, () => {
-                                new ThemeToast({
-                                    type: "success",
-                                    title: this.props.t("successful"),
-                                    content: this.props.t("itemDeleted")
-                                })
+
+                    let resData = await userService.delete({_id: userId})
+                    loadingToast.hide();
+                    if (resData.status) {
+                        this.setState((state: PageState) => {
+                            state.items = state.items.filter(item => userId !== item._id);
+                            return state;
+                        }, () => {
+                            new ThemeToast({
+                                type: "success",
+                                title: this.props.t("successful"),
+                                content: this.props.t("itemDeleted")
                             })
-                        }
-                    })
+                        })
+                    }
                 }
             })
         }
@@ -107,24 +105,24 @@ export default class PageUserList extends Component<PageProps, PageState> {
 
     onViewUser(userId: string) {
         this.setState({
-            isViewUserInfo: true,
-            selectedUserId: userId
+            isViewItemInfo: true,
+            selectedItemId: userId
         })
     }
 
     onSearch(searchKey: string) {
         this.setState({
             searchKey: searchKey,
-            showingUsers: this.state.users.filter(user => user.name.toLowerCase().search(searchKey) > -1)
+            showingItems: this.state.items.filter(item => item.name.toLowerCase().search(searchKey) > -1)
         })
     }
 
-    navigateTermPage(type: "edit", itemId = "") {
+    navigatePage(type: "edit", itemId = "") {
         let path = PagePaths.settings().user().edit(itemId)
         this.props.router.push(path);
     }
 
-    get getTableColumns(): TableColumn<PageState["users"][0]>[] {
+    get getTableColumns(): TableColumn<PageState["items"][0]>[] {
         return [
             {
                 name: this.props.t("image"),
@@ -201,7 +199,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                             PermissionId.UserEdit
                         )
                     ) ? <button
-                        onClick={() => this.navigateTermPage("edit", row._id)}
+                        onClick={() => this.navigatePage("edit", row._id)}
                         className="btn btn-gradient-warning"
                     ><i className="fa fa-pencil-square-o"></i>
                     </button> : null;
@@ -237,14 +235,14 @@ export default class PageUserList extends Component<PageProps, PageState> {
             <div className="page-user">
                 {
                     (() => {
-                        let userInfo = this.state.users.findSingle("_id", this.state.selectedUserId);
+                        let userInfo = this.state.items.findSingle("_id", this.state.selectedItemId);
                         return userInfo ? <ThemeUsersProfileCard
                             router={this.props.router}
                             t={this.props.t}
                             onClose={() => {
-                                this.setState({isViewUserInfo: false})
+                                this.setState({isViewItemInfo: false})
                             }}
-                            isShow={this.state.isViewUserInfo}
+                            isShow={this.state.isViewItemInfo}
                             userInfo={userInfo}
                             langId={this.props.getStateApp.sessionData.langId}
                         /> : null
@@ -256,7 +254,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                             <div className="table-user">
                                 <ThemeDataTable
                                     columns={this.getTableColumns}
-                                    data={this.state.showingUsers}
+                                    data={this.state.showingItems}
                                     t={this.props.t}
                                     onSearch={searchKey => this.onSearch(searchKey)}
                                     isSearchable={true}

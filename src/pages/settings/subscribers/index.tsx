@@ -12,9 +12,9 @@ import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
     searchKey: string
-    subscribers: SubscriberDocument[]
-    showingSubscribers: PageState["subscribers"]
-    selectedSubscribers: PageState["subscribers"]
+    items: SubscriberDocument[]
+    showingItems: PageState["items"]
+    selectedItems: PageState["items"]
     isShowToggleMenu: boolean
 };
 
@@ -25,16 +25,16 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             searchKey: "",
-            showingSubscribers: [],
-            subscribers: [],
-            selectedSubscribers: [],
+            showingItems: [],
+            items: [],
+            selectedItems: [],
             isShowToggleMenu: false
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
-        await this.getSubscribers();
+        await this.getItems();
         this.props.setStateApp({
             isPageLoading: false
         })
@@ -47,16 +47,16 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         ])
     }
 
-    async getSubscribers() {
-        let subscribers = (await subscriberService.get({})).data;
+    async getItems() {
+        let items = (await subscriberService.get({})).data;
         this.setState({
-            subscribers: subscribers
+            items: items
         }, () => this.onSearch(this.state.searchKey));
     }
 
     onDelete(event: any) {
         event.preventDefault();
-        let selectedSubscribeId = this.state.selectedSubscribers.map(post => post._id);
+        let selectedItemId = this.state.selectedItems.map(item => item._id);
 
         Swal.fire({
             title: this.props.t("deleteAction"),
@@ -73,12 +73,12 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                 });
 
                 subscriberService.delete({
-                    _id: selectedSubscribeId
+                    _id: selectedItemId
                 }).then(resData => {
                     loadingToast.hide();
                     if (resData.status) {
                         this.setState((state: PageState) => {
-                            state.subscribers = state.subscribers.filter(item => !selectedSubscribeId.includes(item._id));
+                            state.items = state.items.filter(item => !selectedItemId.includes(item._id));
                             return state;
                         }, () => {
                             new ThemeToast({
@@ -94,9 +94,9 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         })
     }
 
-    onSelect(selectedRows: PageState["subscribers"]) {
+    onSelect(selectedRows: PageState["items"]) {
         this.setState((state: PageState) => {
-            state.selectedSubscribers = selectedRows;
+            state.selectedItems = selectedRows;
             state.isShowToggleMenu = selectedRows.length > 0;
             return state;
         })
@@ -105,11 +105,11 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
     onSearch(searchKey: string) {
         this.setState({
             searchKey: searchKey,
-            showingSubscribers: this.state.subscribers.filter(subscriber => subscriber.email.toLowerCase().search(searchKey) > -1)
+            showingItems: this.state.items.filter(item => item.email.toLowerCase().search(searchKey) > -1)
         })
     }
 
-    get getTableColumns(): TableColumn<PageState["subscribers"][0]>[] {
+    get getTableColumns(): TableColumn<PageState["items"][0]>[] {
         return [
             {
                 name: this.props.t("email"),
@@ -153,8 +153,8 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                                 </div>
                                 <ThemeDataTable
                                     columns={this.getTableColumns}
-                                    data={this.state.showingSubscribers}
-                                    selectedRows={this.state.selectedSubscribers}
+                                    data={this.state.showingItems}
+                                    selectedRows={this.state.selectedItems}
                                     t={this.props.t}
                                     onSelect={rows => this.onSelect(rows)}
                                     onSearch={searchKey => this.onSearch(searchKey)}

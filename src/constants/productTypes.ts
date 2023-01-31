@@ -7,7 +7,6 @@ export enum ProductTypeId {
 }
 
 export const ProductTypes: Array<ProductTypeDocument> = [
-    {id: ProductTypeId.SimpleProduct, order: 1, langKey: "product"},
-    {id: ProductTypeId.VariableProduct, order: 2, langKey: "product"},
-    {id: ProductTypeId.ExternalProduct, order: 3, langKey: "product"},
+    {id: ProductTypeId.SimpleProduct, order: 1, langKey: "simpleProduct"},
+    {id: ProductTypeId.VariableProduct, order: 2, langKey: "variableProduct"}
 ]

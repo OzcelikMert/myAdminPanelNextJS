@@ -7,6 +7,8 @@ import SettingDocument, {
     SettingSeoUpdateParamDocument,
     SettingContactFormUpdateParamDocument,
     SettingStaticLanguageUpdateParamDocument,
+    SettingSocialMediaUpdateParamDocument,
+    SettingECommerceUpdateParamDocument,
 } from "types/services/setting";
 
 export default {
@@ -37,6 +39,18 @@ export default {
     updateStaticLanguage(params: SettingStaticLanguageUpdateParamDocument) {
         return Api.put({
             url: [ServicePages.setting, "staticLanguage"],
+            data: params,
+        });
+    },
+    updateSocialMedia(params: SettingSocialMediaUpdateParamDocument) {
+        return Api.put({
+            url: [ServicePages.setting, "socialMedia"],
+            data: params,
+        });
+    },
+    updateECommerce(params: SettingECommerceUpdateParamDocument) {
+        return Api.put({
+            url: [ServicePages.setting, "eCommerce"],
             data: params,
         });
     }

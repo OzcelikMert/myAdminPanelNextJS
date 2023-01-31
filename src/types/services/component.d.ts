@@ -2,16 +2,16 @@ import {PopulateAuthorIdDocument} from "./user";
 import LanguageKeys from "../languages";
 
 export interface ComponentGetParamDocument {
-    componentId?: string
+    _id?: string
     langId: string,
-    getContents?: 1,
+    getContents?: boolean,
 }
 
 export interface ComponentDeleteParamDocument {
-    componentId: string | string[]
+    _id: string | string[]
 }
 
-export type ComponentUpdateParamDocument = { componentId: string } & ComponentAddParamDocument
+export type ComponentUpdateParamDocument = { _id: string } & ComponentAddParamDocument
 
 export type ComponentAddParamDocument = {} & Omit<ComponentDocument, "_id"|"lastAuthorId"|"authorId">
 

@@ -11,9 +11,11 @@ import staticContentLib from "lib/staticContent.lib";
 import PagePaths from "constants/pagePaths";
 import {UserUpdateParamDocument} from "types/services/user";
 import Swal from "sweetalert2";
+import permissionLib from "lib/permission.lib";
+import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 
 type PageState = {
-    formActiveKey: string
+    mainTabActiveKey: string
     userRoles: { value: number, label: string }[]
     status: { value: number, label: string }[]
     mainTitle: string,
@@ -27,13 +29,13 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            formActiveKey: "general",
+            mainTabActiveKey: "general",
             userRoles: [],
             status: [],
             mainTitle: "",
             isSubmitting: false,
             formData: {
-                userId: this.props.router.query.userId as string ?? "",
+                _id: this.props.router.query._id as string ?? "",
                 name: "",
                 email: "",
                 password: "",
@@ -50,8 +52,8 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
         this.setPageTitle();
         this.getRoles();
         this.getStatus();
-        if (this.state.formData.userId) {
-            await this.getUser();
+        if (this.state.formData._id) {
+            await this.getItem();
         }
         this.props.setStateApp({
             isPageLoading: false
@@ -62,9 +64,9 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
         let titles: string[] = [
             this.props.t("settings"),
             this.props.t("users"),
-            this.props.t(this.state.formData.userId ? "edit" : "add")
+            this.props.t(this.state.formData._id ? "edit" : "add")
         ];
-        if (this.state.formData.userId) {
+        if (this.state.formData._id) {
             titles.push(this.state.mainTitle)
         }
         this.props.setBreadCrumb(titles);
@@ -95,39 +97,39 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
         })
     }
 
-    async getUser() {
+    async getItem() {
         let resData = await userService.get({
-            userId: this.state.formData.userId
+            _id: this.state.formData._id
         });
         if (resData.status) {
             if (resData.data.length > 0) {
-                const user = resData.data[0];
+                const item = resData.data[0];
                 this.setState((state: PageState) => {
                     state.formData = Object.assign(state.formData, {
-                        image: user.image,
-                        name: user.name,
-                        email: user.email,
+                        image: item.image,
+                        name: item.name,
+                        email: item.email,
                         password: "",
-                        roleId: user.roleId,
-                        statusId: user.statusId,
-                        banDateEnd: user.banDateEnd,
-                        banComment: user.banComment,
-                        permissions: user.permissions
+                        roleId: item.roleId,
+                        statusId: item.statusId,
+                        banDateEnd: item.banDateEnd,
+                        banComment: item.banComment,
+                        permissions: item.permissions
                     });
 
-                    state.mainTitle = user.name;
+                    state.mainTitle = item.name;
 
                     return state;
                 }, () => {
                     this.setPageTitle();
                 })
             } else {
-                this.navigateTermPage();
+                this.navigatePage();
             }
         }
     }
 
-    navigateTermPage() {
+    navigatePage() {
         let path = PagePaths.settings().user().list();
         this.props.router.push(path);
     }
@@ -139,7 +141,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
         }, () => {
             let params = this.state.formData;
 
-            ((params.userId)
+            ((params._id)
                 ? userService.update(params)
                 : userService.add(params)).then(resData => {
                 this.setState((state: PageState) => {
@@ -188,7 +190,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     setMessage = () => {
         Swal.fire({
             title: this.props.t("successful"),
-            text: `${this.props.t((V.isEmpty(this.state.formData.userId)) ? "itemAdded" : "itemEdited")}!`,
+            text: `${this.props.t((V.isEmpty(this.state.formData._id)) ? "itemAdded" : "itemEdited")}!`,
             icon: "success",
             timer: 1000,
             timerProgressBar: true,
@@ -197,10 +199,48 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     }
 
     onCloseSuccessMessage() {
-        this.navigateTermPage()
+        this.navigatePage()
     }
 
     TabPermissions = (props: any) => {
+        let self = this;
+
+        function PermissionGroup(props: PermissionGroupDocument, index: number){
+            let permissions = Permissions.findMulti("groupId", props.id).map((perm, index) =>
+                permissionLib.checkPermission(
+                    self.props.getStateApp.sessionData.roleId,
+                    self.props.getStateApp.sessionData.permissions,
+                    perm.id
+                ) ? PermissionItem(perm, index) : null
+            )
+
+            return permissions.every(permission => permission == null) ? null : (
+                <div className="col-md-6 mb-3">
+                    <ThemeFieldSet
+                        key={index}
+                        legend={self.props.t(props.langKey)}
+                    >
+                        {permissions}
+                    </ThemeFieldSet>
+                </div>
+            )
+        }
+
+        function PermissionItem(props: PermissionDocument, index: number) {
+            return (
+                <div className="col-md-4" key={index}>
+                    <ThemeFormCheckBox
+                        key={index}
+                        title={self.props.t(props.langKey)}
+                        name="formData.permissions"
+                        checked={self.state.formData.permissions.includes(props.id)}
+                        onChange={e => self.onPermissionSelected(e.target.checked, props.id)}
+                    />
+                </div>
+            )
+        }
+
+
         return (
             <div className="row">
                 <div className="col-md-12 mb-3">
@@ -212,28 +252,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                     />
                 </div>
                 {
-                    PermissionGroups.map((group, index) => (
-                        <div className="col-md-6 mb-3">
-                            <ThemeFieldSet
-                                key={index}
-                                legend={this.props.t(group.langKey)}
-                            >
-                                {
-                                    Permissions.findMulti("groupId", group.id).map((perm, index) => (
-                                        <div className="col-md-4" key={index}>
-                                            <ThemeFormCheckBox
-                                                key={index}
-                                                title={this.props.t(perm.langKey)}
-                                                name="formData.permissions"
-                                                checked={this.state.formData.permissions.includes(perm.id)}
-                                                onChange={e => this.onPermissionSelected(e.target.checked, perm.id)}
-                                            />
-                                        </div>
-                                    ))
-                                }
-                            </ThemeFieldSet>
-                        </div>
-                    ))
+                    PermissionGroups.map((group, index) => PermissionGroup(group, index))
                 }
             </div>
         );
@@ -308,7 +327,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                         name="formData.password"
                         type="password"
                         autoComplete={"new-password"}
-                        required={V.isEmpty(this.state.formData.userId)}
+                        required={V.isEmpty(this.state.formData._id)}
                         value={this.state.formData.password}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
@@ -335,7 +354,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
             <div className="page-user">
                 <div className="navigate-buttons mb-3">
                     <button className="btn btn-gradient-dark btn-lg btn-icon-text"
-                            onClick={() => this.navigateTermPage()}>
+                            onClick={() => this.navigatePage()}>
                         <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
                     </button>
                 </div>
@@ -347,13 +366,16 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                                 saveButtonText={this.props.t("save")}
                                 saveButtonLoadingText={this.props.t("loading")}
                                 isSubmitting={this.state.isSubmitting}
-                                formAttributes={{onSubmit: (event) => this.onSubmit(event), autoComplete: "new-password"}}
+                                formAttributes={{
+                                    onSubmit: (event) => this.onSubmit(event),
+                                    autoComplete: "new-password"
+                                }}
                             >
                                 <div className="card-body">
                                     <div className="theme-tabs">
                                         <Tabs
-                                            onSelect={(key: any) => this.setState({formActiveKey: key})}
-                                            activeKey={this.state.formActiveKey}
+                                            onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                            activeKey={this.state.mainTabActiveKey}
                                             className="mb-5"
                                             transition={false}>
                                             <Tab eventKey="general" title={this.props.t("general")}>

@@ -28,7 +28,7 @@ export interface PopulateAuthorIdDocument {
 }
 
 export interface UsersGetParamDocument {
-    userId?: string
+    _id?: string
 }
 
 export interface UserAddParamDocument {
@@ -43,9 +43,9 @@ export interface UserAddParamDocument {
 }
 
 export type UserUpdateParamDocument = {
-    userId: string
+    _id: string
 } & UserAddParamDocument
 
 export interface UserDeleteParamDocument {
-    userId: string
+    _id: string
 }

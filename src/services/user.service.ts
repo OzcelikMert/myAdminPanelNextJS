@@ -11,7 +11,7 @@ import UserDocument, {
 export default {
     get(params: UsersGetParamDocument): Promise<ServiceResultDocument<UserDocument[]>> {
         return Api.get({
-            url: [ServicePages.user, params.userId?.toString()],
+            url: [ServicePages.user, params._id?.toString()],
             data: params,
         });
     },
@@ -23,13 +23,13 @@ export default {
     },
     update(params: UserUpdateParamDocument) {
         return Api.put({
-            url: [ServicePages.user, params.userId.toString()],
+            url: [ServicePages.user, params._id.toString()],
             data: params,
         });
     },
     delete(params: UserDeleteParamDocument) {
         return Api.delete({
-            url: [ServicePages.user, params.userId.toString()],
+            url: [ServicePages.user, params._id.toString()],
             data: params,
         });
     },

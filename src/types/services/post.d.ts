@@ -2,6 +2,7 @@ import {PopulateTermsDocument} from "./postTerm";
 import {PopulateAuthorIdDocument} from "./user";
 import {PageTypeId, PostTypeId, StatusId} from "constants/index";
 import {ComponentDocument} from "./component";
+import {AttributeTypeId} from "constants/attributeTypes";
 
 export interface PostECommerceVariationContentDocument {
     _id?: string
@@ -31,15 +32,15 @@ export interface PostECommerceVariationDocument {
 export interface PostECommerceAttributeDocument {
     _id?: string
     attributeId: string
-    variations: string[]
-    typeId: number
+    variationId: string[]
+    typeId: AttributeTypeId
 }
 
 export interface PostECommerceShippingDocument {
-    width: number
-    height: number
-    depth: number
-    weight: number
+    width: string
+    height: string
+    depth: string
+    weight: string
 }
 
 export interface PostECommerceInventoryDocument {
@@ -90,55 +91,55 @@ export default interface PostDocument {
     _id: string
     typeId: PostTypeId,
     pageTypeId?: PageTypeId,
-    mainId?: {
-        _id: string
-        contents: {
-            langId: string
-            title: string,
-            url: string,
-        }
-    },
     statusId: StatusId,
     authorId: PopulateAuthorIdDocument
     lastAuthorId: PopulateAuthorIdDocument
     dateStart: Date,
     order: number,
-    views: number,
     isFixed?: boolean,
     terms: (PopulateTermsDocument | undefined)[]
     contents?: PostContentDocument,
     components?: ComponentDocument[]
     eCommerce?: PostECommerceDocument
+    views: number
+    sitemap?: string
 }
 
 export interface PostGetParamDocument {
-    langId: string
-    postId?: string
-    typeId?: PostTypeId | PostTypeId[]
-    statusId?: StatusId
-    getContents?: 1 | 0
-    maxCount?: number
+    _id?: string
+    typeId?: PostTypeId | PostTypeId[],
+    pageTypeId?: PageTypeId
+    langId?: string
+    url?: string
+    statusId?: StatusId,
+    getContents?: boolean,
+    maxCount?: number,
+    ignorePostId?: string[]
 }
 
 export type PostAddParamDocument = {
-    mainId?: string
-    isFixed: 1 | 0
     contents: PostContentDocument
     terms: string[]
     components?: string[],
-} & Omit<PostDocument, "_id"|"themeGroups"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"isFixed"|"components">
+} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components">
 
 export type PostUpdateParamDocument = {
-    postId: string
+    _id: string
 } & Omit<PostAddParamDocument, "themeGroups">
 
 export interface PostUpdateStatusParamDocument {
-    postId: string[],
+    _id: string[],
     typeId: PostTypeId
     statusId: StatusId,
 }
 
+export interface PostUpdateViewParamDocument {
+    _id: string,
+    typeId: number
+    langId: string
+}
+
 export interface PostDeleteParamDocument {
-    postId: string[],
+    _id: string[],
     typeId: PostTypeId
 }

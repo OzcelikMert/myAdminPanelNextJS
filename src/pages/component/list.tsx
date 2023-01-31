@@ -12,8 +12,8 @@ import ThemeDataTable from "components/elements/table/dataTable";
 
 type PageState = {
     searchKey: string
-    components: ComponentDocument[]
-    showingComponents: PageState["components"]
+    items: ComponentDocument[]
+    showingItems: PageState["items"]
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -23,14 +23,14 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             searchKey: "",
-            showingComponents: [],
-            components: []
+            showingItems: [],
+            items: []
         }
     }
 
     async componentDidMount() {
         this.setPageTitle();
-        await this.getComponents();
+        await this.getItems();
         this.props.setStateApp({
             isPageLoading: false
         })
@@ -43,20 +43,20 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         ])
     }
 
-    async getComponents() {
-        let components = (await componentService.get({langId: this.props.getStateApp.pageData.langId})).data;
+    async getItems() {
+        let items = (await componentService.get({langId: this.props.getStateApp.pageData.langId})).data;
         this.setState((state: PageState) => {
-            state.components = components;
+            state.items = items;
             return state;
         }, () => this.onSearch(this.state.searchKey));
     }
 
     onDelete(_id: string) {
-        let component = this.state.components.findSingle("_id", _id);
-        if(component){
+        let item = this.state.items.findSingle("_id", _id);
+        if(item){
             Swal.fire({
                 title: this.props.t("deleteAction"),
-                html: `<b>'${this.props.t(component.langKey)}'</b> ${this.props.t("deleteItemQuestionWithItemName")}`,
+                html: `<b>'${this.props.t(item.langKey)}'</b> ${this.props.t("deleteItemQuestionWithItemName")}`,
                 confirmButtonText: this.props.t("yes"),
                 cancelButtonText: this.props.t("no"),
                 icon: "question",
@@ -68,12 +68,12 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                         type: "loading"
                     });
                     componentService.delete({
-                        componentId: [_id]
+                        _id: [_id]
                     }).then(resData => {
                         loadingToast.hide();
                         if (resData.status) {
                             this.setState((state: PageState) => {
-                                state.components = state.components.filter(item => _id !== item._id);
+                                state.items = state.items.filter(item => _id !== item._id);
                                 return state;
                             }, () => {
                                 new ThemeToast({
@@ -92,16 +92,16 @@ export default class PageComponentList extends Component<PageProps, PageState> {
     onSearch(searchKey: string) {
         this.setState({
             searchKey: searchKey,
-            showingComponents: this.state.components.filter(component => this.props.t(component.langKey).toLowerCase().search(searchKey) > -1)
+            showingItems: this.state.items.filter(item => this.props.t(item.langKey).toLowerCase().search(searchKey) > -1)
         })
     }
 
-    navigateTermPage(type: "edit", itemId = "") {
+    navigatePage(type: "edit", itemId = "") {
         let path = PagePaths.component().edit(itemId)
         this.props.router.push(path);
     }
 
-    get getTableColumns(): TableColumn<PageState["components"][0]>[] {
+    get getTableColumns(): TableColumn<PageState["items"][0]>[] {
         return [
             {
                 name: this.props.t("title"),
@@ -123,7 +123,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                     PermissionId.ComponentEdit
                 ) ? (
                     <button
-                        onClick={() => this.navigateTermPage("edit", row._id)}
+                        onClick={() => this.navigatePage("edit", row._id)}
                         className="btn btn-gradient-warning"
                     ><i className="fa fa-pencil-square-o"></i>
                     </button>
@@ -156,7 +156,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                             <div className="table-post">
                                 <ThemeDataTable
                                     columns={this.getTableColumns.filter(column => typeof column.name !== "undefined")}
-                                    data={this.state.showingComponents}
+                                    data={this.state.showingItems}
                                     t={this.props.t}
                                     onSearch={searchKey => this.onSearch(searchKey)}
                                     isSearchable={true}

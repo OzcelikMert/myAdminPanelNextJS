@@ -1,4 +1,10 @@
 export const LanguageKeysArray = [
+    "currencyType",
+    "newSocialMedia",
+    "variations",
+    "attributes",
+    "simpleProduct",
+    "variableProduct",
     "product",
     "eCommerce",
     "outGoingEmail",

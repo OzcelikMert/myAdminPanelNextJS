@@ -16,7 +16,7 @@ import Image from "next/image"
 type PageState = {
     langKeys: { value: string, label: string }[]
     types: { value: number, label: string }[]
-    formActiveKey: string
+    mainTabActiveKey: string
     isSubmitting: boolean
     mainTitle: string,
     formData: ComponentUpdateParamDocument,
@@ -28,13 +28,13 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            formActiveKey: "general",
+            mainTabActiveKey: "general",
             langKeys: [],
             types: [],
             isSubmitting: false,
             mainTitle: "",
             formData: {
-                componentId: this.props.router.query.componentId as string ?? "",
+                _id: this.props.router.query._id as string ?? "",
                 order: 0,
                 types: [],
                 elementId: "",
@@ -47,8 +47,8 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         this.setPageTitle();
         this.getLangKeys();
         this.getTypes();
-        if (this.state.formData.componentId) {
-            await this.getComponent();
+        if (this.state.formData._id) {
+            await this.getItem();
         }
         this.props.setStateApp({
             isPageLoading: false
@@ -60,7 +60,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             this.props.setStateApp({
                 isPageLoading: true
             }, async () => {
-                await this.getComponent()
+                await this.getItem()
                 this.props.setStateApp({
                     isPageLoading: false
                 })
@@ -71,9 +71,9 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     setPageTitle() {
         let titles: string[] = [
             this.props.t("components"),
-            this.props.t(this.state.formData.componentId ? "edit" : "add")
+            this.props.t(this.state.formData._id ? "edit" : "add")
         ];
-        if (this.state.formData.componentId) {
+        if (this.state.formData._id) {
             titles.push(this.state.mainTitle)
         }
         this.props.setBreadCrumb(titles);
@@ -96,29 +96,30 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         })
     }
 
-    async getComponent() {
+    async getItem() {
         let resData = await componentService.get({
-            componentId: this.state.formData.componentId,
+            _id: this.state.formData._id,
             langId: this.props.getStateApp.pageData.langId,
             getContents: 1
         });
         if (resData.status) {
             if (resData.data.length > 0) {
-                const component = resData.data[0];
+                const item = resData.data[0];
                 this.setState((state: PageState) => {
                     state.formData = {
                         ...state.formData,
-                        ...component,
-                        types: component.types.map(type => {
-                            if(type.contents){
-                                type.contents.langId = this.props.getStateApp.pageData.langId;
+                        ...item,
+                        types: item.types.map(type => {
+                            type.contents = {
+                                ...type.contents,
+                                langId: this.props.getStateApp.pageData.langId
                             }
                             return type;
                         })
                     };
 
                     if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
-                        state.mainTitle = this.props.t(component.langKey);
+                        state.mainTitle = this.props.t(item.langKey);
                     }
 
                     return state;
@@ -126,12 +127,12 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                     this.setPageTitle();
                 })
             } else {
-                this.navigateTermPage();
+                this.navigatePage();
             }
         }
     }
 
-    navigateTermPage() {
+    navigatePage() {
         let path = PagePaths.component().list();
         this.props.router.push(path);
     }
@@ -142,7 +143,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             isSubmitting: true
         }, () => {
             let params = this.state.formData;
-            ((params.componentId)
+            ((params._id)
                 ? componentService.update(params)
                 : componentService.add(params)).then(resData => {
                 this.setState((state: PageState) => {
@@ -154,7 +155,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     }
 
     onCloseSuccessMessage() {
-        this.navigateTermPage()
+        this.navigatePage()
     }
 
     get TabThemeEvents() {
@@ -205,7 +206,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     setMessage() {
         Swal.fire({
             title: this.props.t("successful"),
-            text: `${this.props.t((V.isEmpty(this.state.formData.componentId)) ? "itemAdded" : "itemEdited")}!`,
+            text: `${this.props.t((V.isEmpty(this.state.formData._id)) ? "itemAdded" : "itemEdited")}!`,
             icon: "success",
             timer: 1000,
             timerProgressBar: true,
@@ -447,7 +448,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             <div className="page-post">
                 <div className="navigate-buttons mb-3">
                     <button className="btn btn-gradient-dark btn-lg btn-icon-text"
-                            onClick={() => this.navigateTermPage()}>
+                            onClick={() => this.navigatePage()}>
                         <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
                     </button>
                 </div>
@@ -464,8 +465,8 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                 <div className="card-body">
                                     <div className="theme-tabs">
                                         <Tabs
-                                            onSelect={(key: any) => this.setState({formActiveKey: key})}
-                                            activeKey={this.state.formActiveKey}
+                                            onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                            activeKey={this.state.mainTabActiveKey}
                                             className="mb-5"
                                             transition={false}>
                                             {

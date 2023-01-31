@@ -10,14 +10,13 @@ import postTermService from "services/postTerm.service";
 import staticContentLib from "lib/staticContent.lib";
 import imageSourceLib from "lib/imageSource.lib";
 import {PostTermUpdateParamDocument} from "types/services/postTerm";
-import ThemeToolTip from "components/elements/tooltip";
 import Swal from "sweetalert2";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
 
 type PageState = {
-    formActiveKey: string
-    postTerms: { value: string, label: string }[]
+    mainTabActiveKey: string
+    items: { value: string, label: string }[]
     status: { value: number, label: string }[]
     isSubmitting: boolean
     mainTitle: string
@@ -31,13 +30,13 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            formActiveKey: `general`,
-            postTerms: [],
+            mainTabActiveKey: `general`,
+            items: [],
             status: [],
             isSubmitting: false,
             mainTitle: "",
             formData: {
-                termId: this.props.router.query.termId as string ?? "",
+                _id: this.props.router.query._id as string ?? "",
                 typeId: Number(this.props.router.query.termTypeId ?? 1),
                 postTypeId: Number(this.props.router.query.postTypeId ?? 1),
                 mainId: "",
@@ -58,10 +57,10 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     async componentDidMount() {
         this.setPageTitle();
-        await this.getTerms();
+        await this.getItems();
         this.getStatus();
-        if (this.state.formData.termId) {
-            await this.getTerm();
+        if (this.state.formData._id) {
+            await this.getItem();
         }
         this.props.setStateApp({
             isPageLoading: false
@@ -73,7 +72,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
             this.props.setStateApp({
                 isPageLoading: true
             }, async () => {
-                await this.getTerm();
+                await this.getItem();
                 this.props.setStateApp({
                     isPageLoading: false
                 })
@@ -85,9 +84,9 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         let titles: string[] = [
             this.props.t(PostTypes.findSingle("id", this.state.formData.postTypeId)?.langKey ?? "[noLangAdd]"),
             this.props.t(PostTermTypes.findSingle("id", this.state.formData.typeId)?.langKey ?? "[noLangAdd]"),
-            this.props.t(this.state.formData.termId ? "edit" : "add")
+            this.props.t(this.state.formData._id ? "edit" : "add")
         ];
-        if (this.state.formData.termId) {
+        if (this.state.formData._id) {
             titles.push(this.state.mainTitle)
         }
         this.props.setBreadCrumb(titles);
@@ -105,7 +104,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         })
     }
 
-    async getTerms() {
+    async getItems() {
         let resData = await postTermService.get({
             typeId: this.state.formData.typeId == PostTermTypeId.Variations ? PostTermTypeId.Attributes : this.state.formData.typeId,
             postTypeId: this.state.formData.postTypeId,
@@ -114,12 +113,12 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         });
         if (resData.status) {
             this.setState((state: PageState) => {
-                state.postTerms = [{ value: "", label: this.props.t("notSelected") }];
+                state.items = [{ value: "", label: this.props.t("notSelected") }];
                 resData.data.orderBy("order", "asc").forEach(item => {
-                    if (!V.isEmpty(this.state.formData.termId)) {
-                        if (this.state.formData.termId == item._id) return;
+                    if (!V.isEmpty(this.state.formData._id)) {
+                        if (this.state.formData._id == item._id) return;
                     }
-                    state.postTerms.push({
+                    state.items.push({
                         value: item._id,
                         label: item.contents?.title || this.props.t("[noLangAdd]")
                     });
@@ -129,25 +128,24 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         }
     }
 
-    async getTerm() {
+    async getItem() {
         let resData = await postTermService.get({
-            termId: this.state.formData.termId,
+            _id: this.state.formData._id,
             typeId: this.state.formData.typeId,
             postTypeId: this.state.formData.postTypeId,
             langId: this.props.getStateApp.pageData.langId
         });
         if (resData.status) {
             if (resData.data.length > 0) {
-                const term = resData.data[0];
+                const item = resData.data[0];
                 this.setState((state: PageState) => {
                     state.formData = {
                         ...state.formData,
-                        ...term,
-                        mainId: term.mainId?._id || "",
+                        ...item,
+                        mainId: item.mainId?._id || "",
                         contents: {
                             ...state.formData.contents,
-                            ...term.contents,
-                            views: term.contents?.views ?? 0,
+                            ...item.contents,
                             langId: this.props.getStateApp.pageData.langId
                         }
                     }
@@ -179,11 +177,11 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
             isSubmitting: true
         }, () => {
             let params = this.state.formData;
-            ((params.termId)
+            ((params._id)
                 ? postTermService.update(params)
                 : postTermService.add(params)).then(async resData => {
                     if (this.state.formData.typeId == PostTermTypeId.Category && resData.status) {
-                        await this.getTerms();
+                        await this.getItems();
                     }
 
                     this.setState((state: PageState) => {
@@ -214,7 +212,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     setMessage() {
         Swal.fire({
             title: this.props.t("successful"),
-            text: `${this.props.t((V.isEmpty(this.state.formData.termId)) ? "itemAdded" : "itemEdited")}!`,
+            text: `${this.props.t((V.isEmpty(this.state.formData._id)) ? "itemAdded" : "itemEdited")}!`,
             icon: "success",
             timer: 1000,
             timerProgressBar: true,
@@ -223,7 +221,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     }
 
     onCloseSuccessMessage() {
-        if (this.state.formData.termId) {
+        if (this.state.formData._id) {
             this.navigateTermPage();
         }
     }
@@ -327,8 +325,8 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                                 `}
                                 name="formData.mainId"
                                 placeholder={this.props.t("chooseMainCategory")}
-                                options={this.state.postTerms}
-                                value={this.state.postTerms.findSingle("value", this.state.formData.mainId || "")}
+                                options={this.state.items}
+                                value={this.state.items.findSingle("value", this.state.formData.mainId || "")}
                                 onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item.value, this)}
                             />
                         </div> : null
@@ -360,17 +358,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                                     <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
                                 </button>
                             </div>
-                            {
-                                this.state.formData.termId && [PostTypeId.Blog, PostTypeId.Portfolio].includes(Number(this.state.formData.typeId))
-                                    ? <div className="col-6">
-                                        <ThemeToolTip message={this.props.t("views")}>
-                                            <label className="badge badge-gradient-primary w-100 p-2 fs-6 rounded-3">
-                                                <i className="mdi mdi-eye"></i> {this.state.formData.contents.views}
-                                            </label>
-                                        </ThemeToolTip>
-
-                                    </div> : null
-                            }
                         </div>
                     </div>
                 </div>
@@ -386,8 +373,8 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                             >
                                 <div className="theme-tabs">
                                     <Tabs
-                                        onSelect={(key: any) => this.setState({ formActiveKey: key })}
-                                        activeKey={this.state.formActiveKey}
+                                        onSelect={(key: any) => this.setState({ mainTabActiveKey: key })}
+                                        activeKey={this.state.mainTabActiveKey}
                                         className="mb-5"
                                         transition={false}>
                                         <Tab eventKey="general" title={this.props.t("general")}>

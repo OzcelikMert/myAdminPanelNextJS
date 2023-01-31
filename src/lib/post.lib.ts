@@ -6,12 +6,12 @@ export default {
         postTypeId = Number(postTypeId);
         let pagePath = PagePaths.themeContent().post(postTypeId);
 
-        if([PostTypeId.Page, PostTypeId.Navigate].includes(postTypeId)){
+        if([PostTypeId.Page].includes(postTypeId)){
             pagePath = PagePaths.post(postTypeId);
         }
 
-        if([PostTypeId.Product, PostTypeId.ProductVariation].includes(postTypeId)){
-            pagePath = PagePaths.eCommerce().post(postTypeId);
+        if([PostTypeId.Product].includes(postTypeId)){
+            pagePath = PagePaths.eCommerce().product();
         }
 
         return pagePath;

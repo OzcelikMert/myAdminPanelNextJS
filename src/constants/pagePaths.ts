@@ -1,109 +1,110 @@
 import {PostTypeId} from "./postTypes";
 import {PostTermTypeId} from "./postTermTypes";
-
-function setPath(...paths: (number | string | undefined)[]) {
-    let returnPath = "";
-    for (let path of paths) {
-        if (path) {
-            if (
-                typeof path === "string" &&
-                path.length > 0 &&
-                path.startsWith("/")
-            ) {
-                path = path.slice(1);
-            }
-
-            returnPath += `/${path}`;
-        }
-    }
-    return returnPath;
-}
+import pagePathLib from "lib/pagePath.lib";
 
 const PagePaths = {
     login() {
-        return setPath("login");
+        return pagePathLib.setPath("login");
     },
     lock() {
-        return setPath("lock");
+        return pagePathLib.setPath("lock");
     },
     dashboard() {
-        return setPath("dashboard");
+        return pagePathLib.setPath("dashboard");
     },
     gallery() {
-        let path = setPath("gallery");
+        let path = pagePathLib.setPath("gallery");
 
         return {
             self() {
-                return setPath(path);
+                return pagePathLib.setPath(path);
             },
             upload() {
-                return setPath(path, "upload");
+                return pagePathLib.setPath(path, "upload");
             },
             list() {
-                return setPath(path, "list");
+                return pagePathLib.setPath(path, "list");
             }
         }
     },
     component() {
-        let path = setPath("component");
+        let path = pagePathLib.setPath("component");
 
         return {
             self() {
-                return setPath(path);
+                return pagePathLib.setPath(path);
             },
             add() {
-                return setPath(path, "add");
+                return pagePathLib.setPath(path, "add");
             },
-            edit(_id: string | number | undefined = ":componentId") {
-                return setPath(path, "edit", _id);
+            edit(_id: string | number | undefined = ":_id") {
+                return pagePathLib.setPath(path, "edit", _id);
             },
             list() {
-                return setPath(path, "list");
+                return pagePathLib.setPath(path, "list");
+            }
+        }
+    },
+    navigation() {
+        let path = pagePathLib.setPath("navigation");
+
+        return {
+            self() {
+                return pagePathLib.setPath(path);
+            },
+            add() {
+                return pagePathLib.setPath(path, "add");
+            },
+            edit(_id: string | number | undefined = ":_id") {
+                return pagePathLib.setPath(path, "edit", _id);
+            },
+            list() {
+                return pagePathLib.setPath(path, "list");
             }
         }
     },
     post(typeId: string | PostTypeId = ":postTypeId", firstPath: string | undefined = undefined) {
-        let path = setPath(firstPath, "post", typeId);
+        let path = pagePathLib.setPath(firstPath, "post", typeId);
 
         return {
             self() {
-                return setPath(path);
+                return pagePathLib.setPath(path);
             },
             add() {
-                return setPath(path, "add");
+                return pagePathLib.setPath(path, "add");
             },
-            edit(_id: string | number | undefined = ":postId") {
-                return setPath(path, "edit", _id);
+            edit(_id: string | number | undefined = ":_id") {
+                return pagePathLib.setPath(path, "edit", _id);
             },
             list() {
-                return setPath(path, "list");
+                return pagePathLib.setPath(path, "list");
             },
             term(typeId: string | PostTermTypeId | undefined = ":termTypeId") {
-                path = setPath(path, "term", typeId);
+                path = pagePathLib.setPath(path, "term", typeId);
 
                 return {
                     self() {
-                        return setPath(path);
+                        return pagePathLib.setPath(path);
                     },
                     add() {
-                        return setPath(path, "add");
+                        return pagePathLib.setPath(path, "add");
                     },
-                    edit(_id: string | number | undefined = ":termId") {
-                        return setPath(path, "edit", _id);
+                    edit(_id: string | number | undefined = ":_id") {
+                        return pagePathLib.setPath(path, "edit", _id);
                     },
                     list() {
-                        return setPath(path, "list");
+                        return pagePathLib.setPath(path, "list");
                     },
                 }
             }
         }
     },
     themeContent() {
-        let path = setPath("theme-content");
+        let path = pagePathLib.setPath("theme-content");
 
         return {
             self() {
-                return setPath(path);
+                return pagePathLib.setPath(path);
             },
             post(typeId?: number) {
                 return PagePaths.post(typeId, path);
@@ -111,60 +112,66 @@ const PagePaths = {
         }
     },
     eCommerce() {
-        let path = setPath("e-commerce");
+        let path = pagePathLib.setPath("e-commerce");
 
         return {
             self() {
-                return setPath(path);
+                return pagePathLib.setPath(path);
             },
-            post(typeId?: number) {
-                return PagePaths.post(typeId, path);
+            product() {
+                return PagePaths.post(PostTypeId.Product, pagePathLib.setPath(path, "product"));
+            },
+            settings() {
+                return pagePathLib.setPath(path, "settings");
             }
         }
     },
     settings() {
-        let path = setPath("settings");
+        let path = pagePathLib.setPath("settings");
 
         return {
             self() {
-                return setPath(path);
+                return pagePathLib.setPath(path);
             },
             seo() {
-                return setPath(path, "seo");
+                return pagePathLib.setPath(path, "seo");
             },
             general() {
-                return setPath(path, "general");
+                return pagePathLib.setPath(path, "general");
             },
             profile() {
-                return setPath(path, "profile");
+                return pagePathLib.setPath(path, "profile");
             },
             changePassword() {
-                return setPath(path, "change-password");
+                return pagePathLib.setPath(path, "change-password");
             },
             staticLanguages() {
-                return setPath(path, "static-languages");
+                return pagePathLib.setPath(path, "static-languages");
             },
             subscribers() {
-                return setPath(path, "subscribers");
+                return pagePathLib.setPath(path, "subscribers");
             },
             contactForms() {
-                return setPath(path, "contact-forms");
+                return pagePathLib.setPath(path, "contact-forms");
+            },
+            socialMedia() {
+                return pagePathLib.setPath(path, "social-media");
             },
             user() {
-                path = setPath(path, "user");
+                path = pagePathLib.setPath(path, "user");
 
                 return {
                     self() {
-                        return setPath(path);
+                        return pagePathLib.setPath(path);
                     },
                     add() {
-                        return setPath(path, "add");
+                        return pagePathLib.setPath(path, "add");
                     },
-                    edit(_id: string | number | undefined = ":userId") {
-                        return setPath(path, "edit", _id);
+                    edit(_id: string | number | undefined = ":_id") {
+                        return pagePathLib.setPath(path, "edit", _id);
                     },
                     list() {
-                        return setPath(path, "list");
+                        return pagePathLib.setPath(path, "list");
                     },
                 }
             }

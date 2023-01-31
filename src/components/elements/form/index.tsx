@@ -15,7 +15,7 @@ type PageProps = {
     saveButtonClassName?: string
     isSubmitting?: boolean,
     formAttributes?: React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>
-    children: JSX.Element
+    children: any
     enterToSubmit?: true
 };
 

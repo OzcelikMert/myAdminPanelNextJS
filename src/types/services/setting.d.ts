@@ -32,16 +32,22 @@ export interface SettingContactFormDocument {
     port: number
 }
 
+export interface SettingSocialMediaDocument {
+    _id?: string
+    elementId: string
+    title: string
+    url: string
+}
+
 export interface SettingContactDocument {
     email?: string,
     phone?: string,
     address?: string,
     addressMap?: string
-    facebook?: string,
-    instagram?: string,
-    twitter?: string,
-    linkedin?: string,
-    google?: string,
+}
+
+export interface SettingECommerceDocument {
+    currencyId: number
 }
 
 export default interface SettingDocument {
@@ -56,6 +62,8 @@ export default interface SettingDocument {
     contact?: SettingContactDocument
     contactForms?: SettingContactFormDocument[]
     staticLanguages?: SettingStaticLanguageDocument[]
+    socialMedia?: SettingSocialMediaDocument[]
+    eCommerce?: SettingECommerceDocument
 }
 
 export interface SettingGetParamDocument {
@@ -76,4 +84,12 @@ export type SettingContactFormUpdateParamDocument =  {
 
 export type SettingStaticLanguageUpdateParamDocument =  {
     staticLanguages: SettingStaticLanguageDocument[]
+}
+
+export type SettingSocialMediaUpdateParamDocument = {
+    socialMedia: SettingSocialMediaDocument[]
+}
+
+export type SettingECommerceUpdateParamDocument = {
+    eCommerce: SettingECommerceDocument
 }

@@ -21,14 +21,6 @@ export default [
         permissionId: PermissionId.SliderEdit
     },
     {
-        path: PagePaths.themeContent().post(PostTypeId.Navigate).add(),
-        permissionId: PermissionId.NavigateAdd
-    },
-    {
-        path: PagePaths.themeContent().post(PostTypeId.Navigate).edit(undefined),
-        permissionId: PermissionId.NavigateEdit
-    },
-    {
         path: PagePaths.themeContent().post(PostTypeId.Service).add(),
         permissionId: PermissionId.ServiceAdd
     },
@@ -67,5 +59,13 @@ export default [
     {
         path: PagePaths.themeContent().post(PostTypeId.Testimonial).edit(undefined),
         permissionId: PermissionId.TestimonialEdit
+    },
+    {
+        path: PagePaths.eCommerce().product().add(),
+        permissionId: PermissionId.ProductAdd
+    },
+    {
+        path: PagePaths.themeContent().post(PostTypeId.Testimonial).edit(undefined),
+        permissionId: PermissionId.ProductEdit
     }
 ] as PermissionPathDocument[]

@@ -21,9 +21,9 @@ enum PermissionId {
     PageAdd,
     PageEdit,
     PageDelete,
-    NavigateAdd,
-    NavigateEdit,
-    NavigateDelete,
+    NavigationAdd,
+    NavigationEdit,
+    NavigationDelete,
     SeoEdit,
     SettingEdit,
     ServiceAdd,
@@ -38,6 +38,7 @@ enum PermissionId {
     ProductAdd,
     ProductEdit,
     ProductDelete,
+    ECommerce
 }
 
 const Permissions: Array<PermissionDocument> = [
@@ -60,9 +61,9 @@ const Permissions: Array<PermissionDocument> = [
     {id: PermissionId.PageAdd, groupId: PermissionGroupId.Page, defaultRoleRank: 2, langKey: "add"},
     {id: PermissionId.PageEdit, groupId: PermissionGroupId.Page, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.PageDelete, groupId: PermissionGroupId.Page, defaultRoleRank: 3, langKey: "delete"},
-    {id: PermissionId.NavigateAdd, groupId: PermissionGroupId.Navigate, defaultRoleRank: 2, langKey: "add"},
-    {id: PermissionId.NavigateEdit, groupId: PermissionGroupId.Navigate, defaultRoleRank: 3, langKey: "edit"},
-    {id: PermissionId.NavigateDelete, groupId: PermissionGroupId.Navigate, defaultRoleRank: 3, langKey: "delete"},
+    {id: PermissionId.NavigationAdd, groupId: PermissionGroupId.Navigation, defaultRoleRank: 2, langKey: "add"},
+    {id: PermissionId.NavigationEdit, groupId: PermissionGroupId.Navigation, defaultRoleRank: 3, langKey: "edit"},
+    {id: PermissionId.NavigationDelete, groupId: PermissionGroupId.Navigation, defaultRoleRank: 3, langKey: "delete"},
     {id: PermissionId.SeoEdit, groupId: PermissionGroupId.Settings, defaultRoleRank: 3, langKey: "seoEdit"},
     {id: PermissionId.SettingEdit, groupId: PermissionGroupId.Settings, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.ServiceAdd, groupId: PermissionGroupId.Service, defaultRoleRank: 2, langKey: "add"},
@@ -74,6 +75,7 @@ const Permissions: Array<PermissionDocument> = [
     {id: PermissionId.SubscriberEdit, groupId: PermissionGroupId.Subscriber, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.ComponentEdit, groupId: PermissionGroupId.Component, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.StaticLanguage, groupId: PermissionGroupId.StaticLanguage, defaultRoleRank: 2, langKey: "edit"},
+    {id: PermissionId.ECommerce, groupId: PermissionGroupId.ECommerce, defaultRoleRank: 3, langKey: "eCommerce"},
     {id: PermissionId.ProductAdd, groupId: PermissionGroupId.Product, defaultRoleRank: 2, langKey: "add"},
     {id: PermissionId.ProductEdit, groupId: PermissionGroupId.Product, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.ProductDelete, groupId: PermissionGroupId.Product, defaultRoleRank: 3, langKey: "delete"},
