@@ -138,17 +138,13 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
+        }, async () => {
             let params = this.state.formData;
 
-            ((params._id)
+            let resData = await ((params._id)
                 ? userService.update(params)
-                : userService.add(params)).then(resData => {
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
-                }, () => this.setMessage())
-            });
+                : userService.add(params));
+            this.setState({isSubmitting: false}, () => this.setMessage())
         })
     }
 

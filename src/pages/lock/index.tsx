@@ -51,27 +51,24 @@ class PageLock extends Component<PageProps, PageState> {
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
-            authService.login({
+        }, async () => {
+            let resData = await authService.login({
                 password: this.state.formData.password,
                 email: this.props.getStateApp.sessionData.email
-            }).then(resData => {
-                if (resData.status && resData.data.length > 0) {
-                    let user = resData.data[0];
-                    this.props.setStateApp({
-                        sessionData: {
-                            id: user._id
-                        }
-                    }, () => {
-                        this.props.router.push(PagePaths.dashboard());
-                    });
-                } else {
-                    this.setState({
-                        isSubmitting: false,
-                        isWrong: true
-                    })
-                }
             });
+            if (resData.status && resData.data.length > 0) {
+                let user = resData.data[0];
+                this.props.setStateApp({
+                    sessionData: {id: user._id}
+                }, () => {
+                    this.props.router.push(PagePaths.dashboard());
+                });
+            } else {
+                this.setState({
+                    isSubmitting: false,
+                    isWrong: true
+                })
+            }
         })
     }
 

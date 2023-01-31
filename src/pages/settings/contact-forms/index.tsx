@@ -56,21 +56,17 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
-            settingService.updateContactForm(this.state.formData).then(resData => {
-                if (resData.status) {
-                    new ThemeToast({
-                        type: "success",
-                        title: this.props.t("successful"),
-                        content: this.props.t("settingsUpdated")
-                    })
-                }
-
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
+        }, async () => {
+            let resData = await settingService.updateContactForm(this.state.formData);
+            if (resData.status) {
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: this.props.t("settingsUpdated")
                 })
-            })
+            }
+
+            this.setState({isSubmitting: false})
         })
     }
 

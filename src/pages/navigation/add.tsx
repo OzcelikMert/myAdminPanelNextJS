@@ -159,19 +159,17 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
+        }, async () => {
             let params = {
                 ...this.state.formData
             };
 
-            ((params._id)
+            let resData = await ((params._id)
                 ? navigationService.update(params)
-                : navigationService.add(params)).then(resData => {
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
-                }, () => this.setMessage())
-            });
+                : navigationService.add(params));
+            this.setState({
+                isSubmitting: false
+            }, () => this.setMessage())
         })
     }
 

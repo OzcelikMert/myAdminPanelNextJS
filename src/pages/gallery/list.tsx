@@ -134,45 +134,41 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
         })
     }
 
-    onDelete() {
-        Swal.fire({
+    async onDelete() {
+        let result = await Swal.fire({
             title: this.props.t("deleteAction"),
             html: `${this.props.t("deleteSelectedItemsQuestion")}`,
             confirmButtonText: this.props.t("yes"),
             cancelButtonText: this.props.t("no"),
             icon: "question",
             showCancelButton: true
-        }).then(result => {
-            if (result.isConfirmed) {
-                this.toast?.hide();
-                const loadingToast = new ThemeToast({
-                    title: this.props.t("loading"),
-                    content: this.props.t("deleting"),
-                    type: "loading"
-                });
+        });
+        if (result.isConfirmed) {
+            this.toast?.hide();
+            const loadingToast = new ThemeToast({
+                title: this.props.t("loading"),
+                content: this.props.t("deleting"),
+                type: "loading"
+            });
 
-                galleryService.delete({
-                    images: this.state.showingItems
-                }).then(resData => {
-                    loadingToast.hide();
-                    if (resData.status) {
-                        this.setState((state: PageState) => {
-                            state.items = state.items.filter(item => !state.selectedItems.includes(item));
-                            state.selectedItems = [];
-                            return state;
-                        }, () => {
-                            this.onSearch(this.state.searchKey);
-                            new ThemeToast({
-                                title: this.props.t("itemDeleted"),
-                                content: this.props.t("itemDeleted"),
-                                type: "success",
-                                timeOut: 3
-                            });
-                        })
-                    }
+            let resData = await galleryService.delete({images: this.state.showingItems});
+            loadingToast.hide();
+            if (resData.status) {
+                this.setState((state: PageState) => {
+                    state.items = state.items.filter(item => !state.selectedItems.includes(item));
+                    state.selectedItems = [];
+                    return state;
+                }, () => {
+                    this.onSearch(this.state.searchKey);
+                    new ThemeToast({
+                        title: this.props.t("itemDeleted"),
+                        content: this.props.t("itemDeleted"),
+                        type: "success",
+                        timeOut: 3
+                    });
                 })
             }
-        })
+        }
     }
 
     onSubmit() {

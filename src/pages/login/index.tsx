@@ -56,37 +56,36 @@ class PageLogin extends Component<PageProps, PageState> {
         this.setState({
             isWrong: false,
             isSubmitting: true
-        }, () => {
-            authService.login(this.state.formData).then(resData => {
-                if (resData.data.length > 0) {
-                    let user = resData.data[0];
-                    if(resData.status){
-                        this.props.setStateApp({
-                            sessionData: {
-                                id: user._id,
-                                langId: LanguageId.English,
-                                roleId: user.roleId,
-                                email: user.email,
-                                image: user.image,
-                                name: user.name,
-                                permissions: user.permissions
-                            }
-                        });
-                        this.props.router.push(PagePaths.dashboard());
-                    }else {
-                        this.setState({
-                            user: user
-                        })
-                    }
+        }, async () => {
+            let resData = await authService.login(this.state.formData);
+            if (resData.data.length > 0) {
+                let user = resData.data[0];
+                if(resData.status){
+                    this.props.setStateApp({
+                        sessionData: {
+                            id: user._id,
+                            langId: LanguageId.English,
+                            roleId: user.roleId,
+                            email: user.email,
+                            image: user.image,
+                            name: user.name,
+                            permissions: user.permissions
+                        }
+                    });
+                    return this.props.router.push(PagePaths.dashboard());
                 }else {
                     this.setState({
-                        isWrong: true
+                        user: user
                     })
                 }
+            }else {
                 this.setState({
-                    isSubmitting: false
+                    isWrong: true
                 })
-            });
+            }
+            this.setState({
+                isSubmitting: false
+            })
         })
     }
 

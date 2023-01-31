@@ -70,9 +70,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
     }
 
     async getUser() {
-        let resData = await userService.get({
-            userId: this.props.getStateApp.sessionData.id
-        });
+        let resData = await userService.get({_id: this.props.getStateApp.sessionData.id});
         if (resData.status) {
             const user = resData.data[0];
             this.setState((state: PageState) => {
@@ -106,22 +104,19 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
         this.setState({
             isSubmitting: true,
             isImageChanging: true
-        }, () => {
-            profileService.update({
-                image: image
-            }).then(resData => {
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    state.isImageChanging = false;
-                    state.formData.image = image;
-                    return state;
-                }, () => {
-                    this.props.setStateApp({
-                        sessionData: {
-                            image: image
-                        }
-                    })
-                });
+        }, async () => {
+            let resData = await profileService.update({image: image});
+            this.setState((state: PageState) => {
+                state.isSubmitting = false;
+                state.isImageChanging = false;
+                state.formData.image = image;
+                return state;
+            }, () => {
+                this.props.setStateApp({
+                    sessionData: {
+                        image: image
+                    }
+                })
             });
         })
         this.setState((state: PageState) => {
@@ -134,25 +129,24 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
-            profileService.update(this.state.formData).then(resData => {
-                if (resData.status) {
-                    this.props.setStateApp({
-                        sessionData: {
-                            name: this.state.formData.name
-                        }
-                    }, () => {
-                        new ThemeToast({
-                            type: "success",
-                            title: this.props.t("successful"),
-                            content: this.props.t("profileUpdated")
-                        })
+        }, async () => {
+            let resData = await profileService.update(this.state.formData);
+            if (resData.status) {
+                this.props.setStateApp({
+                    sessionData: {
+                        name: this.state.formData.name
+                    }
+                }, () => {
+                    new ThemeToast({
+                        type: "success",
+                        title: this.props.t("successful"),
+                        content: this.props.t("profileUpdated")
                     })
-                }
+                })
+            }
 
-                this.setState({
-                    isSubmitting: false
-                });
+            this.setState({
+                isSubmitting: false
             });
         })
     }

@@ -87,23 +87,19 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
-            settingService.updateStaticLanguage({
+        }, async () => {
+            let resData = await settingService.updateStaticLanguage({
                 staticLanguages: this.state.formData.staticLanguages
-            }).then(resData => {
-                if (resData.status) {
-                    new ThemeToast({
-                        type: "success",
-                        title: this.props.t("successful"),
-                        content: this.props.t("settingsUpdated")
-                    })
-                }
-
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
+            });
+            if (resData.status) {
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: this.props.t("settingsUpdated")
                 })
-            })
+            }
+
+            this.setState({isSubmitting: false})
         })
     }
 

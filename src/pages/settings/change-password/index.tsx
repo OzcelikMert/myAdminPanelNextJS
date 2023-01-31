@@ -53,26 +53,25 @@ export default class PageChangePassword extends Component<PageProps, PageState> 
 
         this.setState({
             isSubmitting: true
-        }, () => {
-            profileService.changePassword(this.state.formData).then(resData => {
-                if(resData.status) {
-                    new ThemeToast({
-                        type: "success",
-                        title: this.props.t("successful"),
-                        content: this.props.t("passwordUpdated")
-                    })
-                }else{
-                    new ThemeToast({
-                        type: "error",
-                        title: this.props.t("error"),
-                        content: this.props.t("wrongPassword")
-                    })
-                }
-
-                this.setState({
-                    isSubmitting: false
+        }, async () => {
+            let resData = await profileService.changePassword(this.state.formData);
+            if(resData.status) {
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: this.props.t("passwordUpdated")
                 })
-            });
+            }else{
+                new ThemeToast({
+                    type: "error",
+                    title: this.props.t("error"),
+                    content: this.props.t("wrongPassword")
+                })
+            }
+
+            this.setState({
+                isSubmitting: false
+            })
         })
     }
 

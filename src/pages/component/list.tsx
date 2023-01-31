@@ -51,41 +51,36 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         }, () => this.onSearch(this.state.searchKey));
     }
 
-    onDelete(_id: string) {
+    async onDelete(_id: string) {
         let item = this.state.items.findSingle("_id", _id);
-        if(item){
-            Swal.fire({
+        if (item) {
+            let result = await Swal.fire({
                 title: this.props.t("deleteAction"),
                 html: `<b>'${this.props.t(item.langKey)}'</b> ${this.props.t("deleteItemQuestionWithItemName")}`,
                 confirmButtonText: this.props.t("yes"),
                 cancelButtonText: this.props.t("no"),
                 icon: "question",
                 showCancelButton: true
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const loadingToast = new ThemeToast({
-                        content: this.props.t("deleting"),
-                        type: "loading"
-                    });
-                    componentService.delete({
-                        _id: [_id]
-                    }).then(resData => {
-                        loadingToast.hide();
-                        if (resData.status) {
-                            this.setState((state: PageState) => {
-                                state.items = state.items.filter(item => _id !== item._id);
-                                return state;
-                            }, () => {
-                                new ThemeToast({
-                                    type: "success",
-                                    title: this.props.t("successful"),
-                                    content: this.props.t("itemDeleted")
-                                })
-                            })
-                        }
+            });
+            if (result.isConfirmed) {
+                const loadingToast = new ThemeToast({
+                    content: this.props.t("deleting"),
+                    type: "loading"
+                });
+                let resData = await componentService.delete({_id: [_id]});
+                loadingToast.hide();
+                if (resData.status) {
+                    this.setState({
+                        items: this.state.items.filter(item => _id !== item._id)
+                    }, () => {
+                        new ThemeToast({
+                            type: "success",
+                            title: this.props.t("successful"),
+                            content: this.props.t("itemDeleted")
+                        })
                     })
                 }
-            })
+            }
         }
     }
 

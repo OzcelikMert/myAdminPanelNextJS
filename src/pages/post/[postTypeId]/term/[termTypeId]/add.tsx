@@ -175,37 +175,36 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
+        }, async () => {
             let params = this.state.formData;
-            ((params._id)
+            let resData = await ((params._id)
                 ? postTermService.update(params)
-                : postTermService.add(params)).then(async resData => {
-                    if (this.state.formData.typeId == PostTermTypeId.Category && resData.status) {
-                        await this.getItems();
-                    }
+                : postTermService.add(params));
+            if (this.state.formData.typeId == PostTermTypeId.Category && resData.status) {
+                await this.getItems();
+            }
 
-                    this.setState((state: PageState) => {
-                        if (resData.status) {
-                            state.formData = {
-                                ...state.formData,
-                                mainId: "",
-                                statusId: StatusId.Active,
-                                order: 0,
-                                contents: {
-                                    langId: this.props.getStateApp.pageData.mainLangId,
-                                    image: "",
-                                    title: "",
-                                    url: "",
-                                    seoTitle: "",
-                                    seoContent: "",
-                                }
-                            }
+            this.setState((state: PageState) => {
+                if (resData.status) {
+                    state.formData = {
+                        ...state.formData,
+                        mainId: "",
+                        statusId: StatusId.Active,
+                        order: 0,
+                        contents: {
+                            langId: this.props.getStateApp.pageData.mainLangId,
+                            image: "",
+                            title: "",
+                            url: "",
+                            seoTitle: "",
+                            seoContent: "",
                         }
+                    }
+                }
 
-                        state.isSubmitting = false;
-                        return state;
-                    }, () => this.setMessage());
-                });
+                state.isSubmitting = false;
+                return state;
+            }, () => this.setMessage());
         })
     }
 

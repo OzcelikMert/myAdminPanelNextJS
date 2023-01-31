@@ -67,39 +67,38 @@ export default class PageUserList extends Component<PageProps, PageState> {
         }, () => this.onSearch(this.state.searchKey));
     }
 
-    onDelete(userId: string) {
+    async onDelete(userId: string) {
         let item = this.state.items.findSingle("_id", userId);
         if (item) {
-            Swal.fire({
+            let result = await Swal.fire({
                 title: this.props.t("deleteAction"),
                 html: `<b>'${item.name}'</b> ${this.props.t("deleteItemQuestionWithItemName")}`,
                 confirmButtonText: this.props.t("yes"),
                 cancelButtonText: this.props.t("no"),
                 icon: "question",
                 showCancelButton: true
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    const loadingToast = new ThemeToast({
-                        content: this.props.t("deleting"),
-                        type: "loading"
-                    });
+            });
+            if (result.isConfirmed) {
+                const loadingToast = new ThemeToast({
+                    content: this.props.t("deleting"),
+                    type: "loading"
+                });
 
-                    let resData = await userService.delete({_id: userId})
-                    loadingToast.hide();
-                    if (resData.status) {
-                        this.setState((state: PageState) => {
-                            state.items = state.items.filter(item => userId !== item._id);
-                            return state;
-                        }, () => {
-                            new ThemeToast({
-                                type: "success",
-                                title: this.props.t("successful"),
-                                content: this.props.t("itemDeleted")
-                            })
+                let resData = await userService.delete({_id: userId})
+                loadingToast.hide();
+                if (resData.status) {
+                    this.setState((state: PageState) => {
+                        state.items = state.items.filter(item => userId !== item._id);
+                        return state;
+                    }, () => {
+                        new ThemeToast({
+                            type: "success",
+                            title: this.props.t("successful"),
+                            content: this.props.t("itemDeleted")
                         })
-                    }
+                    })
                 }
-            })
+            }
         }
     }
 

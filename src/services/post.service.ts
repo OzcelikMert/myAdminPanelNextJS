@@ -28,13 +28,13 @@ export default {
             data: params
         });
     },
-    updateStatus(params: PostUpdateViewParamDocument) {
+    updateStatus(params: PostUpdateStatusParamDocument) {
         return Api.put({
             url: [ServicePages.post, params.typeId.toString()],
             data: params
         });
     },
-    updateView(params: PostUpdateStatusParamDocument) {
+    updateView(params: PostUpdateViewParamDocument) {
         return Api.put({
             url: [ServicePages.post, "view", params.typeId.toString(), params._id.toString()],
             data: params

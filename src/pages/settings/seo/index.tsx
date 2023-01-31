@@ -80,19 +80,18 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
 
         this.setState({
             isSubmitting: true
-        }, () => {
-            settingService.updateSeo(this.state.formData).then(resData => {
-                if (resData.status) {
-                    new ThemeToast({
-                        type: "success",
-                        title: this.props.t("successful"),
-                        content: this.props.t("seoUpdated")
-                    })
-                }
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
+        }, async () => {
+            let resData = await settingService.updateSeo(this.state.formData);
+            if (resData.status) {
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: this.props.t("seoUpdated")
                 })
+            }
+            this.setState((state: PageState) => {
+                state.isSubmitting = false;
+                return state;
             })
         })
     }

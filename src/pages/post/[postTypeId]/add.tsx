@@ -319,7 +319,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         console.log(this.state);
         this.setState({
             isSubmitting: true
-        }, () => {
+        }, async () => {
             let params = {
                 ...this.state.formData,
                 terms: this.state.formData.tagTermId.concat(this.state.formData.categoryTermId),
@@ -330,14 +330,12 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 }
             };
 
-            ((params._id)
+            let resData = await ((params._id)
                 ? postService.update(params)
-                : postService.add(params)).then(resData => {
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
-                }, () => this.setMessage())
-            });
+                : postService.add(params));
+            this.setState({
+                isSubmitting: false
+            }, () => this.setMessage())
         })
     }
 

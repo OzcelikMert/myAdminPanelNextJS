@@ -79,42 +79,41 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         let selectedItemId = this.state.selectedItems.map(item => item._id);
 
         if (statusId === StatusId.Deleted && this.state.listMode === "deleted") {
-            Swal.fire({
+            let result = await Swal.fire({
                 title: this.props.t("deleteAction"),
                 text: this.props.t("deleteSelectedItemsQuestion"),
                 confirmButtonText: this.props.t("yes"),
                 cancelButtonText: this.props.t("no"),
                 icon: "question",
                 showCancelButton: true
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    const loadingToast = new ThemeToast({
-                        content: this.props.t("deleting"),
-                        type: "loading"
-                    });
+            });
+            if (result.isConfirmed) {
+                const loadingToast = new ThemeToast({
+                    content: this.props.t("deleting"),
+                    type: "loading"
+                });
 
-                    let resData = await postTermService.delete({
-                        _id: selectedItemId,
-                        typeId: this.state.typeId,
-                        postTypeId: this.state.postTypeId
-                    })
+                let resData = await postTermService.delete({
+                    _id: selectedItemId,
+                    typeId: this.state.typeId,
+                    postTypeId: this.state.postTypeId
+                })
 
-                    loadingToast.hide();
-                    if (resData.status) {
-                        this.setState((state: PageState) => {
-                            state.items = state.items.filter(item => !selectedItemId.includes(item._id))
-                            return state;
-                        }, () => {
-                            new ThemeToast({
-                                type: "success",
-                                title: this.props.t("successful"),
-                                content: this.props.t("itemDeleted")
-                            })
-                            this.onChangeListMode(this.state.listMode);
+                loadingToast.hide();
+                if (resData.status) {
+                    this.setState((state: PageState) => {
+                        state.items = state.items.filter(item => !selectedItemId.includes(item._id))
+                        return state;
+                    }, () => {
+                        new ThemeToast({
+                            type: "success",
+                            title: this.props.t("successful"),
+                            content: this.props.t("itemDeleted")
                         })
-                    }
+                        this.onChangeListMode(this.state.listMode);
+                    })
                 }
-            })
+            }
         } else {
             const loadingToast = new ThemeToast({
                 content: this.props.t("updating"),

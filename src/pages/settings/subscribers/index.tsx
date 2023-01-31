@@ -54,44 +54,42 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         }, () => this.onSearch(this.state.searchKey));
     }
 
-    onDelete(event: any) {
+    async onDelete(event: any) {
         event.preventDefault();
         let selectedItemId = this.state.selectedItems.map(item => item._id);
 
-        Swal.fire({
+        let result = await Swal.fire({
             title: this.props.t("deleteAction"),
             text: this.props.t("deleteSelectedItemsQuestion"),
             confirmButtonText: this.props.t("yes"),
             cancelButtonText: this.props.t("no"),
             icon: "question",
             showCancelButton: true
-        }).then(result => {
-            if (result.isConfirmed) {
-                const loadingToast = new ThemeToast({
-                    content: this.props.t("deleting"),
-                    type: "loading"
-                });
+        });
+        if (result.isConfirmed) {
+            const loadingToast = new ThemeToast({
+                content: this.props.t("deleting"),
+                type: "loading"
+            });
 
-                subscriberService.delete({
-                    _id: selectedItemId
-                }).then(resData => {
-                    loadingToast.hide();
-                    if (resData.status) {
-                        this.setState((state: PageState) => {
-                            state.items = state.items.filter(item => !selectedItemId.includes(item._id));
-                            return state;
-                        }, () => {
-                            new ThemeToast({
-                                type: "success",
-                                title: this.props.t("successful"),
-                                content: this.props.t("itemDeleted")
-                            })
-                            this.onSearch(this.state.searchKey)
-                        })
-                    }
+            let resData = await subscriberService.delete({
+                _id: selectedItemId
+            });
+            loadingToast.hide();
+            if (resData.status) {
+                this.setState((state: PageState) => {
+                    state.items = state.items.filter(item => !selectedItemId.includes(item._id));
+                    return state;
+                }, () => {
+                    new ThemeToast({
+                        type: "success",
+                        title: this.props.t("successful"),
+                        content: this.props.t("itemDeleted")
+                    })
+                    this.onSearch(this.state.searchKey)
                 })
             }
-        })
+        }
     }
 
     onSelect(selectedRows: PageState["items"]) {

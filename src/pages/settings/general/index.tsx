@@ -128,37 +128,35 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
-            settingService.updateGeneral({
+        }, async () => {
+            let resData = await settingService.updateGeneral({
                 ...this.state.formData,
                 head: this.state.formData.head,
                 script: this.state.formData.script,
-            }).then(resData => {
-                if (resData.status) {
-                    this.props.setStateApp({
-                        pageData: {
-                            mainLangId: this.state.formData.defaultLangId
-                        }
-                    }, () => {
-                        new ThemeToast({
-                            type: "success",
-                            title: this.props.t("successful"),
-                            content: this.props.t("settingsUpdated")
-                        })
-                    });
-                }
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
-                }, () => {
-                    if (this.state.formData.panelLangId != localStorageUtil.adminLanguage.get.toString()) {
-                        let language = Languages.findSingle("id", Number(this.state.formData.panelLangId));
-                        if (language) {
-                            localStorageUtil.adminLanguage.set(Number(this.state.formData.panelLangId));
-                            window.location.reload();
-                        }
+            });
+            if (resData.status) {
+                this.props.setStateApp({
+                    pageData: {
+                        mainLangId: this.state.formData.defaultLangId
                     }
-                })
+                }, () => {
+                    new ThemeToast({
+                        type: "success",
+                        title: this.props.t("successful"),
+                        content: this.props.t("settingsUpdated")
+                    })
+                });
+            }
+            this.setState({
+                isSubmitting: false
+            }, () => {
+                if (this.state.formData.panelLangId != localStorageUtil.adminLanguage.get.toString()) {
+                    let language = Languages.findSingle("id", Number(this.state.formData.panelLangId));
+                    if (language) {
+                        localStorageUtil.adminLanguage.set(Number(this.state.formData.panelLangId));
+                        window.location.reload();
+                    }
+                }
             })
         })
     }

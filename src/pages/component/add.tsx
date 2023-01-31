@@ -20,7 +20,7 @@ type PageState = {
     isSubmitting: boolean
     mainTitle: string,
     formData: ComponentUpdateParamDocument,
-} & {[key: string]: any};
+} & { [key: string]: any };
 
 type PageProps = {} & PagePropCommonDocument;
 
@@ -100,7 +100,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         let resData = await componentService.get({
             _id: this.state.formData._id,
             langId: this.props.getStateApp.pageData.langId,
-            getContents: 1
+            getContents: true
         });
         if (resData.status) {
             if (resData.data.length > 0) {
@@ -141,16 +141,14 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         event.preventDefault();
         this.setState({
             isSubmitting: true
-        }, () => {
+        }, async () => {
             let params = this.state.formData;
-            ((params._id)
+            let resData = await ((params._id)
                 ? componentService.update(params)
-                : componentService.add(params)).then(resData => {
-                this.setState((state: PageState) => {
-                    state.isSubmitting = false;
-                    return state;
-                }, () => this.setMessage())
-            });
+                : componentService.add(params))
+            this.setState({
+                isSubmitting: false
+            }, () => this.setMessage())
         })
     }
 
@@ -158,48 +156,45 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         this.navigatePage()
     }
 
-    get TabThemeEvents() {
-        let self = this;
-        return {
-            onInputChange(data: any, key: string, value: any) {
-                self.setState((state: PageState) => {
-                    data[key] = value;
-                    return state;
-                }, () => {})
-            },
-            onCreateType() {
-                self.setState((state: PageState) => {
-                    state.formData.types.push({
-                        _id: String.createId(),
-                        elementId: "",
-                        order: state.formData.types.length,
-                        langKey: "[noLangAdd]",
-                        typeId: ComponentInputTypeId.Text,
-                        contents: {
-                            langId: self.props.getStateApp.pageData.langId,
-                            content: ""
-                        }
-                    })
-                    return state;
-                })
-            },
-            onDelete(componentTypes: ComponentTypeDocument[], index: number) {
-                Swal.fire({
-                    title: self.props.t("deleteAction"),
-                    html: `<b>'${self.props.t(componentTypes[index].langKey)}'</b> ${self.props.t("deleteItemQuestionWithItemName")}`,
-                    confirmButtonText: self.props.t("yes"),
-                    cancelButtonText: self.props.t("no"),
-                    icon: "question",
-                    showCancelButton: true
-                }).then(result => {
-                    if (result.isConfirmed) {
-                        self.setState((state: PageState) => {
-                            componentTypes.splice(index, 1);
-                            return state;
-                        })
-                    }
-                })
-            },
+    onInputChange(data: any, key: string, value: any) {
+        this.setState((state: PageState) => {
+            data[key] = value;
+            return state;
+        }, () => {
+        })
+    }
+
+    onCreateType() {
+        this.setState((state: PageState) => {
+            state.formData.types.push({
+                _id: String.createId(),
+                elementId: "",
+                order: state.formData.types.length,
+                langKey: "[noLangAdd]",
+                typeId: ComponentInputTypeId.Text,
+                contents: {
+                    langId: this.props.getStateApp.pageData.langId,
+                    content: ""
+                }
+            })
+            return state;
+        })
+    }
+
+    async onDelete(componentTypes: ComponentTypeDocument[], index: number) {
+        let result = await Swal.fire({
+            title: this.props.t("deleteAction"),
+            html: `<b>'${this.props.t(componentTypes[index].langKey)}'</b> ${this.props.t("deleteItemQuestionWithItemName")}`,
+            confirmButtonText: this.props.t("yes"),
+            cancelButtonText: this.props.t("no"),
+            icon: "question",
+            showCancelButton: true
+        });
+        if (result.isConfirmed) {
+            this.setState((state: PageState) => {
+                componentTypes.splice(index, 1);
+                return state;
+            })
         }
     }
 
@@ -223,7 +218,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         type={"textarea"}
                         title={this.props.t(typeProps.langKey)}
                         value={typeProps.contents?.content}
-                        onChange={e => this.TabThemeEvents.onInputChange(typeProps.contents, "content", e.target.value)}
+                        onChange={e => this.onInputChange(typeProps.contents, "content", e.target.value)}
                     />
                     break;
                 case ComponentInputTypeId.Image:
@@ -238,7 +233,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                 return state;
                             })}
                             onSelected={images => this.setState((state: PageState) => {
-                                if(typeProps.contents){
+                                if (typeProps.contents) {
                                     typeProps.contents.content = images[0];
                                 }
                                 return state;
@@ -272,7 +267,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                     type={"text"}
                                     title={`${this.props.t(typeProps.langKey)} ${typeProps.contents?.comment ? `(${typeProps.contents.comment})` : ""}`}
                                     value={typeProps.contents?.content}
-                                    onChange={e => this.TabThemeEvents.onInputChange(typeProps.contents, "content", e.target.value)}
+                                    onChange={e => this.onInputChange(typeProps.contents, "content", e.target.value)}
                                 />
                             </div>
                             <div className="col-md-6 mt-3 mt-lg-0">
@@ -280,7 +275,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                     type={"text"}
                                     title={this.props.t("url")}
                                     value={typeProps.contents?.url || ""}
-                                    onChange={e => this.TabThemeEvents.onInputChange(typeProps.contents, "url", e.target.value)}
+                                    onChange={e => this.onInputChange(typeProps.contents, "url", e.target.value)}
                                 />
                             </div>
                         </div>
@@ -291,7 +286,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         type={"number"}
                         title={`${this.props.t(typeProps.langKey)} ${typeProps.contents?.comment ? `(${typeProps.contents.comment})` : ""}`}
                         value={typeProps.contents?.content}
-                        onChange={e => this.TabThemeEvents.onInputChange(typeProps.contents, "content", e.target.value)}
+                        onChange={e => this.onInputChange(typeProps.contents, "content", e.target.value)}
                     />
                     break;
                 default:
@@ -299,7 +294,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         type={"text"}
                         title={`${this.props.t(typeProps.langKey)} ${typeProps.contents?.comment ? `(${typeProps.contents.comment})` : ""}`}
                         value={typeProps.contents?.content}
-                        onChange={e => this.TabThemeEvents.onInputChange(typeProps.contents, "content", e.target.value)}
+                        onChange={e => this.onInputChange(typeProps.contents, "content", e.target.value)}
                     />
                     break;
             }
@@ -311,7 +306,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                             this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12">
                                     <button type={"button"} className="btn btn-gradient-danger btn-lg"
-                                            onClick={() => this.TabThemeEvents.onDelete(this.state.formData.types, typeIndex)}>{this.props.t("delete")}</button>
+                                            onClick={() => this.onDelete(this.state.formData.types, typeIndex)}>{this.props.t("delete")}</button>
                                 </div> : null
                         }
                         {
@@ -322,7 +317,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                         type="text"
                                         required={true}
                                         value={typeProps.elementId}
-                                        onChange={e => this.TabThemeEvents.onInputChange(typeProps, "elementId", e.target.value)}
+                                        onChange={e => this.onInputChange(typeProps, "elementId", e.target.value)}
                                     />
                                 </div> : null
                         }
@@ -334,7 +329,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                         placeholder={this.props.t("langKey")}
                                         options={this.state.langKeys}
                                         value={this.state.langKeys.filter(item => item.value == typeProps.langKey)}
-                                        onChange={(item: any, e) => this.TabThemeEvents.onInputChange(typeProps, "langKey", item.value)}
+                                        onChange={(item: any, e) => this.onInputChange(typeProps, "langKey", item.value)}
                                     />
                                 </div> : null
                         }
@@ -346,7 +341,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                         placeholder={this.props.t("typeId")}
                                         options={this.state.types}
                                         value={this.state.types.filter(item => item.value == typeProps.typeId)}
-                                        onChange={(item: any, e) => this.TabThemeEvents.onInputChange(typeProps, "typeId", item.value)}
+                                        onChange={(item: any, e) => this.onInputChange(typeProps, "typeId", item.value)}
                                     />
                                 </div> : null
                         }
@@ -357,7 +352,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                         title={`${this.props.t("comment")}`}
                                         type="text"
                                         value={typeProps.contents?.comment}
-                                        onChange={e => this.TabThemeEvents.onInputChange(typeProps.contents, "comment", e.target.value)}
+                                        onChange={e => this.onInputChange(typeProps.contents, "comment", e.target.value)}
                                     />
                                 </div> : null
                         }
@@ -369,7 +364,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                                         type="number"
                                         required={true}
                                         value={typeProps.order}
-                                        onChange={e => this.TabThemeEvents.onInputChange(typeProps, "order", e.target.value)}
+                                        onChange={e => this.onInputChange(typeProps, "order", e.target.value)}
                                     />
                                 </div> : null
                         }
@@ -391,7 +386,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                     this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                         ? <div className="col-md-7">
                             <button type={"button"} className="btn btn-gradient-success btn-lg"
-                                    onClick={() => this.TabThemeEvents.onCreateType()}>+ {this.props.t("newType")}
+                                    onClick={() => this.onCreateType()}>+ {this.props.t("newType")}
                             </button>
                         </div> : null
                 }
