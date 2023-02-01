@@ -101,6 +101,51 @@ class AppAdmin extends Component<PageProps, PageState> {
         })
     }
 
+    PageHeader = (props: PagePropCommonDocument) => {
+        let multiLangPaths = [
+            PagePaths.post().edit(),
+            PagePaths.post().term().edit(),
+            PagePaths.eCommerce().product().edit(),
+            PagePaths.eCommerce().product().term().edit(),
+            PagePaths.themeContent().post().edit(),
+            PagePaths.themeContent().post().term().edit(),
+            PagePaths.navigation().edit(),
+            PagePaths.component().edit(),
+            PagePaths.settings().staticLanguages(),
+            PagePaths.settings().seo()
+        ]
+        let path = props.router.pathname.replaceAll("[", ":").replaceAll("]", "");
+
+        return (
+            <div className="page-header">
+                <div className="row w-100 m-0">
+                    <div className="col-md-8 p-0">
+                        <ThemeBreadCrumb breadCrumbs={this.state.breadCrumbTitle.split(" - ")}/>
+                    </div>
+                    {
+                        multiLangPaths.includes(path)
+                            ? <div className="col-md-4 p-0 content-language">
+                                <ThemeContentLanguage
+                                    t={props.t}
+                                    options={this.state.contentLanguages}
+                                    value={this.state.contentLanguages.findSingle("_id", this.state.pageData.langId)}
+                                    onChange={(item, e) => this.setState((state: PageState) => {
+                                        return {
+                                            ...state,
+                                            pageData: {
+                                                ...state.pageData,
+                                                langId: item.value
+                                            }
+                                        };
+                                    })}
+                                />
+                            </div> : null
+                    }
+                </div>
+            </div>
+        )
+    }
+
     render() {
         if (this.pathname !== this.props.router.asPath) {
             return null;
@@ -140,32 +185,7 @@ class AppAdmin extends Component<PageProps, PageState> {
                                         <div className="main-panel">
                                             <div className="content-wrapper">
                                                 {
-                                                    !isFullPageLayout ?
-                                                        <div className="page-header">
-                                                            <div className="row w-100 m-0">
-                                                                <div className="col-md-8 p-0">
-                                                                    <ThemeBreadCrumb
-                                                                        breadCrumbs={this.state.breadCrumbTitle.split(" - ")}/>
-                                                                </div>
-                                                                <div className="col-md-4 p-0 content-language">
-                                                                    <ThemeContentLanguage
-                                                                        t={commonProps.t}
-                                                                        router={this.props.router}
-                                                                        options={this.state.contentLanguages}
-                                                                        value={this.state.contentLanguages.findSingle("_id", this.state.pageData.langId)}
-                                                                        onChange={(item, e) => this.setState((state: PageState) => {
-                                                                            return {
-                                                                                ...state,
-                                                                                pageData: {
-                                                                                    ...state.pageData,
-                                                                                    langId: item.value
-                                                                                }
-                                                                            };
-                                                                        })}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </div> : null
+                                                    !isFullPageLayout ? <this.PageHeader {...commonProps} />: null
                                                 }
                                                 <this.props.Component {...commonProps}/>
                                             </div>

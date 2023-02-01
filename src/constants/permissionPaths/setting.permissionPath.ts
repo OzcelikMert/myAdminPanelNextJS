@@ -13,10 +13,6 @@ export default [
         permissionId: PermissionId.SettingEdit
     },
     {
-        path: PagePaths.settings().subscribers(),
-        permissionId: PermissionId.SubscriberEdit
-    },
-    {
         path: PagePaths.settings().contactForms(),
         userRoleId: UserRoleId.Admin
     },
@@ -25,19 +21,11 @@ export default [
         permissionId: PermissionId.StaticLanguage
     },
     {
-        path: PagePaths.settings().user().add(),
-        permissionId: PermissionId.ComponentEdit
-    },
-    {
-        path: PagePaths.settings().user().edit(),
-        permissionId: PermissionId.ComponentEdit
-    },
-    {
         path: PagePaths.settings().socialMedia(),
         permissionId: PermissionId.SettingEdit
     },
     {
         path: PagePaths.eCommerce().settings(),
         userRoleId: UserRoleId.Admin
-    },
+    }
 ] as PermissionPathDocument[]

@@ -60,8 +60,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
         });
     }
 
-    onChangeStatus = async (event: any, statusId: number) => {
-        event.preventDefault();
+    onChangeStatus = async (statusId: number) => {
         let selectedItemId = this.state.selectedItems.map(item => item._id);
         if (statusId === StatusId.Deleted && this.state.listMode === "deleted") {
             let result = await Swal.fire({
@@ -155,15 +154,35 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
         let pagePath = PagePaths.navigation();
         let path = "";
         switch(type){
-            case "edit": pagePath.edit(itemId); break;
+            case "edit": path = pagePath.edit(itemId); break;
         }
         this.props.router.push(path);
+    }
+
+    get getToggleMenuItems() {
+        return Status.findMulti("id", [
+                StatusId.Active,
+                StatusId.Pending,
+                StatusId.InProgress
+            ].concat(
+                permissionLib.checkPermission(
+                    this.props.getStateApp.sessionData.roleId,
+                    this.props.getStateApp.sessionData.permissions,
+                    PermissionId.NavigationDelete
+                ) ? [StatusId.Deleted] : []
+            )
+        )
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
-                name: this.props.t("title"),
+                name: this.state.isShowToggleMenu ? (
+                    <ThemeTableToggleMenu
+                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        onChange={(value) => this.onChangeStatus(value)}
+                    />
+                ) : this.props.t("title"),
                 selector: row => row.contents?.title || this.props.t("[noLangAdd]"),
                 cell: row => (
                     <div className="row w-100">
@@ -235,39 +254,6 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                     <div className="card">
                         <div className="card-body">
                             <div className="table-post">
-                                <div className={`ms-2 ${!this.state.isShowToggleMenu ? "invisible" : ""}`}>
-                                    {
-                                        (
-                                            permissionLib.checkPermission(
-                                                this.props.getStateApp.sessionData.roleId,
-                                                this.props.getStateApp.sessionData.permissions,
-                                                PermissionId.NavigationEdit
-                                            ) ||
-                                            permissionLib.checkPermission(
-                                                this.props.getStateApp.sessionData.roleId,
-                                                this.props.getStateApp.sessionData.permissions,
-                                                PermissionId.NavigationDelete
-                                            )
-                                        ) ? <ThemeTableToggleMenu
-                                            t={this.props.t}
-                                            status={
-                                                [
-                                                    StatusId.Active,
-                                                    StatusId.Pending,
-                                                    StatusId.InProgress
-                                                ].concat(
-                                                    permissionLib.checkPermission(
-                                                        this.props.getStateApp.sessionData.roleId,
-                                                        this.props.getStateApp.sessionData.permissions,
-                                                        PermissionId.NavigationDelete
-                                                    ) ? [StatusId.Deleted] : []
-                                                )
-                                            }
-                                            onChange={(event, statusId) => this.onChangeStatus(event, statusId)}
-                                            langId={this.props.getStateApp.sessionData.langId}
-                                        /> : null
-                                    }
-                                </div>
                                 <ThemeDataTable
                                     columns={this.getTableColumns.filter(column => typeof column.name !== "undefined")}
                                     data={this.state.showingItems}
@@ -275,7 +261,18 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                                     onSearch={searchKey => this.onSearch(searchKey)}
                                     selectedRows={this.state.selectedItems}
                                     t={this.props.t}
-                                    isSelectable={true}
+                                    isSelectable={(
+                                        permissionLib.checkPermission(
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
+                                            PermissionId.NavigationEdit
+                                        ) ||
+                                        permissionLib.checkPermission(
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
+                                            PermissionId.NavigationDelete
+                                        )
+                                    )}
                                     isAllSelectable={true}
                                     isSearchable={true}
                                 />

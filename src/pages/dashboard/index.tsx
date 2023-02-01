@@ -121,13 +121,20 @@ class PageDashboard extends Component<PageProps, PageState> {
         });
     }
 
-    async navigateTermPage(type: "termEdit" | "edit" | "listPost", postTypeId: number, itemId = "", termTypeId = 0) {
+    async navigatePage(type: "termEdit" | "edit" | "listPost", postTypeId: number, itemId = "", termTypeId = 0) {
         let pagePath = PostLib.getPagePath(postTypeId);
-        let path = (type === "edit")
-            ? pagePath.edit(itemId)
-            : (type === "listPost")
-                ? pagePath.list()
-                : pagePath.term(termTypeId).edit(itemId)
+        let path = "";
+        switch (type) {
+            case "edit":
+                path = pagePath.edit(itemId);
+                break;
+            case "termEdit":
+                path = pagePath.term(termTypeId).edit(itemId);
+                break;
+            case "listPost":
+                path = pagePath.list();
+                break;
+        }
         await this.props.router.push(path);
     }
 
@@ -154,7 +161,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                 sortable: true,
                 cell: row => (
                     <label
-                        onClick={() => this.navigateTermPage("listPost", row.typeId, row._id)}
+                        onClick={() => this.navigatePage("listPost", row.typeId, row._id)}
                         className={`badge badge-gradient-primary cursor-pointer`}
                     >
                         {
@@ -195,7 +202,7 @@ class PageDashboard extends Component<PageProps, PageState> {
                     permissionLib.getPermissionIdForPostType(row.typeId, "Edit")
                 ) ? (
                     <button
-                        onClick={() => this.navigateTermPage("edit", row.typeId, row._id)}
+                        onClick={() => this.navigatePage("edit", row.typeId, row._id)}
                         className="btn btn-gradient-warning"
                     ><i className="fa fa-pencil-square-o"></i></button>
                 ) : null

@@ -6,6 +6,9 @@ import postPermissionPath from "./post.permissionPath";
 import postTermPermissionPath from "./postTerm.permissionPath";
 import navigationPermissionPath from "./navigation.permissionPath";
 import eCommercePermissionPath from "./eCommerce.permissionPath";
+import languagePermissionPath from "constants/permissionPaths/language.permissionPath";
+import userPermissionPath from "constants/permissionPaths/user.permissionPath";
+import subscriberPermissionPath from "constants/permissionPaths/subscriber.permissionPath";
 
 const PermissionPaths: PermissionPathDocument[] = [
     ...galleryPermissionPath,
@@ -14,7 +17,10 @@ const PermissionPaths: PermissionPathDocument[] = [
     ...postPermissionPath,
     ...postTermPermissionPath,
     ...navigationPermissionPath,
-    ...eCommercePermissionPath
+    ...eCommercePermissionPath,
+    ...languagePermissionPath,
+    ...userPermissionPath,
+    ...subscriberPermissionPath
 ];
 
 export default PermissionPaths;

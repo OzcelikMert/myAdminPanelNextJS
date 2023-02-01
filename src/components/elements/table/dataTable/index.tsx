@@ -111,7 +111,7 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
 
     render() {
         return (
-            <div>
+            <div className="theme-table">
                 { this.props.isSearchable ?
                     <div className="row pt-2 pb-2 m-0">
                         <div className="col-md-8"></div>

@@ -10,5 +10,12 @@ export default interface LanguageDocument {
 }
 
 export interface LanguageGetParamDocument {
-    id?: string
+    _id?: string
 }
+
+export type LanguageUpdateParamDocument = {
+    _id: string
+} & LanguageAddParamDocument
+
+export type LanguageAddParamDocument = {} & Omit<LanguageDocument, "_id">
+

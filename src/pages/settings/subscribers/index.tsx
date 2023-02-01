@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {PermissionId, StatusId} from "constants/index";
+import {PermissionId, Status, StatusId} from "constants/index";
 import  {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
@@ -54,8 +54,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         }, () => this.onSearch(this.state.searchKey));
     }
 
-    async onDelete(event: any) {
-        event.preventDefault();
+    async onDelete(statusId: number) {
         let selectedItemId = this.state.selectedItems.map(item => item._id);
 
         let result = await Swal.fire({
@@ -107,12 +106,24 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         })
     }
 
+    get getToggleMenuItems() {
+        return Status.findMulti("id", [
+                StatusId.Deleted
+            ]
+        )
+    }
+
     get getTableColumns(): TableColumn<PageState["items"][0]>[] {
         return [
             {
-                name: this.props.t("email"),
+                name: this.state.isShowToggleMenu ? (
+                    <ThemeTableToggleMenu
+                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        onChange={(value) => this.onDelete(value)}
+                    />
+                ) : this.props.t("email"),
                 selector: row => row.email,
-                sortable: true,
+                sortable: !this.state.isShowToggleMenu,
             },
             {
                 name: this.props.t("createdDate"),
@@ -129,26 +140,6 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                     <div className="card">
                         <div className="card-body">
                             <div className="table-post">
-                                <div className={`ms-2 ${!this.state.isShowToggleMenu ? "invisible" : ""}`}>
-                                    {
-                                        (
-                                            permissionLib.checkPermission(
-                                                this.props.getStateApp.sessionData.roleId,
-                                                this.props.getStateApp.sessionData.permissions,
-                                                PermissionId.SubscriberEdit
-                                            )
-                                        ) ? <ThemeTableToggleMenu
-                                            t={this.props.t}
-                                            status={
-                                                [
-                                                    StatusId.Deleted
-                                                ]
-                                            }
-                                            onChange={(event, statusId) => this.onDelete(event)}
-                                            langId={this.props.getStateApp.sessionData.langId}
-                                        /> : null
-                                    }
-                                </div>
                                 <ThemeDataTable
                                     columns={this.getTableColumns}
                                     data={this.state.showingItems}
@@ -156,7 +147,13 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                                     t={this.props.t}
                                     onSelect={rows => this.onSelect(rows)}
                                     onSearch={searchKey => this.onSearch(searchKey)}
-                                    isSelectable={true}
+                                    isSelectable={(
+                                        permissionLib.checkPermission(
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
+                                            PermissionId.SubscriberEdit
+                                        )
+                                    )}
                                     isAllSelectable={true}
                                     isSearchable={true}
                                 />

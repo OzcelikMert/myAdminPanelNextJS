@@ -174,6 +174,24 @@ const PagePaths = {
                         return pagePathLib.setPath(path, "list");
                     },
                 }
+            },
+            language() {
+                path = pagePathLib.setPath(path, "language");
+
+                return {
+                    self() {
+                        return pagePathLib.setPath(path);
+                    },
+                    add() {
+                        return pagePathLib.setPath(path, "add");
+                    },
+                    edit(_id: string | number | undefined = ":_id") {
+                        return pagePathLib.setPath(path, "edit", _id);
+                    },
+                    list() {
+                        return pagePathLib.setPath(path, "list");
+                    },
+                }
             }
         }
     }

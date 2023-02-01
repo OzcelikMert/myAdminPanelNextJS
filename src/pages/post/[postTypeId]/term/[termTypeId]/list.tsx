@@ -74,8 +74,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         })
     }
 
-    async onChangeStatus(event: any, statusId: number) {
-        event.preventDefault();
+    async onChangeStatus(statusId: number) {
         let selectedItemId = this.state.selectedItems.map(item => item._id);
 
         if (statusId === StatusId.Deleted && this.state.listMode === "deleted") {
@@ -191,10 +190,30 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         this.props.router.push(path);
     }
 
+    get getToggleMenuItems() {
+        return Status.findMulti("id", [
+                StatusId.Active,
+                StatusId.Pending,
+                StatusId.InProgress
+            ].concat(
+                permissionLib.checkPermission(
+                    this.props.getStateApp.sessionData.roleId,
+                    this.props.getStateApp.sessionData.permissions,
+                    permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
+                ) ? [StatusId.Deleted] : []
+            )
+        )
+    }
+
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
-                name: this.props.t("image"),
+                name: this.state.isShowToggleMenu ? (
+                    <ThemeTableToggleMenu
+                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        onChange={(value) => this.onChangeStatus(value)}
+                    />
+                ) : this.props.t("image"),
                 width: "75px",
                 cell: row => (
                     <div className="image pt-2 pb-2">
@@ -292,39 +311,6 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                     <div className="card">
                         <div className="card-body">
                             <div className="table-post">
-                                <div className={`ms-2 ${!this.state.isShowToggleMenu ? "invisible" : ""}`}>
-                                    {
-                                        (
-                                            permissionLib.checkPermission(
-                                                this.props.getStateApp.sessionData.roleId,
-                                                this.props.getStateApp.sessionData.permissions,
-                                                permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Edit")
-                                            ) ||
-                                            permissionLib.checkPermission(
-                                                this.props.getStateApp.sessionData.roleId,
-                                                this.props.getStateApp.sessionData.permissions,
-                                                permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
-                                            )
-                                        ) ? <ThemeTableToggleMenu
-                                            t={this.props.t}
-                                            status={
-                                                [
-                                                    StatusId.Active,
-                                                    StatusId.Pending,
-                                                    StatusId.InProgress
-                                                ].concat(
-                                                    permissionLib.checkPermission(
-                                                        this.props.getStateApp.sessionData.roleId,
-                                                        this.props.getStateApp.sessionData.permissions,
-                                                        permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
-                                                    ) ? [StatusId.Deleted] : []
-                                                )
-                                            }
-                                            onChange={(event, statusId) => this.onChangeStatus(event, statusId)}
-                                            langId={this.props.getStateApp.sessionData.langId}
-                                        /> : null
-                                    }
-                                </div>
                                 <ThemeDataTable
                                     columns={this.getTableColumns}
                                     data={this.state.showingItems}
@@ -332,7 +318,18 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                     onSearch={searchKey => this.onSearch(searchKey)}
                                     selectedRows={this.state.selectedItems}
                                     t={this.props.t}
-                                    isSelectable={true}
+                                    isSelectable={(
+                                        permissionLib.checkPermission(
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
+                                            permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Edit")
+                                        ) ||
+                                        permissionLib.checkPermission(
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
+                                            permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
+                                        )
+                                    )}
                                     isAllSelectable={true}
                                     isSearchable={true}
                                 />

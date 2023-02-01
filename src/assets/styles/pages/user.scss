@@ -1,19 +1,11 @@
 .page-user {
   .table-user {
-    overflow: hidden;
-    position: relative;
     .table-responsive {
-      min-height: 550px;
       .image {
         position: relative;
         width: 50px;
         height: 50px;
         border-radius: 100%;
-        img {
-          width: 50px;
-          height: 50px;
-          border-radius: 75px;
-        }
         .availability-status {
           position: absolute;
           width: 15px;
@@ -34,8 +26,5 @@
         }
       }
     }
-  }
-  .btn-save {
-    padding: 15px 40px 15px 40px;
   }
 }

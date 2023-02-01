@@ -1,4 +1,7 @@
 export const LanguageKeysArray = [
+    "locale",
+    "shortKey",
+    "languages",
     "currencyType",
     "newSocialMedia",
     "variations",
@@ -7,6 +10,7 @@ export const LanguageKeysArray = [
     "variableProduct",
     "product",
     "eCommerce",
+
     "outGoingEmail",
     "worldMap",
     "visitors",

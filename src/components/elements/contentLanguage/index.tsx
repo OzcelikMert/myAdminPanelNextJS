@@ -9,7 +9,6 @@ import Image from "next/image"
 type PageState = {};
 
 type PageProps = {
-    router: PagePropCommonDocument["router"]
     t: PagePropCommonDocument["t"]
     options: LanguageDocument[]
     value?: LanguageDocument
@@ -36,21 +35,7 @@ export default class ThemeContentLanguage extends Component<PageProps, PageState
 
 
     render() {
-        const showingPages = [
-            PagePaths.component().edit(),
-            PagePaths.post().edit(),
-            PagePaths.post().term().edit(),
-            PagePaths.themeContent().post().edit(),
-            PagePaths.themeContent().post().term().edit(),
-            PagePaths.settings().seo(),
-            PagePaths.settings().staticLanguages()
-        ];
-
-        let isShow = showingPages.map(page => {
-            return this.props.router.pathname.indexOf(page) > -1
-        }).includes(true);
-
-        return isShow ? (
+        return (
             <ThemeFormSelect
                 title={this.props.t("contentLanguage")}
                 isSearchable={false}
@@ -58,6 +43,6 @@ export default class ThemeContentLanguage extends Component<PageProps, PageState
                 value={ this.props.value ? {label: <this.Item {...this.props.value} />, value: this.props.value._id} : undefined }
                 onChange={(item: any, e) => this.props.onChange(item, e)}
             />
-        ) : <div></div>
+        )
     }
 }

@@ -158,12 +158,12 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     this.setPageTitle();
                 })
             } else {
-                this.navigateTermPage();
+                this.navigatePage();
             }
         }
     }
 
-    navigateTermPage() {
+    navigatePage() {
         let postTypeId = this.state.formData.postTypeId;
         let postTermTypeId = this.state.formData.typeId;
         let pagePath = PostLib.getPagePath(postTypeId);
@@ -221,7 +221,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     onCloseSuccessMessage() {
         if (this.state.formData._id) {
-            this.navigateTermPage();
+            this.navigatePage();
         }
     }
 
@@ -353,7 +353,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                         <div className="row">
                             <div className="col-6">
                                 <button className="btn btn-gradient-dark btn-lg btn-icon-text w-100"
-                                    onClick={() => this.navigateTermPage()}>
+                                    onClick={() => this.navigatePage()}>
                                     <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
                                 </button>
                             </div>

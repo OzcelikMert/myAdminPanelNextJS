@@ -82,8 +82,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
         });
     }
 
-    onChangeStatus = async (event: any, statusId: number) => {
-        event.preventDefault();
+    onChangeStatus = async (statusId: number) => {
         let selectedItemId = this.state.selectedItems.map(item => item._id);
         if (statusId === StatusId.Deleted && this.state.listMode === "deleted") {
             let result = await Swal.fire({
@@ -182,18 +181,44 @@ export default class PagePostList extends Component<PageProps, PageState> {
         let postTypeId = this.state.typeId;
         let pagePath = PostLib.getPagePath(postTypeId);
         let path = "";
-        switch(type){
-            case "edit": path = pagePath.edit(itemId); break;
-            case "termEdit": path = pagePath.term(termTypeId).edit(itemId); break;
-            case "termList": path = pagePath.term(termTypeId).list(); break;
+        switch (type) {
+            case "edit":
+                path = pagePath.edit(itemId);
+                break;
+            case "termEdit":
+                path = pagePath.term(termTypeId).edit(itemId);
+                break;
+            case "termList":
+                path = pagePath.term(termTypeId).list();
+                break;
         }
         this.props.router.push(path);
+    }
+
+    get getToggleMenuItems() {
+        return Status.findMulti("id", [
+                StatusId.Active,
+                StatusId.Pending,
+                StatusId.InProgress
+            ].concat(
+                permissionLib.checkPermission(
+                    this.props.getStateApp.sessionData.roleId,
+                    this.props.getStateApp.sessionData.permissions,
+                    permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
+                ) ? [StatusId.Deleted] : []
+            )
+        )
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
-                name: this.props.t("image"),
+                name: this.state.isShowToggleMenu ? (
+                    <ThemeTableToggleMenu
+                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        onChange={(value) => this.onChangeStatus(value)}
+                    />
+                ) : this.props.t("image"),
                 width: "75px",
                 cell: row => {
                     return Boolean(row.contents && row.contents.icon && row.contents.icon.length > 0)
@@ -233,7 +258,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                         name: this.props.t("category"),
                         cell: row => row.terms.findMulti("typeId", PostTermTypeId.Category).length > 0
                             ? row.terms.map(item => {
-                                    if(typeof item === "undefined"){
+                                    if (typeof item === "undefined") {
                                         return <label
                                             className={`badge badge-gradient-danger me-1`}
                                         >{this.props.t("deleted")}</label>
@@ -350,39 +375,6 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     <div className="card">
                         <div className="card-body">
                             <div className="table-post">
-                                <div className={`ms-2 ${!this.state.isShowToggleMenu ? "invisible" : ""}`}>
-                                    {
-                                        (
-                                            permissionLib.checkPermission(
-                                                this.props.getStateApp.sessionData.roleId,
-                                                this.props.getStateApp.sessionData.permissions,
-                                                permissionLib.getPermissionIdForPostType(this.state.typeId, "Edit")
-                                            ) ||
-                                            permissionLib.checkPermission(
-                                                this.props.getStateApp.sessionData.roleId,
-                                                this.props.getStateApp.sessionData.permissions,
-                                                permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
-                                            )
-                                        ) ? <ThemeTableToggleMenu
-                                            t={this.props.t}
-                                            status={
-                                                [
-                                                    StatusId.Active,
-                                                    StatusId.Pending,
-                                                    StatusId.InProgress
-                                                ].concat(
-                                                    permissionLib.checkPermission(
-                                                        this.props.getStateApp.sessionData.roleId,
-                                                        this.props.getStateApp.sessionData.permissions,
-                                                        permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
-                                                    ) ? [StatusId.Deleted] : []
-                                                )
-                                            }
-                                            onChange={(event, statusId) => this.onChangeStatus(event, statusId)}
-                                            langId={this.props.getStateApp.sessionData.langId}
-                                        /> : null
-                                    }
-                                </div>
                                 <ThemeDataTable
                                     columns={this.getTableColumns.filter(column => typeof column.name !== "undefined")}
                                     data={this.state.showingItems}
@@ -390,7 +382,18 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                     onSearch={searchKey => this.onSearch(searchKey)}
                                     selectedRows={this.state.selectedItems}
                                     t={this.props.t}
-                                    isSelectable={true}
+                                    isSelectable={(
+                                        permissionLib.checkPermission(
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
+                                            permissionLib.getPermissionIdForPostType(this.state.typeId, "Edit")
+                                        ) ||
+                                        permissionLib.checkPermission(
+                                            this.props.getStateApp.sessionData.roleId,
+                                            this.props.getStateApp.sessionData.permissions,
+                                            permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
+                                        )
+                                    )}
                                     isAllSelectable={true}
                                     isSearchable={true}
                                 />

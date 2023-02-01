@@ -236,6 +236,25 @@ const SidebarNav: SideBarPath[] = [
                 title: "socialMedia",
                 permId: PermissionId.SettingEdit
             },
+            {
+                path: PagePaths.settings().language().self(),
+                icon: `languages`,
+                title: "languages",
+                state: `languages`,
+                roleId: UserRoleId.SuperAdmin,
+                subPaths: [
+                    {
+                        path: PagePaths.settings().language().add(),
+                        title: "add",
+                        roleId: UserRoleId.SuperAdmin
+                    },
+                    {
+                        path: PagePaths.settings().language().list(),
+                        title: "list",
+                        roleId: UserRoleId.SuperAdmin
+                    }
+                ]
+            },
         ]
     },
 ];

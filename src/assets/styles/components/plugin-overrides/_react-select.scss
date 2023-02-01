@@ -15,4 +15,8 @@
   .custom-select__single-value {
     color: var(--theme-input-color)
   }
+
+  .custom-select__input {
+    color: var(--theme-input-color) !important;
+  }
 }

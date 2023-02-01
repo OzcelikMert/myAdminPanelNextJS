@@ -13,15 +13,17 @@ Things to do:
 + Ecommerce icin currency ayarinin yapilacagi bir yer ekle
 + admin paneldeki sidebarlari kontrol edebilecegin bir sayfa yap ne eklendiyse o sidebarda gozuksun (bunu kullanici yetkisi ile cozmeye calis oncelikle. Kullanicida o yetki yoksa baskasinada o yetkiyi veremesin).
 + curencylere currency type olustur
-- theme table ve theme form un scssini posttan ayir ve post-page kullanan posttan ayri olan sayfalari duzelt
-- post sayfasini componentlere ayir ve kod satir sayisini dusur
-- .then lerin hepsini awaite cevir
-- theme table kullandigin sayfalarda (urun silmek veya statu durumunu guncellemek icin) olusturdugun toggleyi theme tablenin icine gom o componentten cek ayri ayri olusturma
-- panelden dil ekleyebilecegin bir sayfa yap
-- duzenlemelerde dil degsitrme icin input gelmiyor
++ .then lerin hepsini awaite cevir
++ theme table ve theme form un scssini posttan ayir ve post-page kullanan posttan ayri olan sayfalari duzelt
++ theme table kullandigin sayfalarda (urun silmek veya statu durumunu guncellemek icin) olusturdugun toggleyi theme tablenin icine gom o componentten cek ayri ayri olusturma
++ panelden dil ekleyebilecegin bir sayfa yap
++ duzenlemelerde dil degsitrme icin input gelmiyor
+- breadcrumbda bulunan yollari yanlis veya eksik olanlari duzelt
 - yeni eklenen language keylerini json dosyalarinada ekle
 - ecommerce variations da varsayilan variation ayarla
 - ayarlar sayfasinda setting service getlerindeki gereksiz columnlari apiden temizle ve clientten gerekli columnun ismini gonder
 - tum { label: string, value: string } olanlari ortak bir theme select interfacesi acarak hepsini buna donustur
 - Yeni olusturulan her sayfa icin permission control yap
 - Yaptigin tum guncellemelerin hata kontrolunu yap
+- post sayfasini componentlere ayir ve kod satir sayisini dusur
+- theme table da yeni yaptigin togglelara tiklaninca secenek bari gelmiyor ve sortable olanlar her tiklandiginda tekrar tekrar sort oluyor
