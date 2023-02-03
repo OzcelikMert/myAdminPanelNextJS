@@ -114,11 +114,13 @@ export default class PageSettingLanguageAdd extends Component<PageProps, PageSta
         }
     }
 
-    navigatePage() {
+    async navigatePage(isReload?: boolean) {
         let pagePath = PagePaths.settings().language();
         let path = pagePath.list();
-        console.log(path)
-        this.props.router.push(path);
+        await this.props.router.push(path);
+        if(isReload){
+            window.location.reload()
+        }
     }
 
     onSubmit(event: FormEvent) {
@@ -151,7 +153,7 @@ export default class PageSettingLanguageAdd extends Component<PageProps, PageSta
     }
 
     onCloseSuccessMessage() {
-        this.navigatePage();
+        this.navigatePage(true);
     }
 
     TabOptions = () => {
