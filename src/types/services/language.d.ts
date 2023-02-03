@@ -11,6 +11,7 @@ export default interface LanguageDocument {
 
 export interface LanguageGetParamDocument {
     _id?: string
+    statusId?: StatusId
 }
 
 export type LanguageUpdateParamDocument = {

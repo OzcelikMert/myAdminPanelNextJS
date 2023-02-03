@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {PagePropCommonDocument} from "types/pageProps";
 import languageService from "services/language.service";
 import settingService from "services/setting.service";
+import {StatusId} from "constants/status";
 
 type PageState = {};
 
@@ -26,7 +27,7 @@ export default class ProviderAppInit extends Component<PageProps, PageState> {
     }
 
     async getContentLanguages() {
-        let resData = await languageService.get({});
+        let resData = await languageService.get({statusId: StatusId.Active});
         if (resData.status) {
             this.props.setStateApp({
                 contentLanguages: resData.data
