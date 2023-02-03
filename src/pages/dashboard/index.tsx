@@ -15,6 +15,7 @@ import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
 import ThemeChartArea from "components/elements/charts/area";
 import PostLib from "lib/post.lib";
+import ThemeBadgeStatus from "components/elements/badge/status";
 
 const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 
@@ -142,7 +143,7 @@ class PageDashboard extends Component<PageProps, PageState> {
         return [
             {
                 name: this.props.t("image"),
-                width: "75px",
+                width: "105px",
                 cell: row => (
                     <div className="image pt-2 pb-2">
                         <Image
@@ -154,6 +155,11 @@ class PageDashboard extends Component<PageProps, PageState> {
                         />
                     </div>
                 )
+            },
+            {
+                name: this.props.t("title"),
+                selector: row => row.contents?.title || this.props.t("[noLangAdd]"),
+                sortable: true
             },
             {
                 name: this.props.t("type"),
@@ -171,21 +177,10 @@ class PageDashboard extends Component<PageProps, PageState> {
                 )
             },
             {
-                name: this.props.t("title"),
-                selector: row => row.contents?.title || this.props.t("[noLangAdd]"),
-                sortable: true
-            },
-            {
                 name: this.props.t("status"),
                 selector: row => row.statusId,
                 sortable: true,
-                cell: row => (
-                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
-                        {
-                            this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
-                        }
-                    </label>
-                )
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },
             {
                 name: this.props.t("updatedBy"),

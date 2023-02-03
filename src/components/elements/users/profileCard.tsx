@@ -12,6 +12,7 @@ import imageSourceLib from "lib/imageSource.lib";
 import {ThemeFieldSet} from "../form";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import Image from "next/image"
+import ThemeBadgeStatus from "components/elements/badge/status";
 
 type PageState = {};
 
@@ -62,7 +63,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                 <div className="col-sm-12">
                     <span className="mb-2 fw-bold">{this.props.t("role")}:
                         <label
-                            className={`badge badge-gradient-${classNameLib.getUserRolesClassName(this.props.userInfo.roleId)} ms-1`}>
+                            className={`badge badge-gradient-${classNameLib.getUserRoles(this.props.userInfo.roleId)} ms-1`}>
                             {
                                 this.props.t(UserRoles.findSingle("id", this.props.userInfo.roleId)?.langKey ?? "[noLangAdd]")
                             }
@@ -71,12 +72,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                 </div>
                 <div className="col-sm-12">
                     <span className="mb-2 fw-bold">{this.props.t("status")}:
-                        <label
-                            className={`badge badge-gradient-${classNameLib.getStatusClassName(this.props.userInfo.statusId)} ms-1`}>
-                            {
-                                this.props.t(Status.findSingle("id", this.props.userInfo.statusId)?.langKey ?? "[noLangAdd]")
-                            }
-                        </label>
+                        {<ThemeBadgeStatus t={this.props.t} statusId={this.props.userInfo.statusId} className="ms-1"/>}
                     </span>
                 </div>
                 {

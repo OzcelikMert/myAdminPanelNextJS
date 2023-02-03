@@ -18,12 +18,15 @@ Things to do:
 + theme table kullandigin sayfalarda (urun silmek veya statu durumunu guncellemek icin) olusturdugun toggleyi theme tablenin icine gom o componentten cek ayri ayri olusturma
 + panelden dil ekleyebilecegin bir sayfa yap
 + duzenlemelerde dil degsitrme icin input gelmiyor
-- breadcrumbda bulunan yollari yanlis veya eksik olanlari duzelt
-- yeni eklenen language keylerini json dosyalarinada ekle
++ breadcrumbda bulunan yollari yanlis veya eksik olanlari duzelt
++ theme table da yeni yaptigin togglelara tiklaninca secenek bari gelmiyor ve sortable olanlar her tiklandiginda tekrar tekrar sort oluyor
++ theme table togglelara icon eklet
++ statuslara icon ekle
 - ecommerce variations da varsayilan variation ayarla
 - ayarlar sayfasinda setting service getlerindeki gereksiz columnlari apiden temizle ve clientten gerekli columnun ismini gonder
 - tum { label: string, value: string } olanlari ortak bir theme select interfacesi acarak hepsini buna donustur
 - Yeni olusturulan her sayfa icin permission control yap
 - Yaptigin tum guncellemelerin hata kontrolunu yap
 - post sayfasini componentlere ayir ve kod satir sayisini dusur
-- theme table da yeni yaptigin togglelara tiklaninca secenek bari gelmiyor ve sortable olanlar her tiklandiginda tekrar tekrar sort oluyor
+- ekle butonu ve guncelle butonlarinin sizelerini ayarla
+- yeni eklenen language keylerini json dosyalarinada ekle

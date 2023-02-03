@@ -13,6 +13,7 @@ import {PostTermUpdateParamDocument} from "types/services/postTerm";
 import Swal from "sweetalert2";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
+import postLib from "lib/post.lib";
 
 type PageState = {
     mainTabActiveKey: string
@@ -82,13 +83,14 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     setPageTitle() {
         let titles: string[] = [
-            this.props.t(PostTypes.findSingle("id", this.state.formData.postTypeId)?.langKey ?? "[noLangAdd]"),
-            this.props.t(PostTermTypes.findSingle("id", this.state.formData.typeId)?.langKey ?? "[noLangAdd]"),
+            ...postLib.getPageTitles({t: this.props.t, postTypeId: this.state.formData.postTypeId, termTypeId: this.state.formData.typeId}),
             this.props.t(this.state.formData._id ? "edit" : "add")
         ];
+
         if (this.state.formData._id) {
             titles.push(this.state.mainTitle)
         }
+
         this.props.setBreadCrumb(titles);
     }
 

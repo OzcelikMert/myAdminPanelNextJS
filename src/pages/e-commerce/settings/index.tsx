@@ -1,20 +1,11 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
+import {ThemeForm, ThemeFormSelect} from "components/elements/form";
 import HandleForm from "library/react/handles/form";
-import {Languages, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
-import languageService from "services/language.service";
-import ServerInfoDocument from "types/services/serverInfo";
-import serverInfoService from "services/serverInfo.service";
 import ThemeToast from "components/elements/toast";
-import ThemeChooseImage from "components/elements/chooseImage";
-import imageSourceLib from "lib/imageSource.lib";
-import {SettingECommerceUpdateParamDocument, SettingGeneralUpdateParamDocument} from "types/services/setting";
+import {SettingECommerceUpdateParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
-import localStorageUtil from "utils/localStorage.util";
-import Spinner from "react-bootstrap/Spinner";
-import Image from "next/image"
 import {CurrencyId, CurrencyTypes} from "constants/currencyTypes";
 
 type PageState = {

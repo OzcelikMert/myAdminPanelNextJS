@@ -1,45 +1,39 @@
 import {StatusId, UserRoleId} from "constants/index";
 
 export default {
-    getStatusClassName(statusId: number): string {
-        let bg = ``;
+    getStatus(statusId: number): string {
+        let className = ``;
         switch (statusId) {
-            case StatusId.Active:
-                bg = `success`;
-                break;
+            case StatusId.Active: className = `success`; break;
             case StatusId.Pending:
             case StatusId.Banned:
-                bg = `danger`;
-                break;
-            case StatusId.InProgress:
-                bg = `warning`;
-                break;
-            case StatusId.Deleted:
-            case StatusId.Disabled:
-                bg = `dark`;
-                break;
+            case StatusId.Disabled: className = `dark`; break;
+            case StatusId.InProgress: className = `warning`; break;
+            case StatusId.Deleted: className = `danger`; break;
         }
-        return bg;
+        return className;
     },
-    getUserRolesClassName(roleId: UserRoleId): string {
-        let bg = ``;
-        switch (roleId) {
-            case UserRoleId.SuperAdmin:
-                bg = `dark`;
-                break;
-            case UserRoleId.Admin:
-                bg = `primary`;
-                break;
-            case UserRoleId.Editor:
-                bg = `danger`;
-                break;
-            case UserRoleId.Author:
-                bg = `success`;
-                break;
-            case UserRoleId.User:
-                bg = `info`;
-                break;
+    getStatusIcon(statusId: number): string {
+        let className = ``;
+        switch (statusId) {
+            case StatusId.Active: className = `mdi mdi-check`;break;
+            case StatusId.Pending: className = `mdi mdi-clock-outline`; break;
+            case StatusId.Banned: className = `mdi mdi-cancel`; break;
+            case StatusId.InProgress: className = `mdi mdi-wrench-clock-outline`; break;
+            case StatusId.Deleted: className = `mdi mdi-trash-can-outline`; break;
+            case StatusId.Disabled: className = `mdi mdi-eye-off-outline`; break;
         }
-        return bg;
+        return className;
+    },
+    getUserRoles(roleId: UserRoleId): string {
+        let className = ``;
+        switch (roleId) {
+            case UserRoleId.SuperAdmin: className = `dark`; break;
+            case UserRoleId.Admin: className = `primary`; break;
+            case UserRoleId.Editor: className = `danger`; break;
+            case UserRoleId.Author: className = `success`; break;
+            case UserRoleId.User: className = `info`; break;
+        }
+        return className;
     }
 }

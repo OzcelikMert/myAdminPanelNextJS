@@ -10,6 +10,7 @@ import LanguageDocument from "types/services/language";
 import languageService from "services/language.service";
 import Image from "next/image";
 import imageSourceLib from "lib/imageSource.lib";
+import ThemeBadgeStatus from "components/elements/badge/status";
 
 type PageState = {
     searchKey: string
@@ -75,7 +76,7 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
         return [
             {
                 name: this.props.t("image"),
-                width: "75px",
+                width: "105px",
                 cell: row => (
                     <div className="image mt-2 mb-2">
                         <Image
@@ -102,13 +103,7 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
             {
                 name: this.props.t("status"),
                 sortable: true,
-                cell: row => (
-                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
-                        {
-                            this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
-                        }
-                    </label>
-                )
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },
             {
                 name: "",

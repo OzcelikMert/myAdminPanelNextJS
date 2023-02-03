@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PageTypeId, PageTypes, PostTermTypeId, PostTypeId, PostTypes, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import {ThemeTableToggleMenu} from "components/elements/table";
+import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/elements/table/toggleMenu";
 import Swal from "sweetalert2";
 import postService from "services/post.service";
 import PostDocument from "types/services/post";
@@ -13,6 +13,8 @@ import ThemeToast from "components/elements/toast";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
+import postLib from "lib/post.lib";
+import ThemeBadgeStatus from "components/elements/badge/status";
 
 type PageState = {
     typeId: PostTypeId
@@ -64,10 +66,11 @@ export default class PagePostList extends Component<PageProps, PageState> {
     }
 
     setPageTitle() {
-        this.props.setBreadCrumb([
-            this.props.t(PostTypes.findSingle("id", this.state.typeId)?.langKey ?? "[noLangAdd]"),
+        let titles: string[] = [
+            ...postLib.getPageTitles({t: this.props.t, postTypeId: this.state.typeId}),
             this.props.t("list")
-        ])
+        ];
+        this.props.setBreadCrumb(titles);
     }
 
     async getItems() {
@@ -195,7 +198,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
         this.props.router.push(path);
     }
 
-    get getToggleMenuItems() {
+    get getToggleMenuItems(): ThemeToggleMenuItemDocument[] {
         return Status.findMulti("id", [
                 StatusId.Active,
                 StatusId.Pending,
@@ -207,7 +210,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
                 ) ? [StatusId.Deleted] : []
             )
-        )
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
@@ -215,11 +218,11 @@ export default class PagePostList extends Component<PageProps, PageState> {
             {
                 name: this.state.isShowToggleMenu ? (
                     <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        items={this.getToggleMenuItems}
                         onChange={(value) => this.onChangeStatus(value)}
                     />
                 ) : this.props.t("image"),
-                width: "75px",
+                width: "105px",
                 cell: row => {
                     return Boolean(row.contents && row.contents.icon && row.contents.icon.length > 0)
                         ? <small>{row.contents?.icon}</small>
@@ -300,13 +303,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("status"),
                 sortable: true,
-                cell: row => (
-                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
-                        {
-                            this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
-                        }
-                    </label>
-                )
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },
             {
                 name: this.props.t("updatedBy"),
@@ -335,29 +332,55 @@ export default class PagePostList extends Component<PageProps, PageState> {
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
                 <div className="row mb-3">
-                    <div className="col-md-3">
+                    <div className="col-md-8">
                         <div className="row">
-                            {
-                                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
-                                    ? <div className="col-6">
-                                        <button className="btn btn-gradient-info btn-lg w-100"
-                                                onClick={() => this.navigatePage("termList", "", PostTermTypeId.Category)}>
-                                            <i className="fa fa-pencil-square-o"></i> {this.props.t("editCategories").toCapitalizeCase()}
-                                        </button>
-                                    </div> : null
-                            }
-                            {
-                                ![PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
-                                    ? <div className="col-6 text-end">
-                                        <button className="btn btn-gradient-primary btn-edit-tag btn-lg w-100"
-                                                onClick={() => this.navigatePage("termList", "", PostTermTypeId.Tag)}>
-                                            <i className="fa fa-pencil-square-o"></i> {this.props.t("editTags").toCapitalizeCase()}
-                                        </button>
-                                    </div> : null
-                            }
+                            <div className="col-md-6 mb-3 mb-md-0">
+                                <div className="row">
+                                    {
+                                        ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
+                                            ? <div className="col-6">
+                                                <button className="btn btn-gradient-success btn-lg w-100"
+                                                        onClick={() => this.navigatePage("termList", "", PostTermTypeId.Category)}>
+                                                    <i className="fa fa-pencil-square-o"></i> {this.props.t("editCategories").toCapitalizeCase()}
+                                                </button>
+                                            </div> : null
+                                    }
+                                    {
+                                        ![PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
+                                            ? <div className="col-6">
+                                                <button className="btn btn-gradient-info btn-edit-tag btn-lg w-100"
+                                                        onClick={() => this.navigatePage("termList", "", PostTermTypeId.Tag)}>
+                                                    <i className="fa fa-pencil-square-o"></i> {this.props.t("editTags").toCapitalizeCase()}
+                                                </button>
+                                            </div> : null
+                                    }
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3 mb-md-0">
+                                <div className="row">
+                                    {
+                                        [PostTypeId.Product].includes(this.state.typeId)
+                                            ? <div className="col-6">
+                                                <button className="btn btn-gradient-primary btn-edit-tag btn-lg w-100"
+                                                        onClick={() => this.navigatePage("termList", "", PostTermTypeId.Attributes)}>
+                                                    <i className="fa fa-pencil-square-o"></i> {this.props.t("editAttribute").toCapitalizeCase()}
+                                                </button>
+                                            </div> : null
+                                    }
+                                    {
+                                        [PostTypeId.Product].includes(this.state.typeId)
+                                            ? <div className="col-6">
+                                                <button className="btn btn-gradient-warning btn-edit-tag btn-lg w-100"
+                                                        onClick={() => this.navigatePage("termList", "", PostTermTypeId.Variations)}>
+                                                    <i className="fa fa-pencil-square-o"></i> {this.props.t("editVariation").toCapitalizeCase()}
+                                                </button>
+                                            </div> : null
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className="col-md-9 text-end">
+                    <div className="col-md-4 text-end">
                         {
                             this.state.listMode === "list"
                                 ? <button className="btn btn-gradient-danger btn-lg list-mode-btn"

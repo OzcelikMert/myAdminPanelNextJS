@@ -7,8 +7,9 @@ import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/elements/toast";
 import {SubscriberDocument} from "types/services/subscriber";
 import subscriberService from "services/subscriber.service";
-import {ThemeTableToggleMenu} from "components/elements/table";
+import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/elements/table/toggleMenu";
 import ThemeDataTable from "components/elements/table/dataTable";
+import classNameLib from "lib/className.lib";
 
 type PageState = {
     searchKey: string
@@ -106,11 +107,11 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         })
     }
 
-    get getToggleMenuItems() {
+    get getToggleMenuItems(): ThemeToggleMenuItemDocument[] {
         return Status.findMulti("id", [
                 StatusId.Deleted
             ]
-        )
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["items"][0]>[] {
@@ -118,7 +119,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
             {
                 name: this.state.isShowToggleMenu ? (
                     <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        items={this.getToggleMenuItems}
                         onChange={(value) => this.onDelete(value)}
                     />
                 ) : this.props.t("email"),

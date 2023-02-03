@@ -4,7 +4,9 @@
 
   .table-responsive {
     min-height: 550px;
-
+    .theme-data-table {
+      min-height: 550px;
+    }
     .image {
       img {
         width: 50px;

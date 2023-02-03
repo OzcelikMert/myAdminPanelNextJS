@@ -171,14 +171,6 @@ const SidebarNav: SideBarPath[] = [
                 ]
             },
             {
-                path: PagePaths.eCommerce().product().term(PostTermTypeId.Attributes).list(),
-                title: "attributes",
-            },
-            {
-                path: PagePaths.eCommerce().product().term(PostTermTypeId.Variations).list(),
-                title: "variations",
-            },
-            {
                 path: PagePaths.eCommerce().settings(),
                 title: "settings",
                 roleId: UserRoleId.Admin

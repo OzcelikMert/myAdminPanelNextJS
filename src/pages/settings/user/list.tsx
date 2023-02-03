@@ -13,6 +13,7 @@ import ThemeToast from "components/elements/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
+import ThemeBadgeStatus from "components/elements/badge/status";
 
 type PageState = {
     searchKey: string
@@ -125,7 +126,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
         return [
             {
                 name: this.props.t("image"),
-                width: "100px",
+                width: "105px",
                 cell: row => (
                     <div className="image mt-2 mb-2">
                         <Image
@@ -153,7 +154,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 selector: row => UserRoles.findSingle("id", row.roleId)?.rank ?? 0,
                 sortable: true,
                 cell: row => (
-                    <label className={`badge badge-gradient-${classNameLib.getUserRolesClassName(row.roleId)}`}>
+                    <label className={`badge badge-gradient-${classNameLib.getUserRoles(row.roleId)}`}>
                         {
                             this.props.t(UserRoles.findSingle("id", row.roleId)?.langKey ?? "[noLangAdd]")
                         }
@@ -164,13 +165,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 name: this.props.t("status"),
                 selector: row => Status.findSingle("id", row.statusId)?.order ?? 0,
                 sortable: true,
-                cell: row => (
-                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
-                        {
-                            this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
-                        }
-                    </label>
-                )
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },
             {
                 name: "",

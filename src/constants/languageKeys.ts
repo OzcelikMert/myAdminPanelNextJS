@@ -1,4 +1,9 @@
 export const LanguageKeysArray = [
+    "editVariation",
+    "editAttribute",
+    "variation",
+    "attribute",
+    "navigation",
     "locale",
     "shortKey",
     "languages",

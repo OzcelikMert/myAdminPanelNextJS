@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {Collapse} from 'react-bootstrap';
 import {PagePropCommonDocument} from "types/pageProps";
 import permissionLib from "lib/permission.lib";
-import SidebarNavs, {SideBarPath} from "constants/sidebarNavs";
-import SidebarNav from "constants/sidebarNavs";
+import SidebarNavs from "constants/sidebarNavs";
+import {SideBarPath} from "types/constants/sidebarNavs";
 import PagePaths from "constants/pagePaths";
 import clone from "clone";
 import routeLib from "lib/route.lib";
@@ -30,7 +30,7 @@ class Sidebar extends Component<PageProps, PageState> {
         this.setState({
             isMenuOpen: {}
         }, () => {
-            this.setIsMenuOpen(SidebarNav);
+            this.setIsMenuOpen(SidebarNavs);
         })
     }
 
@@ -55,7 +55,7 @@ class Sidebar extends Component<PageProps, PageState> {
     }
 
     isPathActive(path: string) {
-        return this.props.router.asPath.search(path) > -1;
+        return this.props.router.asPath.startsWith(path);
     }
 
     Item = (props: SideBarPath) => {

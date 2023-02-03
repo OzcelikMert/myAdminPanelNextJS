@@ -26,6 +26,7 @@ import PostLib from "lib/post.lib";
 import {ProductTypeId, ProductTypes} from "constants/productTypes";
 import {AttributeTypeId, AttributeTypes} from "constants/attributeTypes";
 import ThemeAccordionToggle from "components/elements/accordion/toggle";
+import postLib from "lib/post.lib";
 
 const ThemeRichTextBox = dynamic(() => import("components/elements/richTextBox").then((module) => module.default), {ssr: false});
 
@@ -143,12 +144,14 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
 
     setPageTitle() {
         let titles: string[] = [
-            this.props.t(PostTypes.findSingle("id", this.state.formData.typeId)?.langKey ?? "[noLangAdd]"),
+            ...postLib.getPageTitles({t: this.props.t, postTypeId: this.state.formData.typeId}),
             this.props.t(this.state.formData._id ? "edit" : "add")
         ];
+
         if (this.state.formData._id) {
             titles.push(this.state.mainTitle)
         }
+
         this.props.setBreadCrumb(titles);
     }
 

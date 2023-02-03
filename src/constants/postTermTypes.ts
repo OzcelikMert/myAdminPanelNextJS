@@ -10,8 +10,8 @@ enum PostTermTypeId {
 const PostTermTypes: Array<PostTermTypeDocument> = [
     {id: PostTermTypeId.Category, order: 1, langKey: "category"},
     {id: PostTermTypeId.Tag, order: 2, langKey: "tag"},
-    {id: PostTermTypeId.Attributes, order: 1, langKey: "category"},
-    {id: PostTermTypeId.Variations, order: 2, langKey: "tag"},
+    {id: PostTermTypeId.Attributes, order: 1, langKey: "attribute"},
+    {id: PostTermTypeId.Variations, order: 2, langKey: "variation"},
 ]
 
 export {PostTermTypes, PostTermTypeId};

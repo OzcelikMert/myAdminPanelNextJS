@@ -68,18 +68,25 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
         }
     }
 
+    setPageTitle() {
+        this.props.setBreadCrumb([
+            this.props.t("gallery"),
+            this.props.t("list")
+        ])
+    }
+
     async getItems() {
         let resData = await galleryService.get();
         if (resData.status) {
             if (Array.isArray(resData.data)) {
                 let items = resData.data.orderBy("", "desc");
                 this.setState((state: PageState) => {
-                    if(this.props.selectedImages && this.props.selectedImages.length > 0){
+                    if (this.props.selectedImages && this.props.selectedImages.length > 0) {
                         state.selectedItems = state.selectedItems.concat(this.props.selectedImages);
                         items.sort((a, b) => {
-                            if(this.props.selectedImages?.includes(a)){
+                            if (this.props.selectedImages?.includes(a)) {
                                 return -1;
-                            }else{
+                            } else {
                                 return 1;
                             }
                         })
@@ -91,13 +98,6 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                 })
             }
         }
-    }
-
-    setPageTitle() {
-        this.props.setBreadCrumb([
-            this.props.t("gallery"),
-            this.props.t("list")
-        ])
     }
 
     onSelect(images: string[]) {

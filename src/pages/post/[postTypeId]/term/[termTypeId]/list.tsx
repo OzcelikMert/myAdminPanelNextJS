@@ -7,7 +7,7 @@ import {
 } from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import {ThemeTableToggleMenu} from "components/elements/table";
+import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/elements/table/toggleMenu";
 import Swal from "sweetalert2";
 import PostTermDocument from "types/services/postTerm";
 import postTermService from "services/postTerm.service";
@@ -18,6 +18,8 @@ import ThemeToast from "components/elements/toast";
 import ThemeDataTable from "components/elements/table/dataTable";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
+import postLib from "lib/post.lib";
+import ThemeBadgeStatus from "components/elements/badge/status";
 
 type PageState = {
     typeId: PostTermTypeId
@@ -56,10 +58,12 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     }
 
     setPageTitle() {
-        this.props.setBreadCrumb([
-            this.props.t(PostTypes.findSingle("id", this.state.postTypeId)?.langKey ?? "[noLangAdd]"),
-            this.props.t(PostTermTypes.findSingle("id", this.state.typeId)?.langKey ?? "[noLangAdd]")
-        ])
+        let titles: string[] = [
+            ...postLib.getPageTitles({t: this.props.t, postTypeId: this.state.postTypeId, termTypeId: this.state.typeId}),
+            this.props.t("list")
+        ];
+
+        this.props.setBreadCrumb(titles);
     }
 
     async getItems() {
@@ -190,7 +194,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         this.props.router.push(path);
     }
 
-    get getToggleMenuItems() {
+    get getToggleMenuItems(): ThemeToggleMenuItemDocument[] {
         return Status.findMulti("id", [
                 StatusId.Active,
                 StatusId.Pending,
@@ -202,7 +206,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                     permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                 ) ? [StatusId.Deleted] : []
             )
-        )
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
@@ -210,11 +214,11 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             {
                 name: this.state.isShowToggleMenu ? (
                     <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        items={this.getToggleMenuItems}
                         onChange={(value) => this.onChangeStatus(value)}
                     />
                 ) : this.props.t("image"),
-                width: "75px",
+                width: "105px",
                 cell: row => (
                     <div className="image pt-2 pb-2">
                         <Image
@@ -240,14 +244,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("status"),
                 sortable: true,
-                cell: row => (
-                    <label
-                        className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
-                        {
-                            this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
-                        }
-                    </label>
-                )
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },
             {
                 name: "",

@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PermissionId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import {ThemeTableToggleMenu} from "components/elements/table";
+import ThemeTableToggleMenu from "components/elements/table/toggleMenu";
 import Swal from "sweetalert2";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
@@ -11,6 +11,8 @@ import ThemeDataTable from "components/elements/table/dataTable";
 import {NavigationDocument} from "types/services/navigation";
 import navigationService from "services/navigation.service";
 import PagePaths from "constants/pagePaths";
+import {ThemeToggleMenuItemDocument} from "components/elements/table/toggleMenu";
+import ThemeBadgeStatus from "components/elements/badge/status";
 
 type PageState = {
     searchKey: string
@@ -159,7 +161,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
         this.props.router.push(path);
     }
 
-    get getToggleMenuItems() {
+    get getToggleMenuItems(): ThemeToggleMenuItemDocument[] {
         return Status.findMulti("id", [
                 StatusId.Active,
                 StatusId.Pending,
@@ -171,7 +173,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                     PermissionId.NavigationDelete
                 ) ? [StatusId.Deleted] : []
             )
-        )
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
@@ -179,7 +181,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
             {
                 name: this.state.isShowToggleMenu ? (
                     <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems.map(item => ({label: this.props.t(item.langKey), value: item.id}))}
+                        items={this.getToggleMenuItems}
                         onChange={(value) => this.onChangeStatus(value)}
                     />
                 ) : this.props.t("title"),
@@ -190,7 +192,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                     </div>
                 ),
                 width: "250px",
-                sortable: true
+                sortable: !this.state.isShowToggleMenu
             },
             {
                 name: this.props.t("main"),
@@ -200,13 +202,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
             {
                 name: this.props.t("status"),
                 sortable: true,
-                cell: row => (
-                    <label className={`badge badge-gradient-${classNameLib.getStatusClassName(row.statusId)}`}>
-                        {
-                            this.props.t(Status.findSingle("id", row.statusId)?.langKey ?? "[noLangAdd]")
-                        }
-                    </label>
-                )
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },
             {
                 name: this.props.t("updatedBy"),

@@ -87,7 +87,7 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
                         />
                     </div>
                 ),
-                width: "75px",
+                width: "55px",
                 cell: (row: any) => (
                     <div>
                         <ThemeFormCheckBox
@@ -127,6 +127,7 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
                 }
                 <div className="table-responsive">
                     <DataTable
+                        className="theme-data-table"
                         columns={this.props.isSelectable ? this.setSelectable() : this.props.columns}
                         data={this.props.data}
                         noHeader
