@@ -23,7 +23,7 @@ Things to do:
 + theme table togglelara icon eklet
 + statuslara icon ekle
 + ecommerce variations da varsayilan variation ayarla
-- ayarlar sayfasinda setting service getlerindeki gereksiz columnlari apiden temizle ve clientten gerekli columnun ismini gonder
++ ayarlar sayfasinda setting service getlerindeki gereksiz columnlari apiden temizle ve clientten gerekli columnun ismini gonder
 - tum { label: string, value: string } olanlari ortak bir theme select interfacesi acarak hepsini buna donustur
 - Yeni olusturulan her sayfa icin permission control yap
 - Yaptigin tum guncellemelerin hata kontrolunu yap
