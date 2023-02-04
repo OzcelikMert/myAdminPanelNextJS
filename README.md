@@ -25,8 +25,8 @@ Things to do:
 + ecommerce variations da varsayilan variation ayarla
 + ayarlar sayfasinda setting service getlerindeki gereksiz columnlari apiden temizle ve clientten gerekli columnun ismini gonder
 - tum { label: string, value: string } olanlari ortak bir theme select interfacesi acarak hepsini buna donustur
-- Yeni olusturulan her sayfa icin permission control yap
-- Yaptigin tum guncellemelerin hata kontrolunu yap
++ Yeni olusturulan her sayfa icin permission control yap
+- ekle butonu ve guncelle butonlarinin sizelerini ve konumlarini ayarla
 - post sayfasini componentlere ayir ve kod satir sayisini dusur
-- ekle butonu ve guncelle butonlarinin sizelerini ayarla
 - yeni eklenen language keylerini json dosyalarinada ekle
+- Yaptigin tum guncellemelerin hata kontrolunu yap
