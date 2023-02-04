@@ -42,7 +42,7 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
     }
 
     async getSettings() {
-        let resData = await settingService.get({})
+        let resData = await settingService.get({projection: "socialMedia"})
         if (resData.status) {
             this.setState((state: PageState) => {
                 resData.data.forEach(setting => {

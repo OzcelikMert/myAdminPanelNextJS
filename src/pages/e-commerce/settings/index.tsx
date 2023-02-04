@@ -46,7 +46,7 @@ export default class PageECommerceSettings extends Component<PageProps, PageStat
     }
 
     async getSettings() {
-        let resData = await settingService.get({})
+        let resData = await settingService.get({projection: "eCommerce"})
         if (resData.status) {
             this.setState((state: PageState) => {
                 resData.data.forEach(setting => {

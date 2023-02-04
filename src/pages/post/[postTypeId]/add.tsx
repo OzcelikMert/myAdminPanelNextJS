@@ -518,6 +518,23 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                         return state;
                     })
                 },
+                onChangeDefault(attributeId: string, value: string) {
+                    self.setState((state: PageState) => {
+                        if (typeof state.formData.eCommerce !== "undefined") {
+                            if(typeof state.formData.eCommerce.variationDefaults == "undefined") state.formData.eCommerce.variationDefaults = [];
+                            let findIndex = state.formData.eCommerce.variationDefaults.indexOfKey("attributeId", attributeId);
+                            if (findIndex > -1) {
+                                state.formData.eCommerce.variationDefaults[findIndex].variationId = value;
+                            } else {
+                                state.formData.eCommerce.variationDefaults.push({
+                                    attributeId: attributeId,
+                                    variationId: value
+                                })
+                            }
+                        }
+                        return state;
+                    })
+                },
             }
         }
     }
@@ -990,6 +1007,23 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             return (
                 <div className="row mb-3">
                     <div className="col-md-7">
+                        <h4>{this.props.t("default")}</h4>
+                        <div className="row">
+                            {
+                                this.state.formData.eCommerce?.attributes?.map(attribute => (
+                                    <div className="col-md-4 mt-2 mt-md-0">
+                                        <ThemeFormSelect
+                                            title={this.state.attributes.findSingle("value", attribute.attributeId)?.label}
+                                            options={this.state.variations.findMulti("value", attribute.variationId)}
+                                            value={this.state.variations.findSingle("value", this.state.formData.eCommerce?.variationDefaults?.findSingle("attributeId", attribute.attributeId)?.variationId)}
+                                            onChange={(item: any, e) => this.TabECommerceEvents.Variations.onChangeDefault(attribute.attributeId, item.value)}
+                                        />
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    <div className="col-md-7 mt-2">
                         <button type={"button"} className="btn btn-gradient-success btn-lg"
                                 onClick={() => this.TabECommerceEvents.Variations.onAddNew()}>+ {this.props.t("addNew")}
                         </button>

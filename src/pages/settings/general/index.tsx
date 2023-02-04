@@ -71,7 +71,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
     }
 
     async getSettings() {
-        let resData = await settingService.get({})
+        let resData = await settingService.get({projection: "general"})
         if (resData.status) {
             this.setState((state: PageState) => {
                 resData.data.forEach(setting => {

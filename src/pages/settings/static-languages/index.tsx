@@ -64,7 +64,7 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
     }
 
     async getSettings() {
-        let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId})
+        let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId, projection: "staticLanguage"})
         if (resData.status) {
             this.setState((state: PageState) => {
                 resData.data.forEach(setting => {

@@ -68,6 +68,7 @@ export default interface SettingDocument {
 
 export interface SettingGetParamDocument {
     langId?: string
+    projection?: "general" | "seo" | "eCommerce" | "contactForm" | "socialMedia" | "staticLanguage"
 }
 
 export type SettingGeneralUpdateParamDocument =  {

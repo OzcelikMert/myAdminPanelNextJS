@@ -55,7 +55,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
     }
 
     async getSeo() {
-        let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId});
+        let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId, projection: "seo"});
 
         if (resData.status) {
             this.setState((state: PageState) => {
