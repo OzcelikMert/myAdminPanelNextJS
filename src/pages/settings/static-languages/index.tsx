@@ -7,10 +7,11 @@ import ThemeToast from "components/elements/toast";
 import {
     SettingStaticLanguageDocument, SettingStaticLanguageUpdateParamDocument
 } from "types/services/setting";
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
     isSubmitting: boolean
-    langKeys: { value: string, label: string }[]
+    langKeys: ThemeFormSelectValueDocument[]
     formData: SettingStaticLanguageUpdateParamDocument,
     newItems: SettingStaticLanguageDocument[]
 };

@@ -10,11 +10,12 @@ import Swal from "sweetalert2";
 import {NavigationUpdateParamDocument} from "types/services/navigation";
 import navigationService from "services/navigation.service";
 import PagePaths from "constants/pagePaths";
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
-    items: { value: string, label: string }[]
+    items: ThemeFormSelectValueDocument[]
     mainTabActiveKey: string
-    status: { value: number, label: string }[]
+    status: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
     formData: NavigationUpdateParamDocument,

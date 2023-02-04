@@ -14,11 +14,12 @@ import Swal from "sweetalert2";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
     mainTabActiveKey: string
-    items: { value: string, label: string }[]
-    status: { value: number, label: string }[]
+    items: ThemeFormSelectValueDocument[]
+    status: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
     formData: PostTermUpdateParamDocument,

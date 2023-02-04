@@ -12,10 +12,11 @@ import imageSourceLib from "lib/imageSource.lib";
 import Swal from "sweetalert2";
 import PagePaths from "constants/pagePaths";
 import Image from "next/image"
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
-    langKeys: { value: string, label: string }[]
-    types: { value: number, label: string }[]
+    langKeys: ThemeFormSelectValueDocument[]
+    types: ThemeFormSelectValueDocument[]
     mainTabActiveKey: string
     isSubmitting: boolean
     mainTitle: string,

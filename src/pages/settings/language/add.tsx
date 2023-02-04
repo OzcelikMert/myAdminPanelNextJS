@@ -12,11 +12,12 @@ import {LanguageUpdateParamDocument} from "types/services/language";
 import languageService from "services/language.service";
 import imageSourceLib from "lib/imageSource.lib";
 import Image from "next/image";
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
     mainTabActiveKey: string
-    status: { value: number, label: string }[]
-    flags: { value: string, label: string }[]
+    status: ThemeFormSelectValueDocument[]
+    flags: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
     formData: LanguageUpdateParamDocument,

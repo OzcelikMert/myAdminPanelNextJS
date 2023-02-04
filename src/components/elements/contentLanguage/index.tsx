@@ -5,6 +5,7 @@ import {PagePropCommonDocument} from "types/pageProps";
 import LanguageDocument from "types/services/language";
 import pathUtil from "utils/path.util";
 import Image from "next/image"
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {};
 
@@ -12,7 +13,7 @@ type PageProps = {
     t: PagePropCommonDocument["t"]
     options: LanguageDocument[]
     value?: LanguageDocument
-    onChange: (item: {label: string, value: any}, e: any) => void
+    onChange: (item: ThemeFormSelectValueDocument, e: any) => void
 };
 
 export default class ThemeContentLanguage extends Component<PageProps, PageState> {

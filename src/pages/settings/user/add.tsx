@@ -13,11 +13,12 @@ import {UserUpdateParamDocument} from "types/services/user";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
     mainTabActiveKey: string
-    userRoles: { value: number, label: string }[]
-    status: { value: number, label: string }[]
+    userRoles: ThemeFormSelectValueDocument[]
+    status: ThemeFormSelectValueDocument[]
     mainTitle: string,
     isSubmitting: boolean
     formData: UserUpdateParamDocument

@@ -7,9 +7,10 @@ import ThemeToast from "components/elements/toast";
 import {SettingECommerceUpdateParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
 import {CurrencyId, CurrencyTypes} from "constants/currencyTypes";
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
-    currencyTypes: { label: string, value: string }[]
+    currencyTypes: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     formData: SettingECommerceUpdateParamDocument,
     mainTabActiveKey: string

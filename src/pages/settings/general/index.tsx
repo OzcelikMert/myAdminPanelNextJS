@@ -15,10 +15,11 @@ import {Tab, Tabs} from "react-bootstrap";
 import localStorageUtil from "utils/localStorage.util";
 import Spinner from "react-bootstrap/Spinner";
 import Image from "next/image"
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 type PageState = {
-    languages: { label: string, value: string }[]
-    panelLanguages: { label: string, value: string }[]
+    languages: ThemeFormSelectValueDocument[]
+    panelLanguages: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     serverInfo: ServerInfoDocument
     formData: Omit<SettingGeneralUpdateParamDocument, "contactForms" | "staticLanguages" | "seoContents"> & { panelLangId: string },

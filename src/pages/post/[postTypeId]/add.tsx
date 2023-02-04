@@ -27,22 +27,23 @@ import {ProductTypeId, ProductTypes} from "constants/productTypes";
 import {AttributeTypeId, AttributeTypes} from "constants/attributeTypes";
 import ThemeAccordionToggle from "components/elements/accordion/toggle";
 import postLib from "lib/post.lib";
+import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
 
 const ThemeRichTextBox = dynamic(() => import("components/elements/richTextBox").then((module) => module.default), {ssr: false});
 
 type PageState = {
-    langKeys: { value: string, label: string }[]
-    pageTypes: { value: number, label: string }[]
-    attributeTypes: { value: number, label: string }[]
-    productTypes: { value: number, label: string }[]
-    components: { value: string, label: string }[]
+    langKeys: ThemeFormSelectValueDocument[]
+    pageTypes: ThemeFormSelectValueDocument[]
+    attributeTypes: ThemeFormSelectValueDocument[]
+    productTypes: ThemeFormSelectValueDocument[]
+    components: ThemeFormSelectValueDocument[]
     mainTabActiveKey: string
     eCommerceTabActiveKey: string
-    categoryTerms: { value: string, label: string }[]
-    tagTerms: { value: string, label: string }[]
-    attributes: { value: string, label: string }[],
-    variations: { value: string, label: string, mainId: string }[],
-    status: { value: number, label: string }[]
+    categoryTerms: ThemeFormSelectValueDocument[]
+    tagTerms: ThemeFormSelectValueDocument[]
+    attributes: ThemeFormSelectValueDocument[],
+    variations: (ThemeFormSelectValueDocument & { mainId: string })[],
+    status: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
     formData: Omit<PostUpdateParamDocument, "terms"> & {
