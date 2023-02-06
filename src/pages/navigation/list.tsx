@@ -2,17 +2,17 @@ import React, {Component} from 'react'
 import {PermissionId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import ThemeTableToggleMenu from "components/elements/table/toggleMenu";
+import ThemeTableToggleMenu from "components/theme/table/toggleMenu";
 import Swal from "sweetalert2";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
-import ThemeToast from "components/elements/toast";
-import ThemeDataTable from "components/elements/table/dataTable";
+import ThemeToast from "components/theme/toast";
+import ThemeDataTable from "components/theme/table/dataTable";
 import {NavigationDocument} from "types/services/navigation";
 import navigationService from "services/navigation.service";
 import PagePaths from "constants/pagePaths";
-import {ThemeToggleMenuItemDocument} from "components/elements/table/toggleMenu";
-import ThemeBadgeStatus from "components/elements/badge/status";
+import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
+import ThemeBadgeStatus from "components/theme/badge/status";
 
 type PageState = {
     searchKey: string

@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import PagePaths from "constants/pagePaths";
-import {ThemeFormSelect} from "components/elements/form";
+import {ThemeFormSelect} from "components/theme/form";
 import {PagePropCommonDocument} from "types/pageProps";
 import LanguageDocument from "types/services/language";
 import pathUtil from "utils/path.util";
 import Image from "next/image"
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {};
 

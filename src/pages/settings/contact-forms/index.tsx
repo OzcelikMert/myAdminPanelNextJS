@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/elements/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/theme/form";
 import {UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import {SettingContactFormDocument, SettingContactFormUpdateParamDocument} from "types/services/setting";
 
 type PageState = {
@@ -254,20 +254,24 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
 
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
-            <div className="page-settings page-dashboard page-post">
-                <div className="grid-margin stretch-card">
-                    <div className="card">
-                        <div className="card-body">
-                            <ThemeForm
-                                isActiveSaveButton={true}
-                                saveButtonText={this.props.t("save")}
-                                saveButtonLoadingText={this.props.t("loading")}
-                                isSubmitting={this.state.isSubmitting}
-                                formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
-                            >
-                                <this.ContactForms/>
-                            </ThemeForm>
-                        </div>
+            <div className="page-settings">
+                <div className="row">
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <this.ContactForms/>
+                                    </div>
+                                </div>
+                            </div>
+                        </ThemeForm>
                     </div>
                 </div>
             </div>

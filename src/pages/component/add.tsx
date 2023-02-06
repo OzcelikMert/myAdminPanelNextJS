@@ -1,18 +1,19 @@
 import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
 import {PagePropCommonDocument} from "types/pageProps";
-import {LanguageKeysArray, ComponentInputTypeId, ComponentInputTypes, UserRoleId} from "constants/index";
+import {LanguageKeysArray, ComponentInputTypeId, ComponentInputTypes, UserRoleId, PostTypeId} from "constants/index";
 import HandleForm from "library/react/handles/form";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form";
 import V from "library/variable";
 import {ComponentTypeDocument, ComponentUpdateParamDocument} from "types/services/component";
 import componentService from "services/component.service";
-import ThemeChooseImage from "components/elements/chooseImage";
+import ThemeChooseImage from "components/theme/chooseImage";
 import imageSourceLib from "lib/imageSource.lib";
 import Swal from "sweetalert2";
 import PagePaths from "constants/pagePaths";
 import Image from "next/image"
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
+import ThemeToolTip from "components/theme/tooltip";
 
 type PageState = {
     langKeys: ThemeFormSelectValueDocument[]
@@ -442,46 +443,53 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
-                <div className="navigate-buttons mb-3">
-                    <button className="btn btn-gradient-dark btn-lg btn-icon-text"
-                            onClick={() => this.navigatePage()}>
-                        <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
-                    </button>
+                <div className="row mb-3">
+                    <div className="col-md-3">
+                        <div className="row">
+                            <div className="col-6">
+                                <button className="btn btn-gradient-dark btn-lg btn-icon-text w-100" onClick={() => this.navigatePage()}>
+                                    <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="grid-margin stretch-card">
-                    <div className="card">
-                        <div className="card-body">
-                            <ThemeForm
-                                isActiveSaveButton={true}
-                                saveButtonText={this.props.t("save")}
-                                saveButtonLoadingText={this.props.t("loading")}
-                                isSubmitting={this.state.isSubmitting}
-                                formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
-                            >
-                                <div className="card-body">
-                                    <div className="theme-tabs">
-                                        <Tabs
-                                            onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
-                                            activeKey={this.state.mainTabActiveKey}
-                                            className="mb-5"
-                                            transition={false}>
-                                            {
-                                                this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
-                                                    ? <Tab eventKey="general" title={this.props.t("general")}>
-                                                        <this.TabGeneral/>
-                                                    </Tab> : null
-                                            }
-                                            <Tab
-                                                eventKey={this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin ? "types" : "general"}
-                                                title={this.props.t(this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin ? "content" : "general")}
-                                            >
-                                                <this.TabTypes/>
-                                            </Tab>
-                                        </Tabs>
+                <div className="row">
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="theme-tabs">
+                                            <Tabs
+                                                onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                                activeKey={this.state.mainTabActiveKey}
+                                                className="mb-5"
+                                                transition={false}>
+                                                {
+                                                    this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
+                                                        ? <Tab eventKey="general" title={this.props.t("general")}>
+                                                            <this.TabGeneral/>
+                                                        </Tab> : null
+                                                }
+                                                <Tab
+                                                    eventKey={this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin ? "types" : "general"}
+                                                    title={this.props.t(this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin ? "content" : "general")}
+                                                >
+                                                    <this.TabTypes/>
+                                                </Tab>
+                                            </Tabs>
+                                        </div>
                                     </div>
                                 </div>
-                            </ThemeForm>
-                        </div>
+                            </div>
+                        </ThemeForm>
                     </div>
                 </div>
             </div>

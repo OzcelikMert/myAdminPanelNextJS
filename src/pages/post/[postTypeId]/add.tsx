@@ -1,44 +1,43 @@
 import React, {Component, FormEvent} from 'react'
-import {Tab, Tabs, Accordion, Card, Button} from "react-bootstrap";
+import {Tab, Tabs} from "react-bootstrap";
 import moment from "moment";
-import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form"
-import {LanguageKeysArray, PageTypes, PostTermTypeId, PostTypeId, PostTypes, StatusId} from "constants/index";
+import {ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/theme/form"
+import {LanguageKeysArray, PageTypes, PostTermTypeId, PostTypeId, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import V from "library/variable";
 import Variable from "library/variable";
 import HandleForm from "library/react/handles/form";
-import ThemeChooseImage from "components/elements/chooseImage";
+import ThemeChooseImage from "components/theme/chooseImage";
 import postTermService from "services/postTerm.service";
 import postService from "services/post.service";
 import staticContentLib from "lib/staticContent.lib";
 import imageSourceLib from "lib/imageSource.lib";
 import {
-    PostContentButtonDocument,
-    PostECommerceAttributeDocument, PostECommerceVariationDocument,
     PostUpdateParamDocument
 } from "types/services/post";
 import componentService from "services/component.service";
-import ThemeToolTip from "components/elements/tooltip";
+import ThemeToolTip from "components/theme/tooltip";
 import Swal from "sweetalert2";
 import Image from "next/image"
 import dynamic from "next/dynamic";
 import PostLib from "lib/post.lib";
 import {ProductTypeId, ProductTypes} from "constants/productTypes";
-import {AttributeTypeId, AttributeTypes} from "constants/attributeTypes";
-import ThemeAccordionToggle from "components/elements/accordion/toggle";
+import {AttributeTypes} from "constants/attributeTypes";
 import postLib from "lib/post.lib";
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
+import ComponentPagePostAddECommerce from "components/pages/post/add/eCommerce";
+import ComponentPagePostAddComponent from "components/pages/post/add/component";
+import ComponentPagePostAddButton from "components/pages/post/add/button";
 
-const ThemeRichTextBox = dynamic(() => import("components/elements/richTextBox").then((module) => module.default), {ssr: false});
+const ThemeRichTextBox = dynamic(() => import("components/theme/richTextBox").then((module) => module.default), {ssr: false});
 
-type PageState = {
+export type PageState = {
     langKeys: ThemeFormSelectValueDocument[]
     pageTypes: ThemeFormSelectValueDocument[]
     attributeTypes: ThemeFormSelectValueDocument[]
     productTypes: ThemeFormSelectValueDocument[]
     components: ThemeFormSelectValueDocument[]
     mainTabActiveKey: string
-    eCommerceTabActiveKey: string
     categoryTerms: ThemeFormSelectValueDocument[]
     tagTerms: ThemeFormSelectValueDocument[]
     attributes: ThemeFormSelectValueDocument[],
@@ -61,7 +60,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             mainTabActiveKey: `general`,
-            eCommerceTabActiveKey: "pricing",
             attributeTypes: [],
             productTypes: [],
             attributes: [],
@@ -367,726 +365,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         }
     }
 
-    get TabGeneralButtonEvents() {
-        let self = this;
-        return {
-            onChange(key: keyof PostContentButtonDocument, value: string, index: number) {
-                self.setState((state: PageState) => {
-                    if (state.formData.contents.buttons) state.formData.contents.buttons[index][key] = value;
-                    return state;
-                })
-            },
-            onAddNew() {
-                self.setState((state: PageState) => {
-                    if (typeof state.formData.contents.buttons === "undefined") state.formData.contents.buttons = [];
-                    state.formData.contents.buttons.push({
-                        title: "",
-                        url: ""
-                    })
-                    return state;
-                })
-            },
-            onDelete(index: number) {
-                self.setState((state: PageState) => {
-                    if (state.formData.contents.buttons) state.formData.contents.buttons.remove(index);
-                    return state;
-                })
-            }
-        }
-    }
-
-    get TabComponentEvents() {
-        let self = this;
-        return {
-            onChangeSelect(value: string, index: number) {
-                self.setState((state: PageState) => {
-                    if (state.formData.components) state.formData.components[index] = value;
-                    return state;
-                })
-            },
-            onAddNew() {
-                self.setState((state: PageState) => {
-                    if (typeof state.formData.components === "undefined") state.formData.components = [];
-                    state.formData.components.push("")
-                    return state;
-                })
-            },
-            onDelete(index: number) {
-                self.setState((state: PageState) => {
-                    if (state.formData.components) state.formData.components.remove(index);
-                    return state;
-                })
-            }
-        }
-    }
-
-    get TabECommerceEvents() {
-        let self = this;
-        return {
-            onChange(data: any, key: any, value: any) {
-                self.setState((state: PageState) => {
-                    data[key] = value;
-                    return state;
-                })
-            },
-            Attributes: {
-                onAddNew() {
-                    self.setState((state: PageState) => {
-                        if (typeof state.formData.eCommerce !== "undefined") {
-                            if (typeof state.formData.eCommerce.attributes === "undefined") state.formData.eCommerce.attributes = [];
-                            state.formData.eCommerce.attributes.push({
-                                _id: String.createId(),
-                                attributeId: "",
-                                typeId: AttributeTypeId.Text,
-                                variationId: []
-                            })
-                        }
-                        return state;
-                    })
-                },
-                onChangeVariations(attribute: PostECommerceAttributeDocument, values: PageState["variations"]) {
-                    self.setState((state: PageState) => {
-                        attribute.variationId = values.map(value => value.value)
-                        return state;
-                    })
-                },
-                onDelete(index: number) {
-                    self.setState((state: PageState) => {
-                        if (typeof state.formData.eCommerce !== "undefined") {
-                            state.formData.eCommerce.attributes?.remove(index);
-                        }
-                        return state;
-                    })
-                },
-            },
-            Variations: {
-                onAddNew() {
-                    self.setState((state: PageState) => {
-                        if (typeof state.formData.eCommerce !== "undefined") {
-                            if (typeof state.formData.eCommerce.variations === "undefined") state.formData.eCommerce.variations = [];
-                            state.formData.eCommerce.variations.push({
-                                _id: String.createId(),
-                                selectedVariations: [],
-                                images: [],
-                                order: 0,
-                                pricing: {
-                                    taxIncluded: 0,
-                                    compared: 0,
-                                    shipping: 0,
-                                    taxExcluded: 0,
-                                    taxRate: 0
-                                },
-                                shipping: {
-                                    width: "",
-                                    height: "",
-                                    depth: "",
-                                    weight: ""
-                                },
-                                inventory: {
-                                    sku: "",
-                                    quantity: 0,
-                                    isManageStock: false
-                                },
-                                contents: {
-                                    langId: self.state.formData.contents.langId,
-                                }
-                            })
-                        }
-                        return state;
-                    })
-                },
-                onDelete(index: number) {
-                    self.setState((state: PageState) => {
-                        if (typeof state.formData.eCommerce !== "undefined") {
-                            state.formData.eCommerce.variations?.remove(index);
-                        }
-                        return state;
-                    })
-                },
-                onChangeAttributeChild(data: PostECommerceVariationDocument, attributeId: string, value: string) {
-                    self.setState((state: PageState) => {
-                        if (typeof state.formData.eCommerce !== "undefined") {
-                            let findIndex = data.selectedVariations.indexOfKey("attributeId", attributeId);
-                            if (findIndex > -1) {
-                                data.selectedVariations[findIndex].variationId = value;
-                            } else {
-                                data.selectedVariations.push({
-                                    attributeId: attributeId,
-                                    variationId: value
-                                })
-                            }
-                        }
-                        return state;
-                    })
-                },
-                onChangeDefault(attributeId: string, value: string) {
-                    self.setState((state: PageState) => {
-                        if (typeof state.formData.eCommerce !== "undefined") {
-                            if(typeof state.formData.eCommerce.variationDefaults == "undefined") state.formData.eCommerce.variationDefaults = [];
-                            let findIndex = state.formData.eCommerce.variationDefaults.indexOfKey("attributeId", attributeId);
-                            if (findIndex > -1) {
-                                state.formData.eCommerce.variationDefaults[findIndex].variationId = value;
-                            } else {
-                                state.formData.eCommerce.variationDefaults.push({
-                                    attributeId: attributeId,
-                                    variationId: value
-                                })
-                            }
-                        }
-                        return state;
-                    })
-                },
-            }
-        }
-    }
-
-    TabECommerce = {
-        Pricing: () => {
-            return (
-                <div className="row">
-                    <div className="col-md-7">
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Tax Included Price"}
-                                    name="formData.eCommerce.pricing.taxIncluded"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.pricing?.taxIncluded}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Tax Excluded Price"}
-                                    name="formData.eCommerce.pricing.taxExcluded"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.pricing?.taxExcluded}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Tax Rate"}
-                                    name="formData.eCommerce.pricing.taxRate"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.pricing?.taxRate}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Compared Price"}
-                                    name="formData.eCommerce.pricing.compared"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.pricing?.compared}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        },
-        Inventory: () => {
-            return (
-                <div className="row">
-                    <div className="col-md-7">
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"SKU"}
-                                    name="formData.eCommerce.inventory.sku"
-                                    type="text"
-                                    value={this.state.formData.eCommerce?.inventory?.sku}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Quantity"}
-                                    name="formData.eCommerce.inventory.quantity"
-                                    disabled={!this.state.formData.eCommerce?.inventory?.isManageStock || false}
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.inventory?.quantity}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-7">
-                                <ThemeFormCheckBox
-                                    title={"Is Manage Stock"}
-                                    name="formData.eCommerce.inventory.isManageStock"
-                                    checked={Boolean(this.state.formData.eCommerce?.inventory?.isManageStock)}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        },
-        Shipping: () => {
-            return (
-                <div className="row">
-                    <div className="col-md-7">
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Width"}
-                                    name="formData.eCommerce.shipping.width"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.shipping?.width}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Height"}
-                                    name="formData.eCommerce.shipping.height"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.shipping?.height}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Depth"}
-                                    name="formData.eCommerce.shipping.depth"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.shipping?.depth}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <ThemeFormType
-                                    title={"Weight"}
-                                    name="formData.eCommerce.shipping.weight"
-                                    type="number"
-                                    value={this.state.formData.eCommerce?.shipping?.weight}
-                                    onChange={e => HandleForm.onChangeInput(e, this)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        },
-        Attributes: () => {
-            const Attribute = (attribute: PostECommerceAttributeDocument, index: number) => {
-                return (
-                    <Card>
-                        <Card.Header>
-                            <div className="row">
-                                <div className="col-9">
-                                    <div className="row">
-                                        <div className="col-md-6 mt-2 mt-md-0">
-                                            <ThemeFormSelect
-                                                title={"Attribute"}
-                                                options={this.state.attributes}
-                                                value={this.state.attributes.findSingle("value", attribute.attributeId)}
-                                                onChange={(item: any, e) => this.TabECommerceEvents.onChange(attribute, "attributeId", item.value)}
-                                            />
-                                        </div>
-                                        <div className="col-md-6 mt-2 mt-md-0">
-                                            <ThemeFormSelect
-                                                title={this.props.t("type")}
-                                                options={this.state.attributeTypes}
-                                                value={this.state.attributeTypes?.findSingle("value", attribute.typeId)}
-                                                onChange={(item: any, e) => this.TabECommerceEvents.onChange(attribute, "typeId", item.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-3 m-auto">
-                                    <div className="row">
-                                        <div className="col-md-6 text-center text-md-end">
-                                            <button type="button" className="btn btn-gradient-danger btn-lg"
-                                                    onClick={() => this.TabECommerceEvents.Attributes.onDelete(index)}>
-                                                <i className="mdi mdi-trash-can"></i></button>
-                                        </div>
-                                        <div className="col-md-6 text-center pt-1 mt-5 m-md-auto">
-                                            <ThemeAccordionToggle eventKey={attribute._id || ""}>
-                                                <div className="fs-4 cursor-pointer"><i className="mdi mdi-menu"></i>
-                                                </div>
-                                            </ThemeAccordionToggle>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey={attribute._id || ""}>
-                            <Card.Body>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <ThemeFormSelect
-                                            title={"Variations"}
-                                            isMulti
-                                            closeMenuOnSelect={false}
-                                            options={this.state.variations.findMulti("mainId", attribute.attributeId)}
-                                            value={this.state.variations.findMulti("value", attribute.variationId)}
-                                            onChange={(item: any, e) => this.TabECommerceEvents.Attributes.onChangeVariations(attribute, item)}
-                                        />
-                                    </div>
-                                </div>
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                )
-            }
-
-            return (
-                <div className="row mb-3">
-                    <div className="col-md-7">
-                        <button type={"button"} className="btn btn-gradient-success btn-lg"
-                                onClick={() => this.TabECommerceEvents.Attributes.onAddNew()}>+ {this.props.t("addNew")}
-                        </button>
-                    </div>
-                    <div className="col-md-7 mt-2">
-                        <Accordion flush>
-                            {
-                                this.state.formData.eCommerce?.attributes?.map((option, index) => {
-                                    return Attribute(option, index)
-                                })
-                            }
-                        </Accordion>
-                    </div>
-                </div>
-            );
-        },
-        Variations: () => {
-            const Variation = (variation: PostECommerceVariationDocument, index: number) => {
-                return (
-                    <Card>
-                        <Card.Header>
-                            <div className="row">
-                                <div className="col-9">
-                                    <div className="row">
-                                        {
-                                            this.state.formData.eCommerce?.attributes?.map(attribute => (
-                                                <div className="col-md-4 mt-2 mt-md-0">
-                                                    <ThemeFormSelect
-                                                        title={this.state.attributes.findSingle("value", attribute.attributeId)?.label}
-                                                        options={this.state.variations.findMulti("value", attribute.variationId)}
-                                                        value={this.state.variations.findSingle("value", variation.selectedVariations.findSingle("attributeId", attribute.attributeId)?.variationId)}
-                                                        onChange={(item: any, e) => this.TabECommerceEvents.Variations.onChangeAttributeChild(variation, attribute.attributeId, item.value)}
-                                                    />
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
-                                </div>
-                                <div className="col-3 m-auto">
-                                    <div className="row">
-                                        <div className="col-md-6 text-center text-md-end">
-                                            <button type="button" className="btn btn-gradient-danger btn-lg"
-                                                    onClick={() => this.TabECommerceEvents.Variations.onDelete(index)}>
-                                                <i className="mdi mdi-trash-can"></i></button>
-                                        </div>
-                                        <div className="col-md-6 text-center pt-1 mt-5 m-md-auto">
-                                            <ThemeAccordionToggle eventKey={variation._id || ""}>
-                                                <div className="fs-4 cursor-pointer"><i className="mdi mdi-menu"></i></div>
-                                            </ThemeAccordionToggle>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card.Header>
-                        <Accordion.Collapse eventKey={variation._id || ""}>
-                            <Card.Body>
-                                <Tabs
-                                    onSelect={(key: any) => this.TabECommerceEvents.onChange(this.state, `activeKey${variation._id}`, key)}
-                                    activeKey={this.state[`activeKey${variation._id}`] || "general"}
-                                    className="mb-5"
-                                    transition={false}>
-                                    <Tab eventKey="general" title={this.props.t("general")}>
-                                        <div className="row mb-4">
-                                            <div className="col-md-7 mb-3">
-                                                <ThemeChooseImage
-                                                    {...this.props}
-                                                    isShow={this.state[`selectImage${variation._id}`]}
-                                                    onHide={() => this.setState((state: PageState) => {
-                                                        state[`selectImage${variation._id}`] = false;
-                                                        return state;
-                                                    })}
-                                                    onSelected={images => this.setState((state: PageState) => {
-                                                        if (variation.contents) {
-                                                            variation.contents.image = images[0];
-                                                        }
-                                                        state[`selectImage${variation._id}`] = false;
-                                                        return state;
-                                                    })}
-                                                    isMulti={false}
-                                                    selectedImages={(variation.contents && variation.contents.image) ? [variation.contents.image] : undefined}
-                                                />
-                                                <Image
-                                                    src={imageSourceLib.getUploadedImageSrc(variation.contents?.image)}
-                                                    alt="Empty Image"
-                                                    className="post-image img-fluid"
-                                                    width={100}
-                                                    height={100}
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-gradient-warning btn-xs ms-1"
-                                                    onClick={() => this.TabECommerceEvents.onChange(this.state, `selectImage${variation._id}`, true)}
-                                                ><i className="fa fa-pencil-square-o"></i></button>
-                                            </div>
-                                            <div className="col-md-12 mb-3">
-                                                <ThemeFormType
-                                                    title={this.props.t("shortContent").toCapitalizeCase()}
-                                                    type="textarea"
-                                                    value={variation.contents?.shortContent}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.contents, "shortContent", e.target.value)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab eventKey="content" title={this.props.t("content")}>
-                                        <div className="row mb-4">
-                                            <div className="col-md-12 mb-3">
-                                                {
-                                                    (this.state[`activeKey${variation._id}`] === "content")
-                                                        ? <ThemeRichTextBox
-                                                            value={variation.contents?.content || ""}
-                                                            onChange={newContent => this.TabECommerceEvents.onChange(variation.contents, "content", newContent)}
-                                                            {...this.props}
-                                                        />
-                                                        : ""
-                                                }
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab eventKey="gallery" title={this.props.t("gallery")}>
-                                        <div className="row mb-4">
-                                            <div className="col-md-7 mb-3">
-                                                <ThemeChooseImage
-                                                    {...this.props}
-                                                    isShow={this.state[`selectGallery${variation._id}`]}
-                                                    onHide={() => this.setState((state: PageState) => {
-                                                        state[`selectGallery${variation._id}`] = false;
-                                                        return state;
-                                                    })}
-                                                    onSelected={images => this.setState((state: PageState) => {
-                                                        variation.images = images;
-                                                        return state
-                                                    })}
-                                                    isMulti={true}
-                                                    selectedImages={variation.images}
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-gradient-info btn-lg ms-1"
-                                                    onClick={() => this.TabECommerceEvents.onChange(this.state, `selectGallery${variation._id}`, true)}
-                                                ><i className="fa fa-pencil-square-o"></i> Resim Sec
-                                                </button>
-                                            </div>
-                                            <div className="col-md-12 mb-3">
-                                                <div className="row">
-                                                    {
-                                                        variation.images.map(image => (
-                                                            <div className="col-md-3 mb-3">
-                                                                <Image
-                                                                    src={imageSourceLib.getUploadedImageSrc(image)}
-                                                                    alt="Empty Image"
-                                                                    className="post-image img-fluid"
-                                                                    width={100}
-                                                                    height={100}
-                                                                />
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab eventKey="pricing" title={"Pricing"}>
-                                        <div className="row mb-4">
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Tax Included Price"}
-                                                    type="number"
-                                                    value={variation.pricing?.taxIncluded}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.pricing, "taxIncluded", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Tax Excluded Price"}
-                                                    type="number"
-                                                    value={variation.pricing?.taxExcluded}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.pricing, "taxExcluded", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Tax Rate"}
-                                                    type="number"
-                                                    value={variation.pricing?.taxRate}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.pricing, "taxRate", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Compared Price"}
-                                                    type="number"
-                                                    value={variation.pricing?.compared}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.pricing, "compared", e.target.value)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab eventKey="inventory" title={"Inventory"}>
-                                        <div className="row mb-4">
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"SKU"}
-                                                    type="text"
-                                                    value={variation.inventory?.sku}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.inventory, "sku", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    disabled={!variation.inventory?.isManageStock || false}
-                                                    title={"Quantity"}
-                                                    type="number"
-                                                    value={variation.inventory?.quantity}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.inventory, "quantity", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-7 mb-3">
-                                                <ThemeFormCheckBox
-                                                    title={"Is Manage Stock"}
-                                                    checked={Boolean(variation.inventory?.isManageStock)}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.inventory, "isManageStock", e.target.checked)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                    <Tab eventKey="shipping" title={"Shipping"}>
-                                        <div className="row mb-4">
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Width"}
-                                                    type="number"
-                                                    value={variation.shipping?.width}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.shipping, "width", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Height"}
-                                                    type="number"
-                                                    value={variation.shipping?.height}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.shipping, "height", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Depth"}
-                                                    type="number"
-                                                    value={variation.shipping?.depth}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.shipping, "depth", e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 mb-3">
-                                                <ThemeFormType
-                                                    title={"Weight"}
-                                                    type="number"
-                                                    value={variation.shipping?.weight}
-                                                    onChange={e => this.TabECommerceEvents.onChange(variation.shipping, "weight", e.target.value)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </Tab>
-                                </Tabs>
-                            </Card.Body>
-                        </Accordion.Collapse>
-                    </Card>
-                )
-            }
-
-            return (
-                <div className="row mb-3">
-                    <div className="col-md-7">
-                        <h4>{this.props.t("default")}</h4>
-                        <div className="row">
-                            {
-                                this.state.formData.eCommerce?.attributes?.map(attribute => (
-                                    <div className="col-md-4 mt-2 mt-md-0">
-                                        <ThemeFormSelect
-                                            title={this.state.attributes.findSingle("value", attribute.attributeId)?.label}
-                                            options={this.state.variations.findMulti("value", attribute.variationId)}
-                                            value={this.state.variations.findSingle("value", this.state.formData.eCommerce?.variationDefaults?.findSingle("attributeId", attribute.attributeId)?.variationId)}
-                                            onChange={(item: any, e) => this.TabECommerceEvents.Variations.onChangeDefault(attribute.attributeId, item.value)}
-                                        />
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </div>
-                    <div className="col-md-7 mt-2">
-                        <button type={"button"} className="btn btn-gradient-success btn-lg"
-                                onClick={() => this.TabECommerceEvents.Variations.onAddNew()}>+ {this.props.t("addNew")}
-                        </button>
-                    </div>
-                    <div className="col-md-7 mt-2">
-                        <Accordion flush>
-                            {
-                                this.state.formData.eCommerce?.variations?.map((variation, index) => {
-                                    return Variation(variation, index)
-                                })
-                            }
-                        </Accordion>
-                    </div>
-                </div>
-            );
-        }
-    }
-
-    TabComponents = () => {
-        const Component = (componentId: string, index: number) => {
-            return (
-                <div className="col-md-12 mt-4">
-                    <div className="row">
-                        <div className="col-3 col-lg-1 mt-2">
-                            <button type="button" className="btn btn-gradient-danger btn-lg"
-                                    onClick={event => this.TabComponentEvents.onDelete(index)}><i
-                                className="mdi mdi-trash-can"></i></button>
-                        </div>
-                        <div className="col-9 col-lg-11">
-                            <ThemeFormSelect
-                                title={this.props.t("component")}
-                                options={this.state.components}
-                                value={this.state.components?.filter(item => item.value == componentId)}
-                                onChange={(item: any, e) => this.TabComponentEvents.onChangeSelect(item.value, index)}
-                            />
-                        </div>
-                    </div>
-
-                </div>
-            )
-        }
-
-        return (
-            <div className="row mb-3">
-                <div className="col-md-7">
-                    <button type={"button"} className="btn btn-gradient-success btn-lg"
-                            onClick={() => this.TabComponentEvents.onAddNew()}>+ {this.props.t("addNew")}
-                    </button>
-                </div>
-                <div className="col-md-7 mt-2">
-                    <div className="row">
-                        {
-                            this.state.formData.components?.map((componentId, index) => {
-                                return Component(componentId, index)
-                            })
-                        }
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     TabSEO = () => {
         return (
             <div className="row">
@@ -1133,18 +411,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                         onChange={(event) => HandleForm.onChangeInput(event, this)}
                     />
                 </div>
-                {
-                    [PostTypeId.Product].includes(Number(this.state.formData.typeId))
-                        ? <div className="col-md-7 mb-3">
-                            <ThemeFormSelect
-                                title={"Product Type"}
-                                name="formData.eCommerce.typeId"
-                                options={this.state.productTypes}
-                                value={this.state.productTypes?.findSingle("value", this.state.formData.eCommerce?.typeId || "")}
-                                onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item.value, this)}
-                            />
-                        </div> : null
-                }
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("status")}
@@ -1203,58 +469,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     TabGeneral = () => {
-        const Buttons = () => {
-            const Button = (propButton: PostContentButtonDocument, index: number) => {
-                return (
-                    <div className="col-md-12 mt-4">
-                        <ThemeFieldSet
-                            legend={`${this.props.t("button")}#${index + 1}`}
-                            legendElement={<i className="mdi mdi-trash-can text-danger fs-3 cursor-pointer"
-                                              onClick={() => this.TabGeneralButtonEvents.onDelete(index)}></i>}
-                        >
-                            <div className="row mt-3">
-                                <div className="col-md-6">
-                                    <ThemeFormType
-                                        type={"text"}
-                                        title={this.props.t("title")}
-                                        value={propButton.title}
-                                        onChange={e => this.TabGeneralButtonEvents.onChange("title", e.target.value, index)}
-                                    />
-                                </div>
-                                <div className="col-md-6 mt-3 mt-lg-0">
-                                    <ThemeFormType
-                                        type={"text"}
-                                        title={this.props.t("url")}
-                                        value={propButton.url}
-                                        onChange={e => this.TabGeneralButtonEvents.onChange("url", e.target.value, index)}
-                                    />
-                                </div>
-                            </div>
-                        </ThemeFieldSet>
-                    </div>
-                )
-            }
-
-            return (
-                <div className="row mb-3">
-                    <div className="col-md-7">
-                        <button type={"button"} className="btn btn-gradient-success btn-lg"
-                                onClick={() => this.TabGeneralButtonEvents.onAddNew()}>+ {this.props.t("newButton")}
-                        </button>
-                    </div>
-                    <div className="col-md-7 mt-2">
-                        <div className="row">
-                            {
-                                this.state.formData.contents.buttons?.map((button, index) => {
-                                    return Button(button, index)
-                                })
-                            }
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
         return (
             <div className="row">
                 {
@@ -1361,14 +575,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                             />
                         </div> : null
                 }
-                {
-                    [PostTypeId.Slider, PostTypeId.Service].includes(Number(this.state.formData.typeId))
-                        ? <div className="col-md-7 mb-3">
-                            {
-                                Buttons()
-                            }
-                        </div> : null
-                }
             </div>
         );
     }
@@ -1399,92 +605,67 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                     </div>
                 </div>
                 <div className="row">
-                    <ThemeForm
-                        isActiveSaveButton={true}
-                        saveButtonText={this.props.t("save")}
-                        saveButtonLoadingText={this.props.t("loading")}
-                        isSubmitting={this.state.isSubmitting}
-                        formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
-                    >
-                        <div className="grid-margin stretch-card">
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="theme-tabs">
-                                        <Tabs
-                                            onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
-                                            activeKey={this.state.mainTabActiveKey}
-                                            className="mb-5"
-                                            transition={false}>
-                                            <Tab eventKey="general" title={this.props.t("general")}>
-                                                <this.TabGeneral/>
-                                            </Tab>
-                                            {
-                                                ![PostTypeId.Slider].includes(Number(this.state.formData.typeId))
-                                                    ? <Tab eventKey="content" title={this.props.t("content")}>
-                                                        {
-                                                            (this.state.mainTabActiveKey === "content")
-                                                                ? <this.TabContent/>
-                                                                : ""
-                                                        }
-                                                    </Tab> : null
-                                            }
-                                            {
-                                                [PostTypeId.Page].includes(Number(this.state.formData.typeId))
-                                                    ? <Tab eventKey="components" title={this.props.t("components")}>
-                                                        <this.TabComponents/>
-                                                    </Tab> : null
-                                            }
-                                            <Tab eventKey="options" title={this.props.t("options")}>
-                                                <this.TabOptions/>
-                                            </Tab>
-                                            {
-                                                ![PostTypeId.Slider, PostTypeId.Testimonial].includes(Number(this.state.formData.typeId))
-                                                    ? <Tab eventKey="seo" title={this.props.t("seo")}>
-                                                        <this.TabSEO/>
-                                                    </Tab> : null
-                                            }
-                                        </Tabs>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {
-                            [PostTypeId.Product].includes(this.state.formData.typeId)
-                                ? <div className="grid-margin stretch-card">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <div className="theme-tabs">
-                                                <Tabs
-                                                    onSelect={(key: any) => this.setState({eCommerceTabActiveKey: key})}
-                                                    activeKey={this.state.eCommerceTabActiveKey}
-                                                    className="mb-5"
-                                                    transition={false}>
-                                                    <Tab eventKey="pricing" title={"Pricing"}>
-                                                        <this.TabECommerce.Pricing/>
-                                                    </Tab>
-                                                    <Tab eventKey="inventory" title={"Inventory"}>
-                                                        <this.TabECommerce.Inventory/>
-                                                    </Tab>
-                                                    <Tab eventKey="shipping" title={"Shipping"}>
-                                                        <this.TabECommerce.Shipping/>
-                                                    </Tab>
-                                                    <Tab eventKey="attributes" title={"attributes"}>
-                                                        <this.TabECommerce.Attributes/>
-                                                    </Tab>
-                                                    {
-                                                        this.state.formData.eCommerce?.typeId == ProductTypeId.VariableProduct
-                                                            ? <Tab eventKey="variations" title={"variations"}>
-                                                                <this.TabECommerce.Variations/>
-                                                            </Tab> : null
-                                                    }
-                                                </Tabs>
-                                            </div>
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="theme-tabs">
+                                            <Tabs
+                                                onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                                activeKey={this.state.mainTabActiveKey}
+                                                className="mb-5"
+                                                transition={false}>
+                                                <Tab eventKey="general" title={this.props.t("general")}>
+                                                    <this.TabGeneral/>
+                                                </Tab>
+                                                {
+                                                    ![PostTypeId.Slider].includes(Number(this.state.formData.typeId))
+                                                        ? <Tab eventKey="content" title={this.props.t("content")}>
+                                                            {
+                                                                (this.state.mainTabActiveKey === "content")
+                                                                    ? <this.TabContent/>
+                                                                    : ""
+                                                            }
+                                                        </Tab> : null
+                                                }
+                                                <Tab eventKey="options" title={this.props.t("options")}>
+                                                    <this.TabOptions/>
+                                                </Tab>
+                                                {
+                                                    ![PostTypeId.Slider, PostTypeId.Testimonial].includes(Number(this.state.formData.typeId))
+                                                        ? <Tab eventKey="seo" title={this.props.t("seo")}>
+                                                            <this.TabSEO/>
+                                                        </Tab> : null
+                                                }
+                                            </Tabs>
                                         </div>
                                     </div>
                                 </div>
-                                : null
-                        }
-                    </ThemeForm>
+                            </div>
+                            {
+                                [PostTypeId.Slider, PostTypeId.Service].includes(this.state.formData.typeId)
+                                    ? <ComponentPagePostAddButton page={this} />
+                                    : null
+                            }
+                            {
+                                [PostTypeId.Page].includes(this.state.formData.typeId)
+                                    ? <ComponentPagePostAddComponent page={this} />
+                                    : null
+                            }
+                            {
+                                [PostTypeId.Product].includes(this.state.formData.typeId)
+                                    ? <ComponentPagePostAddECommerce page={this} />
+                                    : null
+                            }
+                        </ThemeForm>
+                    </div>
                 </div>
             </div>
         )

@@ -4,16 +4,16 @@ import {PermissionId, Status, UserRoleId, UserRoles} from "constants/index";
 import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
 import UserDocument from "types/services/user";
-import ThemeUsersProfileCard from "components/elements/users/profileCard";
+import ThemeUsersProfileCard from "components/theme/users/profileCard";
 import userService from "services/user.service";
 import imageSourceLib from "lib/imageSource.lib";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import PagePaths from "constants/pagePaths";
-import ThemeDataTable from "components/elements/table/dataTable";
+import ThemeDataTable from "components/theme/table/dataTable";
 import Image from "next/image"
-import ThemeBadgeStatus from "components/elements/badge/status";
+import ThemeBadgeStatus from "components/theme/badge/status";
 
 type PageState = {
     searchKey: string

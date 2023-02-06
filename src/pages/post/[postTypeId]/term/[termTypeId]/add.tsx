@@ -1,11 +1,11 @@
 import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
-import {ThemeForm, ThemeFormSelect, ThemeFormType,} from "components/elements/form"
+import {ThemeForm, ThemeFormSelect, ThemeFormType,} from "components/theme/form"
 import {PagePropCommonDocument} from "types/pageProps";
 import {PostTermTypeId, PostTermTypes, PostTypeId, PostTypes, StatusId} from "constants/index";
 import V from "library/variable";
 import HandleForm from "library/react/handles/form";
-import ThemeChooseImage from "components/elements/chooseImage";
+import ThemeChooseImage from "components/theme/chooseImage";
 import postTermService from "services/postTerm.service";
 import staticContentLib from "lib/staticContent.lib";
 import imageSourceLib from "lib/imageSource.lib";
@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {
     mainTabActiveKey: string
@@ -84,7 +84,11 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     setPageTitle() {
         let titles: string[] = [
-            ...postLib.getPageTitles({t: this.props.t, postTypeId: this.state.formData.postTypeId, termTypeId: this.state.formData.typeId}),
+            ...postLib.getPageTitles({
+                t: this.props.t,
+                postTypeId: this.state.formData.postTypeId,
+                termTypeId: this.state.formData.typeId
+            }),
             this.props.t(this.state.formData._id ? "edit" : "add")
         ];
 
@@ -116,7 +120,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         });
         if (resData.status) {
             this.setState((state: PageState) => {
-                state.items = [{ value: "", label: this.props.t("notSelected") }];
+                state.items = [{value: "", label: this.props.t("notSelected")}];
                 resData.data.orderBy("order", "asc").forEach(item => {
                     if (!V.isEmpty(this.state.formData._id)) {
                         if (this.state.formData._id == item._id) return;
@@ -303,7 +307,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                         type="button"
                         className="btn btn-gradient-warning btn-xs ms-1"
                         onClick={() => {
-                            this.setState({ isSelectionImage: true })
+                            this.setState({isSelectionImage: true})
                         }}
                     ><i className="fa fa-pencil-square-o"></i></button>
                 </div>
@@ -344,7 +348,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 <ThemeChooseImage
                     {...this.props}
                     isShow={this.state.isSelectionImage}
-                    onHide={() => this.setState({ isSelectionImage: false })}
+                    onHide={() => this.setState({isSelectionImage: false})}
                     onSelected={images => this.setState((state: PageState) => {
                         state.formData.contents.image = images[0];
                         return state
@@ -356,42 +360,46 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                         <div className="row">
                             <div className="col-6">
                                 <button className="btn btn-gradient-dark btn-lg btn-icon-text w-100"
-                                    onClick={() => this.navigatePage()}>
+                                        onClick={() => this.navigatePage()}>
                                     <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="grid-margin stretch-card">
-                    <div className="card">
-                        <div className="card-body">
-                            <ThemeForm
-                                isActiveSaveButton={true}
-                                saveButtonText={this.props.t("save")}
-                                saveButtonLoadingText={this.props.t("loading")}
-                                isSubmitting={this.state.isSubmitting}
-                                formAttributes={{ onSubmit: (event) => this.onSubmit(event) }}
-                            >
-                                <div className="theme-tabs">
-                                    <Tabs
-                                        onSelect={(key: any) => this.setState({ mainTabActiveKey: key })}
-                                        activeKey={this.state.mainTabActiveKey}
-                                        className="mb-5"
-                                        transition={false}>
-                                        <Tab eventKey="general" title={this.props.t("general")}>
-                                            <this.TabGeneral />
-                                        </Tab>
-                                        <Tab eventKey="options" title={this.props.t("options")}>
-                                            <this.TabOptions />
-                                        </Tab>
-                                        <Tab eventKey="seo" title={this.props.t("seo")}>
-                                            <this.TabSEO />
-                                        </Tab>
-                                    </Tabs>
+                <div className="row">
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="theme-tabs">
+                                            <Tabs
+                                                onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                                activeKey={this.state.mainTabActiveKey}
+                                                className="mb-5"
+                                                transition={false}>
+                                                <Tab eventKey="general" title={this.props.t("general")}>
+                                                    <this.TabGeneral/>
+                                                </Tab>
+                                                <Tab eventKey="options" title={this.props.t("options")}>
+                                                    <this.TabOptions/>
+                                                </Tab>
+                                                <Tab eventKey="seo" title={this.props.t("seo")}>
+                                                    <this.TabSEO/>
+                                                </Tab>
+                                            </Tabs>
+                                        </div>
+                                    </div>
                                 </div>
-                            </ThemeForm>
-                        </div>
+                            </div>
+                        </ThemeForm>
                     </div>
                 </div>
             </div>

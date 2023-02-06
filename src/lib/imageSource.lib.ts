@@ -1,5 +1,5 @@
 import V from "library/variable";
-import {emptyImage} from "components/elements/chooseImage";
+import {emptyImage} from "components/theme/chooseImage";
 import pathUtil from "utils/path.util";
 
 export default {

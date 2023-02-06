@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {PagePropCommonDocument} from "types/pageProps";
 import PagePaths from "constants/pagePaths";
 import permissionLib from "lib/permission.lib";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 
 type PageState = {
     permissionIsValid: boolean

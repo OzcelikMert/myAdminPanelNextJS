@@ -11,11 +11,11 @@ import imageSourceLib from "lib/imageSource.lib";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import PagePaths from "constants/pagePaths";
-import ThemeDataTable from "components/elements/table/dataTable";
+import ThemeDataTable from "components/theme/table/dataTable";
 import Image from "next/image"
-import ThemeChartArea from "components/elements/charts/area";
+import ThemeChartArea from "components/theme/charts/area";
 import PostLib from "lib/post.lib";
-import ThemeBadgeStatus from "components/elements/badge/status";
+import ThemeBadgeStatus from "components/theme/badge/status";
 
 const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import JoditEditor, {Jodit} from "jodit-react";
 import {IJodit} from "jodit/index";
-import ThemeChooseImage from "components/elements/chooseImage";
+import ThemeChooseImage from "components/theme/chooseImage";
 import {PagePropCommonDocument} from "types/pageProps";
 import {Config} from "jodit/types/config";
 import Spinner from "react-bootstrap/Spinner";

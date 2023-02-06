@@ -1,6 +1,4 @@
-import Accordion from 'react-bootstrap/Accordion';
 import { useAccordionButton } from 'react-bootstrap/AccordionButton';
-import Card from 'react-bootstrap/Card';
 
 type PageProps = {
     children: any

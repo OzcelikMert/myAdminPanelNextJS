@@ -1,21 +1,21 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import {Languages, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import languageService from "services/language.service";
 import ServerInfoDocument from "types/services/serverInfo";
 import serverInfoService from "services/serverInfo.service";
-import ThemeToast from "components/elements/toast";
-import ThemeChooseImage from "components/elements/chooseImage";
+import ThemeToast from "components/theme/toast";
+import ThemeChooseImage from "components/theme/chooseImage";
 import imageSourceLib from "lib/imageSource.lib";
 import {SettingGeneralUpdateParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
 import localStorageUtil from "utils/localStorage.util";
 import Spinner from "react-bootstrap/Spinner";
 import Image from "next/image"
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {
     languages: ThemeFormSelectValueDocument[]
@@ -358,7 +358,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                         <p className="card-text mb-0 text-dark">{this.props.t("storage")}</p>
                                         <div className="fluid-container">
                                             {
-                                                this.state.isServerInfoLoading ? <Spinner /> : <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.storage}%</h3>
+                                                this.state.isServerInfoLoading ? <Spinner/> :
+                                                    <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.storage}%</h3>
                                             }
                                         </div>
                                     </div>
@@ -374,7 +375,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                         <p className="card-text mb-0 text-dark">{this.props.t("memory")}</p>
                                         <div className="fluid-container">
                                             {
-                                                this.state.isServerInfoLoading ? <Spinner /> : <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.memory}%</h3>
+                                                this.state.isServerInfoLoading ? <Spinner/> :
+                                                    <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.memory}%</h3>
                                             }
                                         </div>
                                     </div>
@@ -390,7 +392,8 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                                         <p className="card-text mb-0 text-dark">{this.props.t("processor")}</p>
                                         <div className="fluid-container">
                                             {
-                                                this.state.isServerInfoLoading ? <Spinner /> : <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.cpu}%</h3>
+                                                this.state.isServerInfoLoading ? <Spinner/> :
+                                                    <h3 className="mb-0 font-weight-medium text-dark">{this.state.serverInfo.cpu}%</h3>
                                             }
                                         </div>
                                     </div>
@@ -405,42 +408,49 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
 
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
-            <div className="page-settings page-dashboard page-post">
-                <this.ServerInfo/>
-                <div className="grid-margin stretch-card">
-                    <div className="card">
-                        <div className="card-body">
-                            <ThemeForm
-                                isActiveSaveButton={true}
-                                saveButtonText={this.props.t("save")}
-                                saveButtonLoadingText={this.props.t("loading")}
-                                isSubmitting={this.state.isSubmitting}
-                                formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
-                            >
-                                <div className="theme-tabs">
-                                    <Tabs
-                                        onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
-                                        activeKey={this.state.mainTabActiveKey}
-                                        className="mb-5"
-                                        transition={false}>
-                                        <Tab eventKey="general" title={this.props.t("general")}>
-                                            <this.TabGeneral/>
-                                        </Tab>
-                                        <Tab eventKey="contact" title={this.props.t("contact")}>
-                                            <this.TabContact/>
-                                        </Tab>
-                                        {
-                                            this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
-                                                ? <Tab eventKey="tools" title={this.props.t("tools")}>
-                                                    <this.TabTools/>
-                                                </Tab> : null
-                                        }
-                                    </Tabs>
+            <div className="page-settings">
+                <div className="row">
+                    <this.ServerInfo/>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="theme-tabs">
+                                            <Tabs
+                                                onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                                activeKey={this.state.mainTabActiveKey}
+                                                className="mb-5"
+                                                transition={false}>
+                                                <Tab eventKey="general" title={this.props.t("general")}>
+                                                    <this.TabGeneral/>
+                                                </Tab>
+                                                <Tab eventKey="contact" title={this.props.t("contact")}>
+                                                    <this.TabContact/>
+                                                </Tab>
+                                                {
+                                                    this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
+                                                        ? <Tab eventKey="tools" title={this.props.t("tools")}>
+                                                            <this.TabTools/>
+                                                        </Tab> : null
+                                                }
+                                            </Tabs>
+                                        </div>
+                                    </div>
                                 </div>
-                            </ThemeForm>
-                        </div>
+                            </div>
+                        </ThemeForm>
                     </div>
                 </div>
+
             </div>
         )
     }

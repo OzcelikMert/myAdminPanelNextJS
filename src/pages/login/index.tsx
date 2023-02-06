@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import ThemeInputType from "components/elements/form/input/type";
+import ThemeInputType from "components/theme/form/input/type";
 import {PagePropCommonDocument} from "types/pageProps";
 import {LanguageId, StatusId} from "constants/index";
-import {ThemeForm, ThemeFormCheckBox} from "components/elements/form";
+import {ThemeForm, ThemeFormCheckBox} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import authService from "services/auth.service";
 import UserDocument from "types/services/user";

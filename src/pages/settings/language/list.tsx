@@ -4,13 +4,13 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
-import ThemeDataTable from "components/elements/table/dataTable";
+import ThemeDataTable from "components/theme/table/dataTable";
 import PagePaths from "constants/pagePaths";
 import LanguageDocument from "types/services/language";
 import languageService from "services/language.service";
 import Image from "next/image";
 import imageSourceLib from "lib/imageSource.lib";
-import ThemeBadgeStatus from "components/elements/badge/status";
+import ThemeBadgeStatus from "components/theme/badge/status";
 
 type PageState = {
     searchKey: string

@@ -12,7 +12,7 @@ import imageSourceLib from "lib/imageSource.lib";
 import {ThemeFieldSet} from "../form";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import Image from "next/image"
-import ThemeBadgeStatus from "components/elements/badge/status";
+import ThemeBadgeStatus from "components/theme/badge/status";
 
 type PageState = {};
 

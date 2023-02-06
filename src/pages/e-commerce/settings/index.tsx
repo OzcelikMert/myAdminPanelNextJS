@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeForm, ThemeFormSelect} from "components/elements/form";
+import {ThemeForm, ThemeFormSelect} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import settingService from "services/setting.service";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import {SettingECommerceUpdateParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
 import {CurrencyId, CurrencyTypes} from "constants/currencyTypes";
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {
     currencyTypes: ThemeFormSelectValueDocument[]
@@ -111,30 +111,34 @@ export default class PageECommerceSettings extends Component<PageProps, PageStat
 
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
-            <div className="page-settings page-dashboard page-post">
-                <div className="grid-margin stretch-card">
-                    <div className="card">
-                        <div className="card-body">
-                            <ThemeForm
-                                isActiveSaveButton={true}
-                                saveButtonText={this.props.t("save")}
-                                saveButtonLoadingText={this.props.t("loading")}
-                                isSubmitting={this.state.isSubmitting}
-                                formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
-                            >
-                                <div className="theme-tabs">
-                                    <Tabs
-                                        onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
-                                        activeKey={this.state.mainTabActiveKey}
-                                        className="mb-5"
-                                        transition={false}>
-                                        <Tab eventKey="general" title={this.props.t("general")}>
-                                            <this.TabGeneral/>
-                                        </Tab>
-                                    </Tabs>
+            <div className="page-post">
+                <div className="row">
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="theme-tabs">
+                                            <Tabs
+                                                onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                                activeKey={this.state.mainTabActiveKey}
+                                                className="mb-5"
+                                                transition={false}>
+                                                <Tab eventKey="general" title={this.props.t("general")}>
+                                                    <this.TabGeneral/>
+                                                </Tab>
+                                            </Tabs>
+                                        </div>
+                                    </div>
                                 </div>
-                            </ThemeForm>
-                        </div>
+                            </div>
+                        </ThemeForm>
                     </div>
                 </div>
             </div>

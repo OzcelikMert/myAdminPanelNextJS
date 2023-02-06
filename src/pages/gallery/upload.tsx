@@ -2,7 +2,7 @@ import React, {Component, createRef, RefObject} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
 import UploadingFilesDocument from "types/pages/gallery/upload";
 import galleryService from "services/gallery.service";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import Image from "next/image"
 
 type PageState = {

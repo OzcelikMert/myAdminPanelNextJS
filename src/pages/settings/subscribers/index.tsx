@@ -4,11 +4,11 @@ import {PermissionId, Status, StatusId} from "constants/index";
 import  {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import {SubscriberDocument} from "types/services/subscriber";
 import subscriberService from "services/subscriber.service";
-import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/elements/table/toggleMenu";
-import ThemeDataTable from "components/elements/table/dataTable";
+import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
+import ThemeDataTable from "components/theme/table/dataTable";
 import classNameLib from "lib/className.lib";
 
 type PageState = {
@@ -136,7 +136,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
 
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
-            <div className="page-post-term">
+            <div className="page-settings">
                 <div className="grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body">

@@ -4,7 +4,7 @@ import moment from "moment";
 import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionGroups, Permissions, StatusId, UserRoleId, UserRoles} from "constants/index";
 import HandleForm from "library/react/handles/form";
-import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/elements/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/theme/form";
 import V, {DateMask} from "library/variable";
 import userService from "services/user.service";
 import staticContentLib from "lib/staticContent.lib";
@@ -13,7 +13,7 @@ import {UserUpdateParamDocument} from "types/services/user";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {
     mainTabActiveKey: string
@@ -202,7 +202,7 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     TabPermissions = (props: any) => {
         let self = this;
 
-        function PermissionGroup(props: PermissionGroupDocument, index: number){
+        function PermissionGroup(props: PermissionGroupDocument, index: number) {
             let permissions = Permissions.findMulti("groupId", props.id).map((perm, index) =>
                 permissionLib.checkPermission(
                     self.props.getStateApp.sessionData.roleId,
@@ -258,6 +258,19 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     TabOptions = () => {
         return (
             <div className="row">
+                <div className="col-md-7 mb-3">
+                    <ThemeFormSelect
+                        title={this.props.t("role")}
+                        name="formData.roleId"
+                        placeholder={this.props.t("chooseRole")}
+                        options={this.state.userRoles}
+                        value={this.state.userRoles?.findSingle("value", this.state.formData.roleId)}
+                        onChange={(item: any, e) => {
+                            HandleForm.onChangeSelect(e.name, item.value, this);
+                            this.onChangeUserRole(item.value);
+                        }}
+                    />
+                </div>
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
                         title={this.props.t("status")}
@@ -329,66 +342,61 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormSelect
-                        title={this.props.t("role")}
-                        name="formData.roleId"
-                        placeholder={this.props.t("chooseRole")}
-                        options={this.state.userRoles}
-                        value={this.state.userRoles?.findSingle("value", this.state.formData.roleId)}
-                        onChange={(item: any, e) => {
-                            HandleForm.onChangeSelect(e.name, item.value, this);
-                            this.onChangeUserRole(item.value);
-                        }}
-                    />
-                </div>
             </div>
         );
     }
 
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
-            <div className="page-user">
-                <div className="navigate-buttons mb-3">
-                    <button className="btn btn-gradient-dark btn-lg btn-icon-text"
-                            onClick={() => this.navigatePage()}>
-                        <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
-                    </button>
+            <div className="page-settings page-user">
+                <div className="row mb-3">
+                    <div className="col-md-3">
+                        <div className="row">
+                            <div className="col-6">
+                                <button className="btn btn-gradient-dark btn-lg btn-icon-text w-100"
+                                        onClick={() => this.navigatePage()}>
+                                    <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="grid-margin stretch-card">
-                    <div className="card">
-                        <div className="card-body">
-                            <ThemeForm
-                                isActiveSaveButton={true}
-                                saveButtonText={this.props.t("save")}
-                                saveButtonLoadingText={this.props.t("loading")}
-                                isSubmitting={this.state.isSubmitting}
-                                formAttributes={{
-                                    onSubmit: (event) => this.onSubmit(event),
-                                    autoComplete: "new-password"
-                                }}
-                            >
-                                <div className="card-body">
-                                    <div className="theme-tabs">
-                                        <Tabs
-                                            onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
-                                            activeKey={this.state.mainTabActiveKey}
-                                            className="mb-5"
-                                            transition={false}>
-                                            <Tab eventKey="general" title={this.props.t("general")}>
-                                                <this.TabGeneral/>
-                                            </Tab>
-                                            <Tab eventKey="options" title={this.props.t("options")}>
-                                                <this.TabOptions/>
-                                            </Tab>
-                                            <Tab eventKey="permissions" title={this.props.t("permissions")}>
-                                                <this.TabPermissions/>
-                                            </Tab>
-                                        </Tabs>
+                <div className="row">
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{
+                                onSubmit: (event) => this.onSubmit(event),
+                                autoComplete: "new-password"
+                            }}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <div className="theme-tabs">
+                                            <Tabs
+                                                onSelect={(key: any) => this.setState({mainTabActiveKey: key})}
+                                                activeKey={this.state.mainTabActiveKey}
+                                                className="mb-5"
+                                                transition={false}>
+                                                <Tab eventKey="general" title={this.props.t("general")}>
+                                                    <this.TabGeneral/>
+                                                </Tab>
+                                                <Tab eventKey="options" title={this.props.t("options")}>
+                                                    <this.TabOptions/>
+                                                </Tab>
+                                                <Tab eventKey="permissions" title={this.props.t("permissions")}>
+                                                    <this.TabPermissions/>
+                                                </Tab>
+                                            </Tabs>
+                                        </div>
                                     </div>
                                 </div>
-                            </ThemeForm>
-                        </div>
+                            </div>
+                        </ThemeForm>
                     </div>
                 </div>
             </div>

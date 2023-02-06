@@ -4,10 +4,10 @@ import Swal from "sweetalert2";
 import galleryService from "services/gallery.service";
 import {TableColumn} from "react-data-table-component";
 import imageSourceLib from "lib/imageSource.lib";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import permissionLib from "lib/permission.lib";
 import {PermissionId} from "constants/index";
-import ThemeDataTable from "components/elements/table/dataTable";
+import ThemeDataTable from "components/theme/table/dataTable";
 import Image from "next/image"
 
 type PageState = {

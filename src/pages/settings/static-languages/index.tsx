@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form";
 import {LanguageKeysArray, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import {
     SettingStaticLanguageDocument, SettingStaticLanguageUpdateParamDocument
 } from "types/services/setting";
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {
     isSubmitting: boolean
@@ -238,20 +238,24 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
 
     render() {
         return this.props.getStateApp.isPageLoading ? null : (
-            <div className="page-settings page-dashboard page-post">
-                <div className="grid-margin stretch-card">
-                    <div className="card">
-                        <div className="card-body">
-                            <ThemeForm
-                                isActiveSaveButton={true}
-                                saveButtonText={this.props.t("save")}
-                                saveButtonLoadingText={this.props.t("loading")}
-                                isSubmitting={this.state.isSubmitting}
-                                formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
-                            >
-                                <this.StaticLanguages/>
-                            </ThemeForm>
-                        </div>
+            <div className="page-settings">
+                <div className="row">
+                    <div className="col-md-12">
+                        <ThemeForm
+                            isActiveSaveButton={true}
+                            saveButtonText={this.props.t("save")}
+                            saveButtonLoadingText={this.props.t("loading")}
+                            isSubmitting={this.state.isSubmitting}
+                            formAttributes={{onSubmit: (event) => this.onSubmit(event)}}
+                        >
+                            <div className="grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <this.StaticLanguages/>
+                                    </div>
+                                </div>
+                            </div>
+                        </ThemeForm>
                     </div>
                 </div>
             </div>

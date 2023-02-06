@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import ThemeInputType from "components/elements/form/input/type";
+import ThemeInputType from "components/theme/form/input/type";
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeForm} from "components/elements/form";
+import {ThemeForm} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import V from "library/variable";
 import authService from "services/auth.service";

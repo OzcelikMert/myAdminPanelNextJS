@@ -1,6 +1,6 @@
 import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
-import {ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form"
+import {ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form"
 import {StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import V from "library/variable";
@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import {NavigationUpdateParamDocument} from "types/services/navigation";
 import navigationService from "services/navigation.service";
 import PagePaths from "constants/pagePaths";
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {
     items: ThemeFormSelectValueDocument[]

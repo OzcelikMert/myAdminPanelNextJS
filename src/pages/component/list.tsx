@@ -4,11 +4,11 @@ import {PermissionId, UserRoleId} from "constants/index";
 import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import {ComponentDocument} from "types/services/component";
 import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
-import ThemeDataTable from "components/elements/table/dataTable";
+import ThemeDataTable from "components/theme/table/dataTable";
 
 type PageState = {
     searchKey: string

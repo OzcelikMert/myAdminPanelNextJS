@@ -1,4 +1,5 @@
 export const LanguageKeysArray = [
+    "buttons",
     "editVariation",
     "editAttribute",
     "variation",

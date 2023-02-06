@@ -1,22 +1,22 @@
 import React, {Component, FormEvent} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/elements/form";
+import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import {
     PermissionGroups,
     Permissions, Status,
     UserRoleId, UserRoles
 } from "constants/index";
-import ThemeChooseImage from "components/elements/chooseImage";
+import ThemeChooseImage from "components/theme/chooseImage";
 import userService from "services/user.service";
 import profileService from "services/profile.service";
 import classNameLib from "lib/className.lib";
 import imageSourceLib from "lib/imageSource.lib";
-import ThemeToast from "components/elements/toast";
+import ThemeToast from "components/theme/toast";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import {ProfileUpdateParamDocument} from "types/services/profile";
 import Image from "next/image"
-import ThemeBadgeStatus from "components/elements/badge/status";
+import ThemeBadgeStatus from "components/theme/badge/status";
 
 type PageState = {
     isSubmitting: boolean

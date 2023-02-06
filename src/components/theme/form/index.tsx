@@ -32,13 +32,13 @@ class ThemeForm extends Component<PageProps, PageState> {
         return (
             <form className="theme-form" {...this.props.formAttributes} onKeyDown={(event) => this.onKeyDown(event)}>
                 {this.props.children}
-                <div className="submit-btn-div mb-4">
+                <div className="submit-btn-div text-end mb-4">
                     {
                         this.props.isActiveSaveButton ?
                             !this.props.isSubmitting
                                 ? <button
                                     type={"submit"}
-                                    className={`btn btn-gradient-success float-end btn-save ${this.props.saveButtonClassName}`}
+                                    className={`btn btn-gradient-success btn-save ${this.props.saveButtonClassName ?? ""}`}
                                 >
                                     {this.props.saveButtonText}
                                 </button>

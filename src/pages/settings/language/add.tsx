@@ -1,6 +1,6 @@
 import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
-import {ThemeForm, ThemeFormSelect, ThemeFormType} from "components/elements/form"
+import {ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form"
 import {StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import V from "library/variable";
@@ -12,7 +12,7 @@ import {LanguageUpdateParamDocument} from "types/services/language";
 import languageService from "services/language.service";
 import imageSourceLib from "lib/imageSource.lib";
 import Image from "next/image";
-import {ThemeFormSelectValueDocument} from "components/elements/form/input/select";
+import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 
 type PageState = {
     mainTabActiveKey: string
