@@ -8,6 +8,6 @@ export interface SideBarPath {
     icon?: string,
     state?: string,
     subPaths?: SideBarPath[]
-    permId?: PermissionId
+    permId?: PermissionId | PermissionId[]
     roleId?: UserRoleId
 }

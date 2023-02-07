@@ -3,7 +3,6 @@ import {PostTypeId} from "./postTypes";
 import {UserRoleId} from "./userRoles";
 import PagePaths from "./pagePaths";
 import {SideBarPath} from "types/constants/sidebarNavs";
-import {PostTermTypeId} from "constants/postTermTypes";
 
 const SidebarNav: SideBarPath[] = [
     {path: PagePaths.dashboard(), icon: `home`, title: "dashboard"},
@@ -27,6 +26,7 @@ const SidebarNav: SideBarPath[] = [
         icon: `navigation-variant`,
         title: "navigates",
         state: `navigates`,
+        permId: [PermissionId.NavigationAdd, PermissionId.NavigationEdit, PermissionId.NavigationDelete],
         subPaths: [
             {
                 path: PagePaths.navigation().add(),
@@ -41,6 +41,7 @@ const SidebarNav: SideBarPath[] = [
         icon: `note-multiple`,
         title: "pages",
         state: `pages`,
+        permId: [PermissionId.PageAdd, PermissionId.PageEdit, PermissionId.PageDelete],
         subPaths: [
             {
                 path: PagePaths.post(PostTypeId.Page).add(),
@@ -60,6 +61,7 @@ const SidebarNav: SideBarPath[] = [
                 path: PagePaths.themeContent().post(PostTypeId.Blog).self(),
                 title: "blogs",
                 state: `blogs`,
+                permId: [PermissionId.BlogAdd, PermissionId.BlogEdit, PermissionId.BlogDelete],
                 subPaths: [
                     {
                         path: PagePaths.themeContent().post(PostTypeId.Blog).add(),
@@ -73,6 +75,7 @@ const SidebarNav: SideBarPath[] = [
                 path: PagePaths.themeContent().post(PostTypeId.Portfolio).self(),
                 title: "portfolios",
                 state: `portfolios`,
+                permId: [PermissionId.PortfolioAdd, PermissionId.PortfolioEdit, PermissionId.PortfolioDelete],
                 subPaths: [
                     {
                         path: PagePaths.themeContent().post(PostTypeId.Portfolio).add(),
@@ -86,6 +89,7 @@ const SidebarNav: SideBarPath[] = [
                 path: PagePaths.themeContent().post(PostTypeId.Slider).self(),
                 title: "sliders",
                 state: `sliders`,
+                permId: [PermissionId.SliderAdd, PermissionId.SliderEdit, PermissionId.SliderDelete],
                 subPaths: [
                     {
                         path: PagePaths.themeContent().post(PostTypeId.Slider).add(),
@@ -99,6 +103,7 @@ const SidebarNav: SideBarPath[] = [
                 path: PagePaths.themeContent().post(PostTypeId.Reference).self(),
                 title: "references",
                 state: `references`,
+                permId: [PermissionId.ReferenceAdd, PermissionId.ReferenceEdit, PermissionId.ReferenceDelete],
                 subPaths: [
                     {
                         path: PagePaths.themeContent().post(PostTypeId.Reference).add(),
@@ -112,6 +117,7 @@ const SidebarNav: SideBarPath[] = [
                 path: PagePaths.themeContent().post(PostTypeId.Service).self(),
                 title: "services",
                 state: `services`,
+                permId: [PermissionId.ServiceAdd, PermissionId.ServiceEdit, PermissionId.ServiceDelete],
                 subPaths: [
                     {
                         path: PagePaths.themeContent().post(PostTypeId.Service).add(),
@@ -125,6 +131,7 @@ const SidebarNav: SideBarPath[] = [
                 path: PagePaths.themeContent().post(PostTypeId.Testimonial).self(),
                 title: "testimonials",
                 state: `testimonials`,
+                permId: [PermissionId.TestimonialAdd, PermissionId.TestimonialEdit, PermissionId.TestimonialDelete],
                 subPaths: [
                     {
                         path: PagePaths.themeContent().post(PostTypeId.Testimonial).add(),
@@ -141,6 +148,7 @@ const SidebarNav: SideBarPath[] = [
         icon: `shape`,
         title: "components",
         state: `components`,
+        permId: [PermissionId.ComponentEdit],
         subPaths: [
             {
                 path: PagePaths.component().add(),
@@ -155,12 +163,13 @@ const SidebarNav: SideBarPath[] = [
         icon: `market`,
         title: "eCommerce",
         state: `eCommerce`,
-        permId: PermissionId.ECommerce,
+        permId: [PermissionId.ECommerce],
         subPaths: [
             {
                 path: PagePaths.eCommerce().product().self(),
                 title: "product",
                 state: `eCommerceProduct`,
+                permId: [PermissionId.ProductAdd, PermissionId.ProductEdit, PermissionId.ProductDelete],
                 subPaths: [
                     {
                         path: PagePaths.eCommerce().product().add(),

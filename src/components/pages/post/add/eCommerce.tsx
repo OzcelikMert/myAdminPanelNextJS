@@ -158,7 +158,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 name="formData.eCommerce.pricing.taxIncluded"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.taxIncluded}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-6 mb-3">
@@ -167,7 +167,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 name="formData.eCommerce.pricing.taxExcluded"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.taxExcluded}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-6 mb-3">
@@ -176,7 +176,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 name="formData.eCommerce.pricing.taxRate"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.taxRate}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-6 mb-3">
@@ -185,7 +185,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 name="formData.eCommerce.pricing.compared"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.compared}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                     </div>
@@ -205,7 +205,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 name="formData.eCommerce.inventory.sku"
                                 type="text"
                                 value={this.props.page.state.formData.eCommerce?.inventory?.sku}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-6 mb-3">
@@ -215,7 +215,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 disabled={!this.props.page.state.formData.eCommerce?.inventory?.isManageStock || false}
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.inventory?.quantity}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-7">
@@ -223,7 +223,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 title={"Is Manage Stock"}
                                 name="formData.eCommerce.inventory.isManageStock"
                                 checked={Boolean(this.props.page.state.formData.eCommerce?.inventory?.isManageStock)}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                     </div>
@@ -241,36 +241,36 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                             <ThemeFormType
                                 title={"Width"}
                                 name="formData.eCommerce.shipping.width"
-                                type="number"
+                                type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.width}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
                                 title={"Height"}
                                 name="formData.eCommerce.shipping.height"
-                                type="number"
+                                type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.height}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
                                 title={"Depth"}
                                 name="formData.eCommerce.shipping.depth"
-                                type="number"
+                                type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.depth}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
                                 title={"Weight"}
                                 name="formData.eCommerce.shipping.weight"
-                                type="number"
+                                type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.weight}
-                                onChange={e => HandleForm.onChangeInput(e, this)}
+                                onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
                     </div>
@@ -577,7 +577,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
                                                 title={"Width"}
-                                                type="number"
+                                                type="text"
                                                 value={variation.shipping?.width}
                                                 onChange={e => this.onChange(variation.shipping, "width", e.target.value)}
                                             />
@@ -585,7 +585,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
                                                 title={"Height"}
-                                                type="number"
+                                                type="text"
                                                 value={variation.shipping?.height}
                                                 onChange={e => this.onChange(variation.shipping, "height", e.target.value)}
                                             />
@@ -593,7 +593,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
                                                 title={"Depth"}
-                                                type="number"
+                                                type="text"
                                                 value={variation.shipping?.depth}
                                                 onChange={e => this.onChange(variation.shipping, "depth", e.target.value)}
                                             />
@@ -601,7 +601,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
                                                 title={"Weight"}
-                                                type="number"
+                                                type="text"
                                                 value={variation.shipping?.weight}
                                                 onChange={e => this.onChange(variation.shipping, "weight", e.target.value)}
                                             />

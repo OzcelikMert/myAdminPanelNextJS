@@ -1,7 +1,6 @@
 # myAdminPanelNextJS
 Admin Panel Next JS
 
-
 Things to do:
 + tum idleri ozel isimden _id ye cevir
 + navigation icin yeni bir sayfa ac
@@ -28,5 +27,9 @@ Things to do:
 + Yeni olusturulan her sayfa icin permission control yap
 + ekle butonu ve guncelle butonlarinin sizelerini ve konumlarini ayarla
 + post sayfasini componentlere ayir ve kod satir sayisini dusur
++ bilesenler bombos geliyor diger kullaniclirda
++ sidebarda yetki verilmese bile item gozukuyor onu engelle
 - yeni eklenen language keylerini json dosyalarinada ekle
+- urunler sayfasinda urun galerisini yap
+- urunlerde varyasyon secerken ayni varyayon olusturtulduysa hata mesjai ver
 - Yaptigin tum guncellemelerin hata kontrolunu yap

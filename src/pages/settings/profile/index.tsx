@@ -82,10 +82,6 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                     permissions: user.permissions
                 };
 
-                if (user.roleId == UserRoleId.Admin) {
-                    state.data.permissions = Permissions.map(permission => permission.id);
-                }
-
                 state.formData = {
                     image: user.image,
                     name: user.name,

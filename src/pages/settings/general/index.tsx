@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
 import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
-import {Languages, UserRoleId} from "constants/index";
+import {Languages, StatusId, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import languageService from "services/language.service";
 import ServerInfoDocument from "types/services/serverInfo";
@@ -104,7 +104,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
     }
 
     async getLanguages() {
-        let resData = await languageService.get({})
+        let resData = await languageService.get({statusId: StatusId.Active})
         if (resData.status) {
             this.setState({
                 languages: resData.data.map(lang => ({
