@@ -72,7 +72,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
 
     setPageTitle() {
         let titles: string[] = [
-            this.props.t("navigation"),
+            this.props.t("navigations"),
             this.props.t(this.state.formData._id ? "edit" : "add")
         ];
         if (this.state.formData._id) {

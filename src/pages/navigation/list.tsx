@@ -48,7 +48,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
 
     setPageTitle() {
         this.props.setBreadCrumb([
-            this.props.t("navigates"),
+            this.props.t("navigations"),
             this.props.t("list")
         ])
     }
