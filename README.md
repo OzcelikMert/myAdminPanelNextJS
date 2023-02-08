@@ -29,7 +29,7 @@ Things to do:
 + post sayfasini componentlere ayir ve kod satir sayisini dusur
 + bilesenler bombos geliyor diger kullaniclirda
 + sidebarda yetki verilmese bile item gozukuyor onu engelle
++ urunler sayfasinda urun galerisini yap
++ urunlerde varyasyon secerken ayni varyayon olusturtulduysa hata mesjai ver
 - yeni eklenen language keylerini json dosyalarinada ekle
-- urunler sayfasinda urun galerisini yap
-- urunlerde varyasyon secerken ayni varyayon olusturtulduysa hata mesjai ver
 - Yaptigin tum guncellemelerin hata kontrolunu yap

@@ -90,7 +90,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                     url: "",
                     seoTitle: "",
                     seoContent: "",
-                },
+                }
             },
             isSelectionImage: false,
             isIconActive: false
@@ -114,7 +114,8 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 formData: {
                     ...this.state.formData,
                     eCommerce: {
-                        ...(this.state.formData.eCommerce ?? {typeId: ProductTypeId.SimpleProduct})
+                        ...(this.state.formData.eCommerce ?? {typeId: ProductTypeId.SimpleProduct}),
+                        images: [],
                     }
                 }
             })

@@ -1,4 +1,10 @@
 export const LanguageKeysArray = [
+    "shipping",
+    "pricing",
+    "inventory",
+
+
+    "sameVariationErrorMessage",
     "buttons",
     "editVariation",
     "editAttribute",
@@ -16,8 +22,6 @@ export const LanguageKeysArray = [
     "variableProduct",
     "product",
     "eCommerce",
-
-
     "outGoingEmail",
     "worldMap",
     "visitors",

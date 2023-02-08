@@ -11,11 +11,13 @@ import {ProductTypeId} from "constants/productTypes";
 import PagePostAdd, {PageState as PostPageState} from "pages/post/[postTypeId]/add";
 import {AttributeTypeId} from "constants/attributeTypes";
 import dynamic from "next/dynamic";
+import ThemeToolTip from "components/theme/tooltip";
+
 const ThemeRichTextBox = dynamic(() => import("components/theme/richTextBox").then((module) => module.default), {ssr: false});
 
 type PageState = {
     mainTabActiveKey: string
-} & {[key: string]: any};
+} & { [key: string]: any };
 
 type PageProps = {
     page: PagePostAdd
@@ -25,17 +27,17 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            mainTabActiveKey: "pricing"
+            mainTabActiveKey: "options"
         }
     }
 
     onChange(data: any, key: any, value: any) {
-        this.props.page.setState((state: PageState) => {
+        this.props.page.setState((state: PostPageState) => {
             data[key] = value;
             return state;
         })
     }
-    
+
     onAddNewAttribute() {
         this.props.page.setState((state: PostPageState) => {
             if (typeof state.formData.eCommerce !== "undefined") {
@@ -50,14 +52,14 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
             return state;
         })
     }
-    
+
     onChangeAttributeVariations(attribute: PostECommerceAttributeDocument, values: PostPageState["variations"]) {
         this.props.page.setState((state: PostPageState) => {
             attribute.variationId = values.map(value => value.value)
             return state;
         })
     }
-    
+
     onDeleteAttribute(index: number) {
         this.props.page.setState((state: PostPageState) => {
             if (typeof state.formData.eCommerce !== "undefined") {
@@ -124,6 +126,9 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         variationId: value
                     })
                 }
+
+                let dataSelectedVariationFilter = JSON.stringify(data.selectedVariations);
+                data.isWarningForIsThereOther = state.formData.eCommerce.variations?.some(variation => variation._id != data._id && JSON.stringify(variation.selectedVariations) == dataSelectedVariationFilter);
             }
             return state;
         })
@@ -132,7 +137,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
     onChangeVariationDefault(attributeId: string, value: string) {
         this.props.page.setState((state: PostPageState) => {
             if (typeof state.formData.eCommerce !== "undefined") {
-                if(typeof state.formData.eCommerce.variationDefaults == "undefined") state.formData.eCommerce.variationDefaults = [];
+                if (typeof state.formData.eCommerce.variationDefaults == "undefined") state.formData.eCommerce.variationDefaults = [];
                 let findIndex = state.formData.eCommerce.variationDefaults.indexOfKey("attributeId", attributeId);
                 if (findIndex > -1) {
                     state.formData.eCommerce.variationDefaults[findIndex].variationId = value;
@@ -188,6 +193,55 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 onChange={e => HandleForm.onChangeInput(e, this.props.page)}
                             />
                         </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    TabGallery = () => {
+        console.log(this.props.page.state)
+        return (
+            <div className="row">
+                <div className="col-md-7 mb-3">
+                    <ThemeChooseImage
+                        {...this.props.page.props}
+                        isShow={this.props.page.state.selectGalleryECommerce}
+                        onHide={() => this.props.page.setState((state: PostPageState) => {
+                            state.selectGalleryECommerce = false;
+                            return state;
+                        })}
+                        onSelected={images => this.props.page.setState((state: PostPageState) => {
+                            if (typeof state.formData.eCommerce !== "undefined") {
+                                state.formData.eCommerce.images = images;
+                            }
+                            return state
+                        })}
+                        isMulti={true}
+                        selectedImages={this.props.page.state.formData.eCommerce?.images}
+                    />
+                    <button
+                        type="button"
+                        className="btn btn-gradient-info btn-lg ms-1"
+                        onClick={() => this.onChange(this.props.page.state, `selectGalleryECommerce`, true)}
+                    ><i className="fa fa-pencil-square-o"></i> Resim Sec
+                    </button>
+                </div>
+                <div className="col-md-12 mb-3">
+                    <div className="row">
+                        {
+                            this.props.page.state.formData.eCommerce?.images?.map(image => (
+                                <div className="col-md-3 mb-3">
+                                    <Image
+                                        src={imageSourceLib.getUploadedImageSrc(image)}
+                                        alt="Empty Image"
+                                        className="post-image img-fluid"
+                                        width={100}
+                                        height={100}
+                                    />
+                                </div>
+                            ))
+                        }
                     </div>
                 </div>
             </div>
@@ -372,7 +426,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 <div className="row">
                                     {
                                         this.props.page.state.formData.eCommerce?.attributes?.map(attribute => (
-                                            <div className="col-md-4 mt-2 mt-md-0">
+                                            <div className="col-md-4 mt-3">
                                                 <ThemeFormSelect
                                                     title={this.props.page.state.attributes.findSingle("value", attribute.attributeId)?.label}
                                                     options={this.props.page.state.variations.findMulti("value", attribute.variationId)}
@@ -386,14 +440,24 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                             </div>
                             <div className="col-3 m-auto">
                                 <div className="row">
-                                    <div className="col-md-6 text-center text-md-end">
+                                    <div className="col-md text-center text-md-end">
                                         <button type="button" className="btn btn-gradient-danger btn-lg"
                                                 onClick={() => this.onDeleteVariation(index)}>
                                             <i className="mdi mdi-trash-can"></i></button>
                                     </div>
-                                    <div className="col-md-6 text-center pt-1 mt-5 m-md-auto">
+                                    {
+                                        variation.isWarningForIsThereOther
+                                            ? <div className="col-md text-center pt-1 mt-5 m-md-auto">
+                                                <ThemeToolTip message={this.props.page.props.t("sameVariationErrorMessage")}>
+                                                    <div className="fs-4 cursor-pointer text-warning"><i
+                                                        className="mdi mdi-alert-circle"></i></div>
+                                                </ThemeToolTip>
+                                            </div> : null
+                                    }
+                                    <div className="col-md text-center pt-1 mt-5 m-md-auto">
                                         <ThemeAccordionToggle eventKey={variation._id || ""}>
-                                            <div className="fs-4 cursor-pointer"><i className="mdi mdi-menu"></i></div>
+                                            <div className="fs-4 cursor-pointer"><i
+                                                className="mdi mdi-menu"></i></div>
                                         </ThemeAccordionToggle>
                                     </div>
                                 </div>
@@ -413,11 +477,11 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                             <ThemeChooseImage
                                                 {...this.props.page.props}
                                                 isShow={this.props.page.state[`selectImage${variation._id}`]}
-                                                onHide={() => this.props.page.setState((state: PageState) => {
+                                                onHide={() => this.props.page.setState((state: PostPageState) => {
                                                     state[`selectImage${variation._id}`] = false;
                                                     return state;
                                                 })}
-                                                onSelected={images => this.props.page.setState((state: PageState) => {
+                                                onSelected={images => this.props.page.setState((state: PostPageState) => {
                                                     if (variation.contents) {
                                                         variation.contents.image = images[0];
                                                     }
@@ -471,11 +535,11 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                             <ThemeChooseImage
                                                 {...this.props.page.props}
                                                 isShow={this.props.page.state[`selectGallery${variation._id}`]}
-                                                onHide={() => this.props.page.setState((state: PageState) => {
+                                                onHide={() => this.props.page.setState((state: PostPageState) => {
                                                     state[`selectGallery${variation._id}`] = false;
                                                     return state;
                                                 })}
-                                                onSelected={images => this.props.page.setState((state: PageState) => {
+                                                onSelected={images => this.props.page.setState((state: PostPageState) => {
                                                     variation.images = images;
                                                     return state
                                                 })}
@@ -508,7 +572,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                     </div>
                                 </Tab>
-                                <Tab eventKey="pricing" title={"Pricing"}>
+                                <Tab eventKey="pricing" title={this.props.page.props.t("pricing")}>
                                     <div className="row mb-4">
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
@@ -544,7 +608,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                     </div>
                                 </Tab>
-                                <Tab eventKey="inventory" title={"Inventory"}>
+                                <Tab eventKey="inventory" title={this.props.page.props.t("inventory")}>
                                     <div className="row mb-4">
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
@@ -572,7 +636,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                     </div>
                                 </Tab>
-                                <Tab eventKey="shipping" title={"Shipping"}>
+                                <Tab eventKey="shipping" title={this.props.page.props.t("shipping")}>
                                     <div className="row mb-4">
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
@@ -622,7 +686,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                     <div className="row">
                         {
                             this.props.page.state.formData.eCommerce?.attributes?.map(attribute => (
-                                <div className="col-md-4 mt-2 mt-md-0">
+                                <div className="col-md-4 mt-3">
                                     <ThemeFormSelect
                                         title={this.props.page.state.attributes.findSingle("value", attribute.attributeId)?.label}
                                         options={this.props.page.state.variations.findMulti("value", attribute.variationId)}
@@ -634,12 +698,12 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         }
                     </div>
                 </div>
-                <div className="col-md-7 mt-2">
+                <div className="col-md-7 mt-3">
                     <button type={"button"} className="btn btn-gradient-success btn-lg"
                             onClick={() => this.onAddNewVariation()}>+ {this.props.page.props.t("addNew")}
                     </button>
                 </div>
-                <div className="col-md-7 mt-2">
+                <div className="col-md-7 mt-3">
                     <Accordion flush>
                         {
                             this.props.page.state.formData.eCommerce?.variations?.map((variation, index) => {
@@ -682,21 +746,36 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 <Tab eventKey="options" title={this.props.page.props.t("options")}>
                                     <this.TabOptions/>
                                 </Tab>
-                                <Tab eventKey="pricing" title={"Pricing"}>
-                                    <this.TabPricing/>
-                                </Tab>
-                                <Tab eventKey="inventory" title={"Inventory"}>
-                                    <this.TabInventory/>
-                                </Tab>
-                                <Tab eventKey="shipping" title={"Shipping"}>
-                                    <this.TabShipping/>
-                                </Tab>
-                                <Tab eventKey="attributes" title={"attributes"}>
+                                {
+                                    this.props.page.state.formData.eCommerce?.typeId == ProductTypeId.SimpleProduct
+                                        ? <Tab eventKey="gallery" title={this.props.page.props.t("gallery")}>
+                                            <this.TabGallery/>
+                                        </Tab> : null
+                                }
+                                {
+                                    this.props.page.state.formData.eCommerce?.typeId == ProductTypeId.SimpleProduct
+                                        ? <Tab eventKey="pricing" title={this.props.page.props.t("pricing")}>
+                                            <this.TabPricing/>
+                                        </Tab> : null
+                                }
+                                {
+                                    this.props.page.state.formData.eCommerce?.typeId == ProductTypeId.SimpleProduct
+                                        ? <Tab eventKey="inventory" title={this.props.page.props.t("inventory")}>
+                                            <this.TabInventory/>
+                                        </Tab> : null
+                                }
+                                {
+                                    this.props.page.state.formData.eCommerce?.typeId == ProductTypeId.SimpleProduct
+                                        ? <Tab eventKey="shipping" title={this.props.page.props.t("shipping")}>
+                                            <this.TabShipping/>
+                                        </Tab> : null
+                                }
+                                <Tab eventKey="attributes" title={this.props.page.props.t("attributes")}>
                                     <this.TabAttributes/>
                                 </Tab>
                                 {
                                     this.props.page.state.formData.eCommerce?.typeId == ProductTypeId.VariableProduct
-                                        ? <Tab eventKey="variations" title={"variations"}>
+                                        ? <Tab eventKey="variations" title={this.props.page.props.t("variations")}>
                                             <this.TabVariations/>
                                         </Tab> : null
                                 }

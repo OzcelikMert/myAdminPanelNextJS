@@ -20,6 +20,7 @@ export interface PostECommerceVariationSelectedDocument {
 
 export interface PostECommerceVariationDocument {
     _id?: string
+    isWarningForIsThereOther?: boolean
     order: number
     selectedVariations: PostECommerceVariationSelectedDocument[]
     images: string[]
@@ -58,7 +59,8 @@ export interface PostECommercePricingDocument {
 }
 
 export interface PostECommerceDocument {
-    typeId?: number
+    typeId: number
+    images: string[]
     pricing?: PostECommercePricingDocument
     inventory?: PostECommerceInventoryDocument
     shipping?: PostECommerceShippingDocument
