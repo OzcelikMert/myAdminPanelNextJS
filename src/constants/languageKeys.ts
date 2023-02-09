@@ -2,8 +2,6 @@ export const LanguageKeysArray = [
     "shipping",
     "pricing",
     "inventory",
-
-
     "sameVariationErrorMessage",
     "buttons",
     "editVariation",

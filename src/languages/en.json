@@ -1,4 +1,7 @@
 {
+  "shipping" : "Shipping",
+  "pricing" : "Pricing",
+  "inventory" : "Inventory",
   "sameVariationErrorMessage": "You are using the variation options you entered in another variation!",
   "buttons": "Buttons",
   "editVariation": "Edit Variation",

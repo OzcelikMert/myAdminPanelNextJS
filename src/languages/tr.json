@@ -1,4 +1,7 @@
 {
+  "shipping": "Nakliye",
+  "pricing": "Fiyatlandırma",
+  "inventory": "Envanter",
   "sameVariationErrorMessage": "Girmiş olduğunuz varyasyon seçeneklerini başka bir varyasyonda kullanıyorsunuz!",
   "buttons": "Butonlar",
   "editVariation": "Varyasyonu Düzenle",
