@@ -1,7 +1,5 @@
 export const LanguageKeysArray = [
     "size",
-
-
     "shipping",
     "pricing",
     "inventory",
