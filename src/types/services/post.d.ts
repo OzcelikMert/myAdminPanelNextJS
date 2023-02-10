@@ -105,6 +105,7 @@ export default interface PostDocument {
     eCommerce?: PostECommerceDocument
     views: number
     sitemap?: string
+    createdAt: string
 }
 
 export interface PostGetParamDocument {
@@ -123,7 +124,7 @@ export type PostAddParamDocument = {
     contents: PostContentDocument
     terms: string[]
     components?: string[],
-} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components">
+} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components"|"createdAt">
 
 export type PostUpdateParamDocument = {
     _id: string

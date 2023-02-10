@@ -72,6 +72,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             postTypeId: this.state.postTypeId,
             langId: this.props.getStateApp.pageData.mainLangId
         })).data;
+        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState({
             items: items,
             showingItems: items.filter(item => item.statusId !== StatusId.Deleted)
@@ -245,6 +246,17 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 name: this.props.t("status"),
                 sortable: true,
                 cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
+            },
+            {
+                name: this.props.t("order"),
+                sortable: true,
+                selector: row => row.order
+            },
+            {
+                name: this.props.t("createdDate"),
+                sortable: true,
+                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {
                 name: "",

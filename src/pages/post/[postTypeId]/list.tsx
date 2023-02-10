@@ -78,6 +78,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
             typeId: this.state.typeId,
             langId: this.props.getStateApp.pageData.langId
         })).data;
+        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState((state: PageState) => {
             state.items = items;
             state.showingItems = items.filter(item => item.statusId !== StatusId.Deleted);
@@ -309,6 +310,17 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 name: this.props.t("updatedBy"),
                 sortable: true,
                 selector: row => row.lastAuthorId.name
+            },
+            {
+                name: this.props.t("order"),
+                sortable: true,
+                selector: row => row.order
+            },
+            {
+                name: this.props.t("createdDate"),
+                sortable: true,
+                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {
                 name: "",

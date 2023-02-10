@@ -1,9 +1,6 @@
 import React, {Component} from 'react'
-import {PermissionId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import classNameLib from "lib/className.lib";
-import permissionLib from "lib/permission.lib";
 import ThemeDataTable from "components/theme/table/dataTable";
 import PagePaths from "constants/pagePaths";
 import LanguageDocument from "types/services/language";
@@ -48,6 +45,7 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
 
     async getItems() {
         let items = (await languageService.get({})).data;
+        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState((state: PageState) => {
             state.items = items;
             state.showingItems = items;
@@ -104,6 +102,17 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
                 name: this.props.t("status"),
                 sortable: true,
                 cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
+            },
+            {
+                name: this.props.t("order"),
+                sortable: true,
+                selector: row => row.order
+            },
+            {
+                name: this.props.t("createdDate"),
+                sortable: true,
+                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {
                 name: "",

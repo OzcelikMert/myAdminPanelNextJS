@@ -36,7 +36,7 @@ export default class ProviderAppInit extends Component<PageProps, PageState> {
     }
 
     async getContentMainLanguage() {
-        let resData = await settingService.get({})
+        let resData = await settingService.get({projection: "general"});
         if (resData.status) {
             let data = resData.data[0];
             this.props.setStateApp({

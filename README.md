@@ -31,5 +31,8 @@ Things to do:
 + sidebarda yetki verilmese bile item gozukuyor onu engelle
 + urunler sayfasinda urun galerisini yap
 + urunlerde varyasyon secerken ayni varyayon olusturtulduysa hata mesjai ver
++ Datatablelerde date siralamasi icin bir func yaz
++ datatablelerde listeyi varsayiilan siralamayi gore cek hepsini ona ozel func yaz
+- Theme selectde optionlarindan mouseyi kaydirinca beyaz oluyor bg onu coz
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap

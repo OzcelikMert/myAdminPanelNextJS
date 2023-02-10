@@ -24,6 +24,10 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
     listPage: number = 0;
     listPagePerCount: number = 10;
 
+    static dateSort(a: {createdAt: string | Date}, b: {createdAt: string | Date}) {
+        return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1
+    }
+
     constructor(props: PageProps<any>) {
         super(props);
         this.state = {

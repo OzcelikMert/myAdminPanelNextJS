@@ -210,9 +210,7 @@ export default class PageGalleryList extends Component<PageProps, PageState> {
                 name: this.props.t("createdDate"),
                 selector: row => (new Date(row.createdAt)).toLocaleDateString(),
                 sortable: true,
-                sortFunction: (a, b) => {
-                    return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1
-                }
+                sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {
                 name: this.props.t("size"),

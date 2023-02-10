@@ -35,6 +35,7 @@ export default interface PostTermDocument {
     order: number,
     contents?: PostTermContentDocument
     alternates?: PostTermAlternateDocument[]
+    createdAt: string
 }
 
 export interface PopulateTermsDocument {
@@ -60,7 +61,7 @@ export interface PostTermGetParamDocument {
 export type PostTermAddParamDocument = {
     mainId?: string
     contents: PostTermContentDocument
-} & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"alternates">
+} & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"alternates"|"createdAt">
 
 export type PostTermUpdateParamDocument = {
     _id: string

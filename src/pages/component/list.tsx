@@ -45,6 +45,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
 
     async getItems() {
         let items = (await componentService.get({langId: this.props.getStateApp.pageData.langId})).data;
+        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState((state: PageState) => {
             state.items = items;
             return state;
@@ -71,8 +72,9 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                 loadingToast.hide();
                 if (resData.status) {
                     this.setState({
-                        items: this.state.items.filter(item => _id !== item._id)
+                        items: this.state.items.findMulti("_id", _id, false)
                     }, () => {
+                        this.onSearch(this.state.searchKey);
                         new ThemeToast({
                             type: "success",
                             title: this.props.t("successful"),
@@ -107,6 +109,17 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                 name: this.props.t("updatedBy"),
                 sortable: true,
                 selector: row => row.lastAuthorId.name
+            },
+            {
+                name: this.props.t("order"),
+                sortable: true,
+                selector: row => row.order
+            },
+            {
+                name: this.props.t("createdDate"),
+                sortable: true,
+                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {
                 name: "",

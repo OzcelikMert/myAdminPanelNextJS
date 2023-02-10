@@ -18,6 +18,7 @@ export default interface UserDocument {
     twitter: string,
     views: number,
     isOnline: boolean
+    createdAt: string
 }
 
 export interface PopulateAuthorIdDocument {

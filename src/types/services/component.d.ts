@@ -13,7 +13,7 @@ export interface ComponentDeleteParamDocument {
 
 export type ComponentUpdateParamDocument = { _id: string } & ComponentAddParamDocument
 
-export type ComponentAddParamDocument = {} & Omit<ComponentDocument, "_id"|"lastAuthorId"|"authorId">
+export type ComponentAddParamDocument = {} & Omit<ComponentDocument, "_id"|"lastAuthorId"|"authorId"|"createdAt">
 
 export interface ComponentTypeContentDocument {
     langId: string
@@ -38,5 +38,6 @@ export interface ComponentDocument {
     elementId: string
     langKey: LanguageKeys,
     order: number,
+    createdAt: string
     types: ComponentTypeDocument[]
 }

@@ -50,6 +50,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
 
     async getItems() {
         let items = (await subscriberService.get({})).data;
+        items = items.orderBy("createdAt", "desc");
         this.setState({
             items: items
         }, () => this.onSearch(this.state.searchKey));
@@ -128,9 +129,10 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
             },
             {
                 name: this.props.t("createdDate"),
+                sortable: true,
                 selector: row => new Date(row.createdAt).toLocaleDateString(),
-                sortable: true
-            }
+                sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
+            },
         ];
     }
 

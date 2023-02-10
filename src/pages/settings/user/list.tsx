@@ -55,6 +55,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
 
     async getItems() {
         let items = (await userService.get({})).data;
+        items = items.orderBy("createdAt", "desc").orderBy("roleId", "desc");
         this.setState((state: PageState) => {
             state.items = state.items.sort(item => {
                 let sort = 0;
@@ -166,6 +167,12 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 selector: row => Status.findSingle("id", row.statusId)?.order ?? 0,
                 sortable: true,
                 cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
+            },
+            {
+                name: this.props.t("createdDate"),
+                sortable: true,
+                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {
                 name: "",
