@@ -57,16 +57,16 @@
 @import "components/bootstrap-progress";
 @import "components/dropdowns";
 @import "components/spinner";
-@import "components/input/index";
+@import "components/theme/form/input/index";
 @import "components/landing-screens/auth";
-@import "components/users/profileCard";
-@import "components/chooseImage/index";
+@import "components/theme/users/profileCard";
+@import "components/theme/chooseImage/index";
 @import "components/contentLangauge";
 @import "components/widgets";
-@import "components/table/toggleMenu";
-@import "components/table/dataTable/index";
-@import "components/toast";
-@import "components/form";
+@import "components/theme/table/toggleMenu";
+@import "components/theme/table/dataTable/index";
+@import "components/theme/toast";
+@import "components/theme/form";
 
 /* === Plugin Overrides === */
 @import "components/plugin-overrides/date-picker";

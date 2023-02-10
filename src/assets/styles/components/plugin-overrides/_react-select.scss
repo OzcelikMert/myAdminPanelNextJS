@@ -6,8 +6,9 @@
 
   .custom-select__menu {
     div {
+      background: var(--theme-bg) !important;
       div:hover {
-        background: var(--theme-content-wrapper-bg);
+        background: var(--theme-content-wrapper-bg) !important;
       }
     }
   }
