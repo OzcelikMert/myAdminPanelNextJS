@@ -32,6 +32,8 @@ import ComponentPagePostAddButton from "components/pages/post/add/button";
 const ThemeRichTextBox = dynamic(() => import("components/theme/richTextBox").then((module) => module.default), {ssr: false});
 
 export type PageState = {
+    categoryTermId: string[]
+    tagTermId: string[]
     langKeys: ThemeFormSelectValueDocument[]
     pageTypes: ThemeFormSelectValueDocument[]
     attributeTypes: ThemeFormSelectValueDocument[]
@@ -45,10 +47,7 @@ export type PageState = {
     status: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
-    formData: Omit<PostUpdateParamDocument, "terms"> & {
-        categoryTermId: string[]
-        tagTermId: string[]
-    },
+    formData: Omit<PostUpdateParamDocument, "terms">,
     isSelectionImage: boolean
     isIconActive: boolean
 } & { [key: string]: any };
@@ -61,6 +60,8 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         this.state = {
             mainTabActiveKey: `general`,
             attributeTypes: [],
+            categoryTermId: [],
+            tagTermId: [],
             productTypes: [],
             attributes: [],
             variations: [],
@@ -75,8 +76,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             formData: {
                 _id: this.props.router.query._id as string ?? "",
                 typeId: Number(this.props.router.query.postTypeId ?? 1),
-                categoryTermId: [],
-                tagTermId: [],
                 statusId: 0,
                 order: 0,
                 dateStart: new Date(),
@@ -278,11 +277,12 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                         else if (term?.typeId == PostTermTypeId.Tag) tagTermId.push(term._id);
                     });
 
+                    state.categoryTermId = categoryTermId;
+                    state.tagTermId = tagTermId;
+
                     state.formData = {
                         ...state.formData,
                         ...item,
-                        categoryTermId: categoryTermId,
-                        tagTermId: tagTermId,
                         components: item.components?.map(component => component._id),
                         dateStart: new Date(item.dateStart),
                         contents: {
@@ -325,7 +325,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         }, async () => {
             let params = {
                 ...this.state.formData,
-                terms: this.state.formData.tagTermId.concat(this.state.formData.categoryTermId),
+                terms: this.state.tagTermId.concat(this.state.categoryTermId),
                 components: this.state.formData.components?.filter(componentId => !Variable.isEmpty(componentId)),
                 contents: {
                     ...this.state.formData.contents,
@@ -551,12 +551,12 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                         ? <div className="col-md-7 mb-3">
                             <ThemeFormSelect
                                 title={this.props.t("category")}
-                                name="formData.categoryTermId"
+                                name="categoryTermId"
                                 placeholder={this.props.t("chooseCategory").toCapitalizeCase()}
                                 isMulti
                                 closeMenuOnSelect={false}
                                 options={this.state.categoryTerms}
-                                value={this.state.categoryTerms?.filter(item => this.state.formData.categoryTermId.includes(item.value))}
+                                value={this.state.categoryTerms?.filter(item => this.state.categoryTermId.includes(item.value))}
                                 onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item, this)}
                             />
                         </div> : null
@@ -566,12 +566,12 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                         ? <div className="col-md-7 mb-3">
                             <ThemeFormSelect
                                 title={this.props.t("tag")}
-                                name="formData.tagTermId"
+                                name="tagTermId"
                                 placeholder={this.props.t("chooseTag")}
                                 isMulti
                                 closeMenuOnSelect={false}
                                 options={this.state.tagTerms}
-                                value={this.state.tagTerms?.filter(item => this.state.formData.tagTermId.includes(item.value))}
+                                value={this.state.tagTerms?.filter(item => this.state.tagTermId.includes(item.value))}
                                 onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item, this)}
                             />
                         </div> : null

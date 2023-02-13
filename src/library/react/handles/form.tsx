@@ -2,7 +2,6 @@ import React, {Component} from "react";
 
 function setDataWithKeys(data: any, keys: string[], value: any, isArrayPush: boolean = false) {
     let key = keys[0];
-
     if (keys.length === 1){
         if(isArrayPush){
             if(Array.isArray(data[key])){
@@ -38,16 +37,17 @@ class HandleForm {
         })
     }
 
-    static onChangeSelect(key: any, value: any, component: Component) {
+    static onChangeSelect(name: any, value: any, component: Component) {
+        let keys = name.split(".");
         component.setState((state: any) => {
             if(Array.isArray(value)){
-                state = setDataWithKeys(state, key.split("."), []);
+                state = setDataWithKeys(state, keys, []);
                 value.forEach(item => {
                     let data = (typeof item.value !== "undefined") ? item.value : item;
-                    state = setDataWithKeys(state, key.split("."), data, true);
+                    state = setDataWithKeys(state, keys, data, true);
                 })
             }else {
-                state = setDataWithKeys(state, key.split("."), value);
+                state = setDataWithKeys(state, keys, value);
             }
             return state;
         });

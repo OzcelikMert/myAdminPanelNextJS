@@ -9,7 +9,7 @@ import PostDocument, {
 } from "types/services/post";
 
 export default {
-    get(params: PostGetParamDocument): Promise<ServiceResultDocument<PostDocument[]>> {
+    get(params: PostGetParamDocument): Promise<ServiceResultDocument<PostDocument[], {allCount?: number}>> {
         let url = Array.isArray(params.typeId) ? [] : [params.typeId?.toString(), params._id?.toString()]
         return Api.get({
             url: [ServicePages.post, ...url],

@@ -116,7 +116,7 @@ export interface PostGetParamDocument {
     url?: string
     statusId?: StatusId,
     getContents?: boolean,
-    maxCount?: number,
+    count?: number,
     ignorePostId?: string[]
 }
 

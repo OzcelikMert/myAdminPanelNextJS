@@ -9,7 +9,7 @@ import {
 } from "types/services/navigation";
 
 export default {
-    get(params: NavigationGetParamDocument): Promise<ServiceResultDocument<NavigationDocument[]>> {
+    get(params: NavigationGetParamDocument): Promise<ServiceResultDocument<NavigationDocument[], null>> {
         return Api.get({
             url: [ServicePages.navigation, params._id?.toString()],
             data: params,

@@ -12,7 +12,7 @@ import SettingDocument, {
 } from "types/services/setting";
 
 export default {
-    get(params: SettingGetParamDocument): Promise<ServiceResultDocument<SettingDocument[]>> {
+    get(params: SettingGetParamDocument): Promise<ServiceResultDocument<SettingDocument[], null>> {
         return Api.get({
             url: [ServicePages.setting],
             data: params,

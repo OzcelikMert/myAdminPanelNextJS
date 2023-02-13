@@ -9,7 +9,7 @@ import {
 } from "types/services/component";
 
 export default {
-    get(params: ComponentGetParamDocument): Promise<ServiceResultDocument<ComponentDocument[]>> {
+    get(params: ComponentGetParamDocument): Promise<ServiceResultDocument<ComponentDocument[], null>> {
         return Api.get({
             url: [ServicePages.component, params._id?.toString()],
             data: params,

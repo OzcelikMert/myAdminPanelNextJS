@@ -1,6 +1,6 @@
-interface ServiceResultDocument<T> {
+interface ServiceResultDocument<T, P> {
     data: T;
-    customData: any;
+    customData: P;
     status: boolean;
     message: string;
     errorCode: number;

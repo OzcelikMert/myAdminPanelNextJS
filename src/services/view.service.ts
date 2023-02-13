@@ -7,12 +7,12 @@ import {
 } from "types/services/view";
 
 export default {
-    getNumber(): Promise<ServiceResultDocument<ViewNumberDocument>> {
+    getNumber(): Promise<ServiceResultDocument<ViewNumberDocument, null>> {
         return Api.get({
             url: [ServicePages.view, "number"]
         });
     },
-    getStatistics(): Promise<ServiceResultDocument<ViewStatisticsDocument>> {
+    getStatistics(): Promise<ServiceResultDocument<ViewStatisticsDocument, null>> {
         return Api.get({
             url: [ServicePages.view, "statistics"]
         });

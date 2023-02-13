@@ -5,7 +5,7 @@ import GalleryDocument, {GalleryDeleteParamDocument, GalleryAddParamDocument} fr
 import {ApiRequestParamDocument} from "types/services/api";
 
 export default {
-    get(): Promise<ServiceResultDocument<GalleryDocument[]>> {
+    get(): Promise<ServiceResultDocument<GalleryDocument[], null>> {
         return Api.get({
             url: [ServicePages.gallery],
         });

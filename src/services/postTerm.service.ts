@@ -9,7 +9,7 @@ import PostTermDocument, {
 } from "types/services/postTerm";
 
 export default {
-    get(params: PostTermGetParamDocument): Promise<ServiceResultDocument<PostTermDocument[]>> {
+    get(params: PostTermGetParamDocument): Promise<ServiceResultDocument<PostTermDocument[], null>> {
         let typeId = Array.isArray(params.typeId) ? [] : [params.typeId?.toString()]
         return Api.get({
             url: [ServicePages.postTerm, params.postTypeId.toString(), ...typeId, params._id?.toString()],

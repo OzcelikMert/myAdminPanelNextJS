@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {
     PostTermTypeId,
-    PostTermTypes, PostTypeId,
-    PostTypes, Status,
+    PostTypeId,
+    Status,
     StatusId
 } from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
@@ -59,7 +59,11 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
 
     setPageTitle() {
         let titles: string[] = [
-            ...postLib.getPageTitles({t: this.props.t, postTypeId: this.state.postTypeId, termTypeId: this.state.typeId}),
+            ...postLib.getPageTitles({
+                t: this.props.t,
+                postTypeId: this.state.postTypeId,
+                termTypeId: this.state.typeId
+            }),
             this.props.t("list")
         ];
 
@@ -70,7 +74,8 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         let items = (await postTermService.get({
             typeId: this.state.typeId,
             postTypeId: this.state.postTypeId,
-            langId: this.props.getStateApp.pageData.mainLangId
+            langId: this.props.getStateApp.pageData.mainLangId,
+            withPostCount: true
         })).data;
         items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState({
@@ -187,10 +192,16 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         let postTermTypeId = this.state.typeId;
         let pagePath = PostLib.getPagePath(postTypeId);
         let path = "";
-        switch(type){
-            case "add": path = pagePath.term(postTermTypeId).add(); break;
-            case "edit": path = pagePath.term(postTermTypeId).edit(postTermId); break;
-            case "back": path = pagePath.list(); break;
+        switch (type) {
+            case "add":
+                path = pagePath.term(postTermTypeId).add();
+                break;
+            case "edit":
+                path = pagePath.term(postTermTypeId).edit(postTermId);
+                break;
+            case "back":
+                path = pagePath.list();
+                break;
         }
         this.props.router.push(path);
     }
@@ -242,10 +253,18 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 selector: row => row.mainId ? row.mainId.contents?.title || this.props.t("[noLangAdd]") : this.props.t("notSelected"),
                 sortable: true
             },
+            (
+                [PostTermTypeId.Category, PostTermTypeId.Tag].includes(this.state.typeId) ?
+                    {
+                        name: this.props.t("numberOfUses"),
+                        sortable: true,
+                        selector: row => row.postCount ?? 0,
+                    } : {}
+            ),
             {
                 name: this.props.t("status"),
                 sortable: true,
-                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId}/>
             },
             {
                 name: this.props.t("order"),

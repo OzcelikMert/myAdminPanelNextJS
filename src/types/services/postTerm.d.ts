@@ -36,6 +36,7 @@ export default interface PostTermDocument {
     contents?: PostTermContentDocument
     alternates?: PostTermAlternateDocument[]
     createdAt: string
+    postCount?: number
 }
 
 export interface PopulateTermsDocument {
@@ -50,12 +51,13 @@ export interface PopulateTermsDocument {
 export interface PostTermGetParamDocument {
     url?: string
     ignoreTermId?: string[],
-    maxCount?: number
+    count?: number
     langId: string
     typeId?: PostTermTypeId
     postTypeId: PostTypeId
     _id?: string
     statusId?: StatusId
+    withPostCount?: boolean
 }
 
 export type PostTermAddParamDocument = {
