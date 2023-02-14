@@ -45,7 +45,6 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
 
     async getItems() {
         let items = (await languageService.get({})).data;
-        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState((state: PageState) => {
             state.items = items;
             state.showingItems = items;

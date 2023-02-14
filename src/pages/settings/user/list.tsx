@@ -55,7 +55,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
 
     async getItems() {
         let items = (await userService.get({})).data;
-        items = items.orderBy("createdAt", "desc").orderBy("roleId", "desc");
+        items = items.orderBy("roleId", "desc");
         this.setState((state: PageState) => {
             state.items = state.items.sort(item => {
                 let sort = 0;

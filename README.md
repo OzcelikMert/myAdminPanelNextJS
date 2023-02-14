@@ -34,6 +34,10 @@ Things to do:
 + Datatablelerde date siralamasi icin bir func yaz
 + datatablelerde listeyi varsayiilan siralamayi gore cek hepsini ona ozel func yaz
 + Theme selectde optionlarindan mouseyi kaydirinca beyaz oluyor bg onu coz
-- Before & after post type ekle ve sayfasini yap (hair transplant icin)
++ listelerde siralamayi ayarla
++ listelerde guncelleyen isminin yaninda hangi tarihte guncellemis yazsin
++ postlarda silinen kategoriler nasil geliyor kontrol et
++ Before & after post type ekle ve sayfasini yap (hair transplant icin)
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
+- tum loglari temizle

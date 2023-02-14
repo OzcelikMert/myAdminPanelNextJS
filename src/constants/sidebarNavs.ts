@@ -24,7 +24,7 @@ const SidebarNav: SideBarPath[] = [
     {
         path: PagePaths.navigation().self(),
         icon: `navigation-variant`,
-        title: "navigates",
+        title: "navigations",
         state: `navigates`,
         permId: [PermissionId.NavigationAdd, PermissionId.NavigationEdit, PermissionId.NavigationDelete],
         subPaths: [
@@ -139,6 +139,20 @@ const SidebarNav: SideBarPath[] = [
                         permId: PermissionId.TestimonialAdd
                     },
                     {path: PagePaths.themeContent().post(PostTypeId.Testimonial).list(), title: "list"}
+                ]
+            },
+            {
+                path: PagePaths.themeContent().post(PostTypeId.BeforeAndAfter).self(),
+                title: "beforeAndAfter",
+                state: `beforeAndAfter`,
+                permId: [PermissionId.BeforeAndAfterAdd, PermissionId.BeforeAndAfterEdit, PermissionId.BeforeAndAfterDelete],
+                subPaths: [
+                    {
+                        path: PagePaths.themeContent().post(PostTypeId.BeforeAndAfter).add(),
+                        title: "add",
+                        permId: PermissionId.BeforeAndAfterAdd
+                    },
+                    {path: PagePaths.themeContent().post(PostTypeId.BeforeAndAfter).list(), title: "list"}
                 ]
             },
         ]

@@ -28,6 +28,7 @@ import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 import ComponentPagePostAddECommerce from "components/pages/post/add/eCommerce";
 import ComponentPagePostAddComponent from "components/pages/post/add/component";
 import ComponentPagePostAddButton from "components/pages/post/add/button";
+import ComponentPagePostAddBeforeAndAfter from "components/pages/post/add/beforeAndAfter";
 
 const ThemeRichTextBox = dynamic(() => import("components/theme/richTextBox").then((module) => module.default), {ssr: false});
 
@@ -119,6 +120,18 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 }
             })
         }
+        if ([PostTypeId.BeforeAndAfter].includes(this.state.formData.typeId)) {
+            this.setState({
+                formData: {
+                    ...this.state.formData,
+                    beforeAndAfter: {
+                        imageBefore: "",
+                        imageAfter: "",
+                        images: [],
+                    }
+                }
+            })
+        }
         this.getStatus();
         if (this.state.formData._id) {
             await this.getItem();
@@ -185,7 +198,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         let resData = await componentService.get({langId: this.props.getStateApp.pageData.mainLangId});
         if (resData.status) {
             this.setState((state: PageState) => {
-                state.components = resData.data.orderBy("order", "asc").map(component => {
+                state.components = resData.data.map(component => {
                     return {
                         value: component._id,
                         label: this.props.t(component.langKey)
@@ -228,7 +241,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             this.setState((state: PageState) => {
                 state.categoryTerms = [];
                 state.tagTerms = [];
-                for (const term of resData.data.orderBy("order", "asc")) {
+                for (const term of resData.data) {
                     if (term.typeId == PostTermTypeId.Category) {
                         state.categoryTerms.push({
                             value: term._id,
@@ -650,6 +663,11 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                                     </div>
                                 </div>
                             </div>
+                            {
+                                [PostTypeId.BeforeAndAfter].includes(this.state.formData.typeId)
+                                    ? <ComponentPagePostAddBeforeAndAfter page={this} />
+                                    : null
+                            }
                             {
                                 [PostTypeId.Slider, PostTypeId.Service].includes(this.state.formData.typeId)
                                     ? <ComponentPagePostAddButton page={this} />

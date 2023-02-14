@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {PageTypeId, PageTypes, PostTermTypeId, PostTypeId, PostTypes, Status, StatusId} from "constants/index";
+import {PageTypeId, PageTypes, PostTermTypeId, PostTypeId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
 import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
@@ -15,6 +15,7 @@ import Image from "next/image"
 import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 
 type PageState = {
     typeId: PostTypeId
@@ -78,7 +79,6 @@ export default class PagePostList extends Component<PageProps, PageState> {
             typeId: this.state.typeId,
             langId: this.props.getStateApp.pageData.langId
         })).data;
-        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState((state: PageState) => {
             state.items = items;
             state.showingItems = items.filter(item => item.statusId !== StatusId.Deleted);
@@ -257,7 +257,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 sortable: true
             },
             (
-                ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial].includes(this.state.typeId)
+                [PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Product, PostTypeId.BeforeAndAfter].includes(this.state.typeId)
                     ? {
                         name: this.props.t("category"),
                         cell: row => row.terms.findMulti("typeId", PostTermTypeId.Category).length > 0
@@ -279,7 +279,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     } : {}
             ),
             (
-                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Service].includes(this.state.typeId)
+                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Service, PostTypeId.BeforeAndAfter].includes(this.state.typeId)
                     ? {
                         name: this.props.t("views"),
                         selector: row => row.views,
@@ -309,7 +309,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                selector: row => row.lastAuthorId.name
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
             },
             {
                 name: this.props.t("order"),

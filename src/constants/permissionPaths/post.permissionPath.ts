@@ -65,7 +65,15 @@ export default [
         permissionId: PermissionId.ProductAdd
     },
     {
-        path: PagePaths.themeContent().post(PostTypeId.Testimonial).edit(undefined),
+        path: PagePaths.eCommerce().product().edit(undefined),
         permissionId: PermissionId.ProductEdit
-    }
+    },
+    {
+        path: PagePaths.themeContent().post(PostTypeId.BeforeAndAfter).add(),
+        permissionId: PermissionId.BeforeAndAfterAdd
+    },
+    {
+        path: PagePaths.themeContent().post(PostTypeId.BeforeAndAfter).edit(undefined),
+        permissionId: PermissionId.BeforeAndAfterEdit
+    },
 ] as PermissionPathDocument[]

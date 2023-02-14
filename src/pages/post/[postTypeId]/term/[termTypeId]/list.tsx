@@ -20,6 +20,7 @@ import Image from "next/image"
 import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 
 type PageState = {
     typeId: PostTermTypeId
@@ -77,7 +78,6 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             langId: this.props.getStateApp.pageData.mainLangId,
             withPostCount: true
         })).data;
-        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState({
             items: items,
             showingItems: items.filter(item => item.statusId !== StatusId.Deleted)
@@ -265,6 +265,11 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 name: this.props.t("status"),
                 sortable: true,
                 cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId}/>
+            },
+            {
+                name: this.props.t("updatedBy"),
+                sortable: true,
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
             },
             {
                 name: this.props.t("order"),

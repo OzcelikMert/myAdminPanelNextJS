@@ -16,7 +16,7 @@ export type NavigationUpdateParamDocument = {
 export type NavigationAddParamDocument = {
     mainId?: string
     contents: Omit<NavigationContentDocument, "_id">
-} & Omit<NavigationDocument, "_id"|"contents"|"lastAuthorId"|"authorId"|"mainId"|"createdAt">
+} & Omit<NavigationDocument, "_id"|"contents"|"lastAuthorId"|"authorId"|"mainId"|"createdAt"|"updatedAt">
 
 export interface NavigationGetParamDocument {
     _id?: string
@@ -44,6 +44,7 @@ export interface NavigationDocument {
         }
     }
     createdAt: string
+    updatedAt: string
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
     order: number,

@@ -9,6 +9,7 @@ import {ComponentDocument} from "types/services/component";
 import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/theme/table/dataTable";
+import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 
 type PageState = {
     searchKey: string
@@ -45,7 +46,6 @@ export default class PageComponentList extends Component<PageProps, PageState> {
 
     async getItems() {
         let items = (await componentService.get({langId: this.props.getStateApp.pageData.langId})).data;
-        items = items.orderBy("createdAt", "desc").orderBy("order", "asc");
         this.setState((state: PageState) => {
             state.items = items;
             return state;
@@ -108,7 +108,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                selector: row => row.lastAuthorId.name
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
             },
             {
                 name: this.props.t("order"),

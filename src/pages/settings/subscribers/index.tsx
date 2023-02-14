@@ -50,7 +50,6 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
 
     async getItems() {
         let items = (await subscriberService.get({})).data;
-        items = items.orderBy("createdAt", "desc");
         this.setState({
             items: items
         }, () => this.onSearch(this.state.searchKey));

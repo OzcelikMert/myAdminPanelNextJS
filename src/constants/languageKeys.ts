@@ -1,4 +1,19 @@
 export const LanguageKeysArray = [
+    "imageAfter",
+    "imageBefore",
+    "width",
+    "height",
+    "depth",
+    "weight",
+    "productType",
+    "taxIncludedPrice",
+    "taxExcludedPrice",
+    "taxRate",
+    "comparedPrice",
+    "sku",
+    "quantity",
+    "isManageStock",
+    "beforeAndAfter",
     "numberOfUses",
 
 

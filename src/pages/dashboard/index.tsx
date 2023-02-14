@@ -2,20 +2,19 @@ import React, {Component} from 'react';
 import dynamic from "next/dynamic";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import {PostTypeId, PostTypes, Status} from "constants/index";
+import {PostTypeId, PostTypes} from "constants/index";
 import PostDocument from "types/services/post";
 import postService from "services/post.service";
 import viewService from "services/view.service";
 import {ViewNumberDocument, ViewStatisticsDocument} from "types/services/view";
 import imageSourceLib from "lib/imageSource.lib";
-import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
-import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/theme/table/dataTable";
 import Image from "next/image"
 import ThemeChartArea from "components/theme/charts/area";
 import PostLib from "lib/post.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 
 const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 
@@ -185,7 +184,7 @@ class PageDashboard extends Component<PageProps, PageState> {
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                selector: row => row.lastAuthorId.name
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
             },
             {
                 name: "",

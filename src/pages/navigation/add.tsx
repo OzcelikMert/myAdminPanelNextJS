@@ -101,7 +101,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
         if (resData.status) {
             this.setState((state: PageState) => {
                 state.items = [{value: "", label: this.props.t("notSelected")}];
-                resData.data.orderBy("order", "asc").forEach(item => {
+                resData.data.forEach(item => {
                     if (!V.isEmpty(this.state.formData._id)) {
                         if (this.state.formData._id == item._id) return;
                     }

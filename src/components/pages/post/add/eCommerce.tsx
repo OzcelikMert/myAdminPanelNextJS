@@ -159,7 +159,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Tax Included Price"}
+                                title={this.props.page.props.t("taxIncludedPrice")}
                                 name="formData.eCommerce.pricing.taxIncluded"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.taxIncluded}
@@ -168,7 +168,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Tax Excluded Price"}
+                                title={this.props.page.props.t("taxExcludedPrice")}
                                 name="formData.eCommerce.pricing.taxExcluded"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.taxExcluded}
@@ -177,7 +177,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Tax Rate"}
+                                title={this.props.page.props.t("taxRate")}
                                 name="formData.eCommerce.pricing.taxRate"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.taxRate}
@@ -186,7 +186,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Compared Price"}
+                                title={this.props.page.props.t("comparedPrice")}
                                 name="formData.eCommerce.pricing.compared"
                                 type="number"
                                 value={this.props.page.state.formData.eCommerce?.pricing?.compared}
@@ -200,7 +200,6 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
     }
 
     TabGallery = () => {
-        console.log(this.props.page.state)
         return (
             <div className="row">
                 <div className="col-md-7 mb-3">
@@ -255,7 +254,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"SKU"}
+                                title={this.props.page.props.t("sku")}
                                 name="formData.eCommerce.inventory.sku"
                                 type="text"
                                 value={this.props.page.state.formData.eCommerce?.inventory?.sku}
@@ -264,7 +263,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Quantity"}
+                                title={this.props.page.props.t("quantity")}
                                 name="formData.eCommerce.inventory.quantity"
                                 disabled={!this.props.page.state.formData.eCommerce?.inventory?.isManageStock || false}
                                 type="number"
@@ -274,7 +273,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-7">
                             <ThemeFormCheckBox
-                                title={"Is Manage Stock"}
+                                title={this.props.page.props.t("isManageStock")}
                                 name="formData.eCommerce.inventory.isManageStock"
                                 checked={Boolean(this.props.page.state.formData.eCommerce?.inventory?.isManageStock)}
                                 onChange={e => HandleForm.onChangeInput(e, this.props.page)}
@@ -293,7 +292,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Width"}
+                                title={this.props.page.props.t("width")}
                                 name="formData.eCommerce.shipping.width"
                                 type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.width}
@@ -302,7 +301,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Height"}
+                                title={this.props.page.props.t("height")}
                                 name="formData.eCommerce.shipping.height"
                                 type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.height}
@@ -311,7 +310,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Depth"}
+                                title={this.props.page.props.t("depth")}
                                 name="formData.eCommerce.shipping.depth"
                                 type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.depth}
@@ -320,7 +319,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         </div>
                         <div className="col-md-6 mb-3">
                             <ThemeFormType
-                                title={"Weight"}
+                                title={this.props.page.props.t("weight")}
                                 name="formData.eCommerce.shipping.weight"
                                 type="text"
                                 value={this.props.page.state.formData.eCommerce?.shipping?.weight}
@@ -343,7 +342,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 <div className="row">
                                     <div className="col-md-6 mt-2 mt-md-0">
                                         <ThemeFormSelect
-                                            title={"Attribute"}
+                                            title={this.props.page.props.t("attribute")}
                                             options={this.props.page.state.attributes}
                                             value={this.props.page.state.attributes.findSingle("value", attribute.attributeId)}
                                             onChange={(item: any, e) => this.onChange(attribute, "attributeId", item.value)}
@@ -381,7 +380,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                             <div className="row">
                                 <div className="col-md-12">
                                     <ThemeFormSelect
-                                        title={"Variations"}
+                                        title={this.props.page.props.t("variations")}
                                         isMulti
                                         closeMenuOnSelect={false}
                                         options={this.props.page.state.variations.findMulti("mainId", attribute.attributeId)}
@@ -576,7 +575,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                     <div className="row mb-4">
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Tax Included Price"}
+                                                title={this.props.page.props.t("taxIncludedPrice")}
                                                 type="number"
                                                 value={variation.pricing?.taxIncluded}
                                                 onChange={e => this.onChange(variation.pricing, "taxIncluded", e.target.value)}
@@ -584,7 +583,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Tax Excluded Price"}
+                                                title={this.props.page.props.t("taxExcludedPrice")}
                                                 type="number"
                                                 value={variation.pricing?.taxExcluded}
                                                 onChange={e => this.onChange(variation.pricing, "taxExcluded", e.target.value)}
@@ -592,7 +591,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Tax Rate"}
+                                                title={this.props.page.props.t("taxRate")}
                                                 type="number"
                                                 value={variation.pricing?.taxRate}
                                                 onChange={e => this.onChange(variation.pricing, "taxRate", e.target.value)}
@@ -600,7 +599,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Compared Price"}
+                                                title={this.props.page.props.t("comparedPrice")}
                                                 type="number"
                                                 value={variation.pricing?.compared}
                                                 onChange={e => this.onChange(variation.pricing, "compared", e.target.value)}
@@ -612,7 +611,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                     <div className="row mb-4">
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"SKU"}
+                                                title={this.props.page.props.t("sku")}
                                                 type="text"
                                                 value={variation.inventory?.sku}
                                                 onChange={e => this.onChange(variation.inventory, "sku", e.target.value)}
@@ -621,7 +620,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
                                                 disabled={!variation.inventory?.isManageStock || false}
-                                                title={"Quantity"}
+                                                title={this.props.page.props.t("quantity")}
                                                 type="number"
                                                 value={variation.inventory?.quantity}
                                                 onChange={e => this.onChange(variation.inventory, "quantity", e.target.value)}
@@ -629,7 +628,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                         <div className="col-md-7 mb-3">
                                             <ThemeFormCheckBox
-                                                title={"Is Manage Stock"}
+                                                title={this.props.page.props.t("isManageStock")}
                                                 checked={Boolean(variation.inventory?.isManageStock)}
                                                 onChange={e => this.onChange(variation.inventory, "isManageStock", e.target.checked)}
                                             />
@@ -640,7 +639,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                     <div className="row mb-4">
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Width"}
+                                                title={this.props.page.props.t("width")}
                                                 type="text"
                                                 value={variation.shipping?.width}
                                                 onChange={e => this.onChange(variation.shipping, "width", e.target.value)}
@@ -648,7 +647,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Height"}
+                                                title={this.props.page.props.t("height")}
                                                 type="text"
                                                 value={variation.shipping?.height}
                                                 onChange={e => this.onChange(variation.shipping, "height", e.target.value)}
@@ -656,7 +655,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Depth"}
+                                                title={this.props.page.props.t("depth")}
                                                 type="text"
                                                 value={variation.shipping?.depth}
                                                 onChange={e => this.onChange(variation.shipping, "depth", e.target.value)}
@@ -664,7 +663,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         </div>
                                         <div className="col-md-6 mb-3">
                                             <ThemeFormType
-                                                title={"Weight"}
+                                                title={this.props.page.props.t("weight")}
                                                 type="text"
                                                 value={variation.shipping?.weight}
                                                 onChange={e => this.onChange(variation.shipping, "weight", e.target.value)}
@@ -721,7 +720,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
             <div className="row">
                 <div className="col-md-7 mb-3">
                     <ThemeFormSelect
-                        title={"Product Type"}
+                        title={this.props.page.props.t("productType")}
                         name="formData.eCommerce.typeId"
                         options={this.props.page.state.productTypes}
                         value={this.props.page.state.productTypes?.findSingle("value", this.props.page.state.formData.eCommerce?.typeId || "")}

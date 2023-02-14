@@ -38,7 +38,10 @@ enum PermissionId {
     ProductAdd,
     ProductEdit,
     ProductDelete,
-    ECommerce
+    ECommerce,
+    BeforeAndAfterAdd,
+    BeforeAndAfterEdit,
+    BeforeAndAfterDelete,
 }
 
 const Permissions: Array<PermissionDocument> = [
@@ -79,6 +82,9 @@ const Permissions: Array<PermissionDocument> = [
     {id: PermissionId.ProductAdd, groupId: PermissionGroupId.Product, defaultRoleRank: 2, langKey: "add"},
     {id: PermissionId.ProductEdit, groupId: PermissionGroupId.Product, defaultRoleRank: 3, langKey: "edit"},
     {id: PermissionId.ProductDelete, groupId: PermissionGroupId.Product, defaultRoleRank: 3, langKey: "delete"},
+    {id: PermissionId.BeforeAndAfterAdd, groupId: PermissionGroupId.BeforeAndAfter, defaultRoleRank: 2, langKey: "add"},
+    {id: PermissionId.BeforeAndAfterEdit, groupId: PermissionGroupId.BeforeAndAfter, defaultRoleRank: 3, langKey: "edit"},
+    {id: PermissionId.BeforeAndAfterDelete, groupId: PermissionGroupId.BeforeAndAfter, defaultRoleRank: 3, langKey: "delete"},
 ]
 
 export {Permissions, PermissionId};

@@ -75,6 +75,12 @@ export interface PostContentButtonDocument {
     url: string
 }
 
+export interface PostBeforeAndAfterDocument {
+    imageBefore: string
+    imageAfter: string
+    images: string[]
+}
+
 export interface PostContentDocument {
     langId: string
     image?: string,
@@ -99,13 +105,15 @@ export default interface PostDocument {
     dateStart: Date,
     order: number,
     isFixed?: boolean,
-    terms: (PopulateTermsDocument | undefined)[]
+    terms: PopulateTermsDocument[]
     contents?: PostContentDocument,
     components?: ComponentDocument[]
     eCommerce?: PostECommerceDocument
+    beforeAndAfter?: PostBeforeAndAfterDocument
     views: number
     sitemap?: string
     createdAt: string
+    updatedAt: string
 }
 
 export interface PostGetParamDocument {
@@ -124,7 +132,7 @@ export type PostAddParamDocument = {
     contents: PostContentDocument
     terms: string[]
     components?: string[],
-} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components"|"createdAt">
+} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components"|"createdAt"|"updatedAt">
 
 export type PostUpdateParamDocument = {
     _id: string

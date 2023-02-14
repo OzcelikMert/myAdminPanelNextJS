@@ -33,6 +33,10 @@ export default [
         permissionId: PermissionId.TestimonialAdd
     },
     {
+        path: PagePaths.themeContent().post(PostTypeId.BeforeAndAfter).term(undefined).self(),
+        permissionId: PermissionId.BeforeAndAfterAdd
+    },
+    {
         path: PagePaths.eCommerce().product().term(undefined).self(),
         permissionId: PermissionId.ProductAdd
     }
