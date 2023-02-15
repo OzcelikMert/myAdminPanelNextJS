@@ -5,10 +5,11 @@ import PageGalleryUpload from "pages/gallery/upload";
 import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionId} from "constants/index";
 import permissionLib from "lib/permission.lib";
+import GalleryDocument from "types/services/gallery";
 
 type PageState = {
     formActiveKey: string
-    uploadedImages: string[]
+    uploadedImages: GalleryDocument[]
 };
 
 type PageProps = {

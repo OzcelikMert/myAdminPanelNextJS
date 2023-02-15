@@ -38,6 +38,7 @@ Things to do:
 + listelerde guncelleyen isminin yaninda hangi tarihte guncellemis yazsin
 + postlarda silinen kategoriler nasil geliyor kontrol et
 + Before & after post type ekle ve sayfasini yap (hair transplant icin)
++ sayfa degisikliligi yapmadan kategori ve etiket ekleme
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
 - tum loglari temizle

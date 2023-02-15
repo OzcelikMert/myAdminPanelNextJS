@@ -4,6 +4,7 @@ import UploadingFilesDocument from "types/pages/gallery/upload";
 import galleryService from "services/gallery.service";
 import ThemeToast from "components/theme/toast";
 import Image from "next/image"
+import GalleryDocument from "types/services/gallery";
 
 type PageState = {
     isDragging: boolean,
@@ -12,7 +13,7 @@ type PageState = {
 
 type PageProps = {
     isModal?: boolean
-    uploadedImages?: (images: string[]) => void
+    uploadedImages?: (images: GalleryDocument[]) => void
 } & PagePropCommonDocument;
 
 class PageGalleryUpload extends Component<PageProps, PageState> {
@@ -43,7 +44,7 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
     }
 
     async uploadFiles() {
-        let uploadedImages: string[] = [];
+        let uploadedImages: GalleryDocument[] = [];
         for (const uploadingFile of this.state.uploadingFiles) {
             if (
                 uploadingFile.progressValue === 100 ||

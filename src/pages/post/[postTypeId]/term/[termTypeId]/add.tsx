@@ -26,11 +26,19 @@ type PageState = {
     isSelectionImage: boolean
 };
 
-type PageProps = {} & PagePropCommonDocument;
+type PageProps = {
+    isModal?: boolean
+    _id?: string
+    postTypeId?: PostTypeId
+    typeId?: PostTermTypeId
+} & PagePropCommonDocument;
 
 export default class PagePostTermAdd extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
+        let _id = this.props._id ?? this.props.router.query._id as string ?? "";
+        let typeId = this.props.typeId ?? this.props.router.query.termTypeId ?? 1;
+        let postTypeId = this.props.postTypeId ?? this.props.router.query.postTypeId ?? 1;
         this.state = {
             mainTabActiveKey: `general`,
             items: [],
@@ -38,9 +46,9 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
             isSubmitting: false,
             mainTitle: "",
             formData: {
-                _id: this.props.router.query._id as string ?? "",
-                typeId: Number(this.props.router.query.termTypeId ?? 1),
-                postTypeId: Number(this.props.router.query.postTypeId ?? 1),
+                _id: _id,
+                typeId: Number(typeId),
+                postTypeId: Number(postTypeId),
                 mainId: "",
                 statusId: 0,
                 order: 0,
@@ -359,10 +367,13 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     <div className="col-md-3">
                         <div className="row">
                             <div className="col-6">
-                                <button className="btn btn-gradient-dark btn-lg btn-icon-text w-100"
-                                        onClick={() => this.navigatePage()}>
-                                    <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
-                                </button>
+                                {
+                                    !this.props.isModal
+                                        ? <button className="btn btn-gradient-dark btn-lg btn-icon-text w-100"
+                                                  onClick={() => this.navigatePage()}>
+                                            <i className="mdi mdi-arrow-left"></i> {this.props.t("returnBack")}
+                                        </button> : null
+                                }
                             </div>
                         </div>
                     </div>

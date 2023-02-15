@@ -254,7 +254,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 sortable: true
             },
             (
-                [PostTermTypeId.Category, PostTermTypeId.Tag].includes(this.state.typeId) ?
+                [PostTermTypeId.Category].includes(this.state.typeId) ?
                     {
                         name: this.props.t("numberOfUses"),
                         sortable: true,

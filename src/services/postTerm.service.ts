@@ -16,7 +16,7 @@ export default {
             data: params
         });
     },
-    add(params: PostTermAddParamDocument) {
+    add(params: PostTermAddParamDocument): Promise<ServiceResultDocument<{_id: string}[], null>> {
         return Api.post({
             url: [ServicePages.postTerm, params.postTypeId.toString(), params.typeId.toString()],
             data: params

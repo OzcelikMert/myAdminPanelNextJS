@@ -29,6 +29,8 @@ import ComponentPagePostAddECommerce from "components/pages/post/add/eCommerce";
 import ComponentPagePostAddComponent from "components/pages/post/add/component";
 import ComponentPagePostAddButton from "components/pages/post/add/button";
 import ComponentPagePostAddBeforeAndAfter from "components/pages/post/add/beforeAndAfter";
+import ComponentPagePostAddChooseCategory from "components/pages/post/add/chooseCategory";
+import ComponentPagePostAddChooseTag from "components/pages/post/add/chooseTag";
 
 const ThemeRichTextBox = dynamic(() => import("components/theme/richTextBox").then((module) => module.default), {ssr: false});
 
@@ -562,31 +564,13 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 {
                     ![PostTypeId.Page, PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial].includes(Number(this.state.formData.typeId))
                         ? <div className="col-md-7 mb-3">
-                            <ThemeFormSelect
-                                title={this.props.t("category")}
-                                name="categoryTermId"
-                                placeholder={this.props.t("chooseCategory").toCapitalizeCase()}
-                                isMulti
-                                closeMenuOnSelect={false}
-                                options={this.state.categoryTerms}
-                                value={this.state.categoryTerms?.filter(item => this.state.categoryTermId.includes(item.value))}
-                                onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item, this)}
-                            />
+                            <ComponentPagePostAddChooseCategory page={this}  />
                         </div> : null
                 }
                 {
                     ![PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial].includes(Number(this.state.formData.typeId))
                         ? <div className="col-md-7 mb-3">
-                            <ThemeFormSelect
-                                title={this.props.t("tag")}
-                                name="tagTermId"
-                                placeholder={this.props.t("chooseTag")}
-                                isMulti
-                                closeMenuOnSelect={false}
-                                options={this.state.tagTerms}
-                                value={this.state.tagTerms?.filter(item => this.state.tagTermId.includes(item.value))}
-                                onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item, this)}
-                            />
+                            <ComponentPagePostAddChooseTag page={this}  />
                         </div> : null
                 }
             </div>

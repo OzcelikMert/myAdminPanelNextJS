@@ -64,7 +64,7 @@ export interface PostTermGetParamDocument {
 export type PostTermAddParamDocument = {
     mainId?: string
     contents: PostTermContentDocument
-} & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"alternates"|"createdAt"|"updatedAt">
+} & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"alternates"|"createdAt"|"updatedAt"|"postCount">
 
 export type PostTermUpdateParamDocument = {
     _id: string
