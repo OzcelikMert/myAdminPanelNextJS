@@ -39,6 +39,7 @@ Things to do:
 + postlarda silinen kategoriler nasil geliyor kontrol et
 + Before & after post type ekle ve sayfasini yap (hair transplant icin)
 + sayfa degisikliligi yapmadan kategori ve etiket ekleme
++ multi dillli olan sayfalarin hepsinin listine multi dil selectboxunu getir boylece hangi dillerde hangi postlar eklenmemis gorulsun
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
 - tum loglari temizle

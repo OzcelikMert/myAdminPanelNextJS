@@ -58,6 +58,19 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         })
     }
 
+    async componentDidUpdate(prevProps: Readonly<PageProps>) {
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
+            this.props.setStateApp({
+                isPageLoading: true
+            }, async () => {
+                await this.getItems()
+                this.props.setStateApp({
+                    isPageLoading: false
+                })
+            })
+        }
+    }
+
     setPageTitle() {
         let titles: string[] = [
             ...postLib.getPageTitles({
@@ -75,8 +88,9 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         let items = (await postTermService.get({
             typeId: this.state.typeId,
             postTypeId: this.state.postTypeId,
-            langId: this.props.getStateApp.pageData.mainLangId,
-            withPostCount: true
+            langId: this.props.getStateApp.pageData.langId,
+            withPostCount: true,
+            ignoreDefaultLanguage: true
         })).data;
         this.setState({
             items: items,

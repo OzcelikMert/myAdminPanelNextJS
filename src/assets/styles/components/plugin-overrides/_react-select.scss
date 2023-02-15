@@ -5,10 +5,17 @@
   }
 
   .custom-select__menu {
-    div {
+    .custom-select__menu-list {
       background: var(--theme-bg) !important;
-      div:hover {
-        background: var(--theme-content-wrapper-bg) !important;
+      .custom-select__option {
+        &:hover {
+          background: var(--theme-content-wrapper-bg) !important;
+        }
+      }
+      .custom-select__option--is-focused,
+      .custom-select__option--is-selected {
+        background: var(--theme-bg) !important;
+        color: var(--theme-input-color) !important;
       }
     }
   }

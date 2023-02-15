@@ -18,7 +18,7 @@ type PageProps = {
 
 export default class ThemeContentLanguage extends Component<PageProps, PageState> {
     Item = (props: LanguageDocument) => (
-        <div className="row p-0">
+        <div className={`row p-0`}>
             <div className="col-6 text-end">
                 <Image
                     className="img-fluid"

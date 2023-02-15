@@ -59,6 +59,7 @@ export interface PostTermGetParamDocument {
     _id?: string
     statusId?: StatusId
     withPostCount?: boolean
+    ignoreDefaultLanguage?: boolean
 }
 
 export type PostTermAddParamDocument = {

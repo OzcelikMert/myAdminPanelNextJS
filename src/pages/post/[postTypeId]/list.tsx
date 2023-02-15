@@ -64,6 +64,17 @@ export default class PagePostList extends Component<PageProps, PageState> {
             })
 
         }
+
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
+            this.props.setStateApp({
+                isPageLoading: true
+            }, async () => {
+                await this.getItems()
+                this.props.setStateApp({
+                    isPageLoading: false
+                })
+            })
+        }
     }
 
     setPageTitle() {
@@ -77,7 +88,8 @@ export default class PagePostList extends Component<PageProps, PageState> {
     async getItems() {
         let items = (await postService.get({
             typeId: this.state.typeId,
-            langId: this.props.getStateApp.pageData.langId
+            langId: this.props.getStateApp.pageData.langId,
+            ignoreDefaultLanguage: true
         })).data;
         this.setState((state: PageState) => {
             state.items = items;

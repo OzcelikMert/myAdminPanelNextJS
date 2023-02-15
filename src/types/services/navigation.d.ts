@@ -23,6 +23,7 @@ export interface NavigationGetParamDocument {
     langId?: string
     url?: string
     statusId?: number
+    ignoreDefaultLanguage?: boolean
 }
 
 export interface NavigationContentDocument {

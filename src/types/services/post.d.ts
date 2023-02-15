@@ -126,6 +126,7 @@ export interface PostGetParamDocument {
     getContents?: boolean,
     count?: number,
     ignorePostId?: string[]
+    ignoreDefaultLanguage?: boolean
 }
 
 export type PostAddParamDocument = {

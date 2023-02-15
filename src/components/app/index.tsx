@@ -18,6 +18,7 @@ import ProviderPermission from "components/providers/permission.provider";
 import ProviderAppInit from "components/providers/app.init.provider";
 import Variable from "library/variable";
 import {ToastContainer} from "react-toastify";
+import MultiLanguagePaths from "constants/multiLanguagePaths";
 
 type PageState = {
     contentLanguages: LanguageDocument[],
@@ -102,18 +103,6 @@ class AppAdmin extends Component<PageProps, PageState> {
     }
 
     PageHeader = (props: PagePropCommonDocument) => {
-        let multiLangPaths = [
-            PagePaths.post().edit(),
-            PagePaths.post().term().edit(),
-            PagePaths.eCommerce().product().edit(),
-            PagePaths.eCommerce().product().term().edit(),
-            PagePaths.themeContent().post().edit(),
-            PagePaths.themeContent().post().term().edit(),
-            PagePaths.navigation().edit(),
-            PagePaths.component().edit(),
-            PagePaths.settings().staticLanguages(),
-            PagePaths.settings().seo()
-        ]
         let path = props.router.pathname.replaceAll("[", ":").replaceAll("]", "");
 
         return (
@@ -123,7 +112,7 @@ class AppAdmin extends Component<PageProps, PageState> {
                         <ThemeBreadCrumb breadCrumbs={this.state.breadCrumbTitle.split(" - ")}/>
                     </div>
                     {
-                        multiLangPaths.includes(path)
+                        MultiLanguagePaths.includes(path)
                             ? <div className="col-md-4 p-0 content-language">
                                 <ThemeContentLanguage
                                     t={props.t}

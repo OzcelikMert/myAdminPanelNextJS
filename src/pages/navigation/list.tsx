@@ -47,6 +47,19 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
         })
     }
 
+    async componentDidUpdate(prevProps: Readonly<PageProps>) {
+        if (prevProps.getStateApp.pageData.langId != this.props.getStateApp.pageData.langId) {
+            this.props.setStateApp({
+                isPageLoading: true
+            }, async () => {
+                await this.getItems()
+                this.props.setStateApp({
+                    isPageLoading: false
+                })
+            })
+        }
+    }
+
     setPageTitle() {
         this.props.setBreadCrumb([
             this.props.t("navigations"),
@@ -55,7 +68,10 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
     }
 
     async getItems() {
-        let items = (await navigationService.get({langId: this.props.getStateApp.pageData.langId})).data;
+        let items = (await navigationService.get({
+            langId: this.props.getStateApp.pageData.langId,
+            ignoreDefaultLanguage: true
+        })).data;
         this.setState((state: PageState) => {
             state.items = items;
             state.showingItems = items.filter(item => item.statusId !== StatusId.Deleted);
