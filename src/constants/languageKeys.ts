@@ -15,8 +15,6 @@ export const LanguageKeysArray = [
     "isManageStock",
     "beforeAndAfter",
     "numberOfUses",
-
-
     "size",
     "shipping",
     "pricing",

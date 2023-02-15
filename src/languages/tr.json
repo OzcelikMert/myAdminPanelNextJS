@@ -1,4 +1,22 @@
 {
+  "imageAfter": "Sonraki Fotoğraf",
+  "imageBefore": "Önceki Fotoğraf",
+  "width": "Genişliği",
+  "height": "Yühsekliği",
+  "depth": "Derinliği",
+  "weight": "Ağırlığı",
+  "productType": "Ürün Tipi",
+  "taxIncludedPrice": "Vergi Dahil Fiyatı",
+  "taxExcludedPrice": "Vergi Hariç Fiyatı",
+  "taxRate": "Vergi Oranı",
+  "comparedPrice": "Karşılaştırılan Fiyat",
+  "sku": "Stok Kodu",
+  "quantity": "Miktarı",
+  "isManageStock": "Stok Yönetimi var mı?",
+  "beforeAndAfter": "Öncesi & Sonrası",
+  "numberOfUses": "Kullanım Sayısı",
+
+
   "size": "Boyut",
   "shipping": "Nakliye",
   "pricing": "Fiyatlandırma",
