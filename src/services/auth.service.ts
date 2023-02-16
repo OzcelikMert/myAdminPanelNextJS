@@ -5,13 +5,13 @@ import UserDocument from "types/services/user";
 import {AuthLoginParamDocument, AuthGetSessionParamDocument} from "types/services/auth";
 
 export default {
-    getSession(params: AuthGetSessionParamDocument): Promise<ServiceResultDocument<UserDocument[], null>> {
+    getSession(params: AuthGetSessionParamDocument): Promise<ServiceResultDocument<UserDocument[]>> {
         return Api.get({
             url: [ServicePages.auth],
             data: params,
         });
     },
-    login(params: AuthLoginParamDocument): Promise<ServiceResultDocument<UserDocument[], null>> {
+    login(params: AuthLoginParamDocument): Promise<ServiceResultDocument<UserDocument[]>> {
         return Api.post({
             url: [ServicePages.auth],
             data: params,

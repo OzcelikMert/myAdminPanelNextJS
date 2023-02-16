@@ -9,7 +9,7 @@ import UserDocument, {
 } from "types/services/user";
 
 export default {
-    get(params: UsersGetParamDocument): Promise<ServiceResultDocument<UserDocument[], null>> {
+    get(params: UsersGetParamDocument): Promise<ServiceResultDocument<UserDocument[]>> {
         return Api.get({
             url: [ServicePages.user, params._id?.toString()],
             data: params,

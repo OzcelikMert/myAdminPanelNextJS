@@ -9,14 +9,14 @@ import PostTermDocument, {
 } from "types/services/postTerm";
 
 export default {
-    get(params: PostTermGetParamDocument): Promise<ServiceResultDocument<PostTermDocument[], null>> {
+    get(params: PostTermGetParamDocument): Promise<ServiceResultDocument<PostTermDocument[]>> {
         let typeId = Array.isArray(params.typeId) ? [] : [params.typeId?.toString()]
         return Api.get({
             url: [ServicePages.postTerm, params.postTypeId.toString(), ...typeId, params._id?.toString()],
             data: params
         });
     },
-    add(params: PostTermAddParamDocument): Promise<ServiceResultDocument<{_id: string}[], null>> {
+    add(params: PostTermAddParamDocument): Promise<ServiceResultDocument<{_id: string}[]>> {
         return Api.post({
             url: [ServicePages.postTerm, params.postTypeId.toString(), params.typeId.toString()],
             data: params

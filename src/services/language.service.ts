@@ -8,13 +8,13 @@ import LanguageDocument, {
 } from "types/services/language";
 
 export default {
-    getFlags(params: {}): Promise<ServiceResultDocument<string[], null>> {
+    getFlags(params: {}): Promise<ServiceResultDocument<string[]>> {
         return Api.get({
             url: [ServicePages.language, "flags"],
             data: params
         });
     },
-    get(params: LanguageGetParamDocument): Promise<ServiceResultDocument<LanguageDocument[], null>> {
+    get(params: LanguageGetParamDocument): Promise<ServiceResultDocument<LanguageDocument[]>> {
         return Api.get({
             url: [ServicePages.language, params._id],
             data: params

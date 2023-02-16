@@ -9,7 +9,7 @@ import {
 } from "types/services/subscriber";
 
 export default {
-    get(params: SubscriberGetParamDocument): Promise<ServiceResultDocument<SubscriberDocument[], null>> {
+    get(params: SubscriberGetParamDocument): Promise<ServiceResultDocument<SubscriberDocument[]>> {
         return Api.get({
             url: [ServicePages.subscriber],
             data: params
