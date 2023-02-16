@@ -5,6 +5,7 @@ export interface ComponentGetParamDocument {
     _id?: string
     langId: string,
     getContents?: boolean,
+    elementId?: string
 }
 
 export interface ComponentDeleteParamDocument {

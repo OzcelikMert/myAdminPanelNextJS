@@ -16,6 +16,7 @@ import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
+import pathUtil from "utils/path.util";
 
 type PageState = {
     typeId: PostTypeId
@@ -255,7 +256,9 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 selector: row => row.contents?.title || this.props.t("[noLangAdd]"),
                 cell: row => (
                     <div className="row w-100">
-                        <div className="col-md-8">{row.contents?.title || this.props.t("[noLangAdd]")}</div>
+                        <div className="col-md-8">
+                            {row.contents?.title || this.props.t("[noLangAdd]")}
+                        </div>
                         <div className="col-md-4">
                             {
                                 row.isFixed
@@ -291,7 +294,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     } : {}
             ),
             (
-                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Service, PostTypeId.BeforeAndAfter].includes(this.state.typeId)
+                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.BeforeAndAfter].includes(this.state.typeId)
                     ? {
                         name: this.props.t("views"),
                         selector: row => row.views,

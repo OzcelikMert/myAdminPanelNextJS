@@ -114,6 +114,13 @@ export default interface PostDocument {
     sitemap?: string
     createdAt: string
     updatedAt: string
+    alternates: PostAlternateDocument[]
+}
+
+export interface PostAlternateDocument {
+    langId: string
+    title?: string,
+    url?: string
 }
 
 export interface PostGetParamDocument {
