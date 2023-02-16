@@ -14,7 +14,7 @@ import "library/variable/number"
 import "library/variable/date"
 import "library/variable/math"
 
-import AppAdmin from "components/app";
+import ComponentApp from "components/app";
 
 import English from "languages/en.json"
 import Turkish from "languages/tr.json"
@@ -42,7 +42,7 @@ if(typeof window !== "undefined") {
 function App(props: AppProps) {
     return (
         <ProviderNoSSR>
-            <AppAdmin {...props} />
+            <ComponentApp {...props} />
         </ProviderNoSSR>
     )
 }

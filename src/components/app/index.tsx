@@ -29,7 +29,7 @@ type PageProps = {
     t: PagePropCommonDocument["t"]
 } & AppProps
 
-class AppAdmin extends Component<PageProps, PageState> {
+class ComponentApp extends Component<PageProps, PageState> {
     pathname: string;
 
     constructor(props: PageProps) {
@@ -204,4 +204,4 @@ export function withCustomProps(Component: any) {
     return ComponentWithCustomProps;
 }
 
-export default withCustomProps(AppAdmin);
+export default withCustomProps(ComponentApp);
