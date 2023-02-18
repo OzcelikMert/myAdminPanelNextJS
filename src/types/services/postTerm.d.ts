@@ -45,7 +45,8 @@ export interface PopulateTermsDocument {
     typeId: PostTermTypeId
     contents: {
         langId: string,
-        title: string,
+        title?: string,
+        url?: string
     }
 }
 

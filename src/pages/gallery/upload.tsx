@@ -183,14 +183,14 @@ class PageGalleryUpload extends Component<PageProps, PageState> {
                                         onChange={(event) => this.onChangeFile(event)}
                                         multiple={true}
                                         name="formData.image[]"
-                                        accept=".jpg,.png,.gif,.webp"
+                                        accept=".jpg,.png,.gif,.jpeg"
                                     />
                                     <div className="icons">
                                       <i className="mdi mdi-image"></i>
                                       <i className="mdi mdi-file"></i>
                                       <i className="mdi mdi-file-cloud"></i>
                                     </div>
-                                    <p className="cursor-pointer" onClick={() => this.refInputFile.current?.click()}>{this.props.t("dragAndDropHere")}</p>
+                                    <p className="cursor-pointer" onClick={() => this.refInputFile.current?.click()}>{this.props.t("dragAndDropHere")} (.jpg, .png, .gif)</p>
                                 </div>
                             </div>
                             {
