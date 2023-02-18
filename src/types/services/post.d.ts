@@ -111,7 +111,6 @@ export default interface PostDocument {
     eCommerce?: PostECommerceDocument
     beforeAndAfter?: PostBeforeAndAfterDocument
     views: number
-    sitemap?: string
     createdAt: string
     updatedAt: string
     alternates: PostAlternateDocument[]
