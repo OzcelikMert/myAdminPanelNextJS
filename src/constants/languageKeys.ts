@@ -1,4 +1,6 @@
 export const LanguageKeysArray = [
+    "update",
+
     "imageAfter",
     "imageBefore",
     "width",
@@ -75,7 +77,7 @@ export const LanguageKeysArray = [
     "title",
     "main",
     "tag",
-    "order",
+    "rank",
     "isFixed",
     "url",
     "notSelected",

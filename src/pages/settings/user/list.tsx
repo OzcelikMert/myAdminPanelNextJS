@@ -164,7 +164,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
             },
             {
                 name: this.props.t("status"),
-                selector: row => Status.findSingle("id", row.statusId)?.order ?? 0,
+                selector: row => Status.findSingle("id", row.statusId)?.rank ?? 0,
                 sortable: true,
                 cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },

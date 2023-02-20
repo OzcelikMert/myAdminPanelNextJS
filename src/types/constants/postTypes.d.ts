@@ -3,7 +3,7 @@ import LanguageKeys from "../languages";
 
 interface PostTypeDocument {
     id: PostTypeId,
-    order: number,
+    rank: number,
     langKey: LanguageKeys
 }
 

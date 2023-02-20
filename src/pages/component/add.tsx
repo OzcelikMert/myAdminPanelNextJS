@@ -37,7 +37,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             mainTitle: "",
             formData: {
                 _id: this.props.router.query._id as string ?? "",
-                order: 0,
+                rank: 0,
                 types: [],
                 elementId: "",
                 langKey: "[noLangAdd]"
@@ -155,7 +155,9 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     }
 
     onCloseSuccessMessage() {
-        this.navigatePage()
+        if (!this.state.formData._id) {
+            this.navigatePage();
+        }
     }
 
     onInputChange(data: any, key: string, value: any) {
@@ -171,7 +173,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             state.formData.types.push({
                 _id: String.createId(),
                 elementId: "",
-                order: state.formData.types.length,
+                rank: state.formData.types.length,
                 langKey: "[noLangAdd]",
                 typeId: ComponentInputTypeId.Text,
                 contents: {
@@ -362,11 +364,11 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                             this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <div className="col-md-12 mt-3">
                                     <ThemeFormType
-                                        title={`${this.props.t("order")}*`}
+                                        title={`${this.props.t("rank")}*`}
                                         type="number"
                                         required={true}
-                                        value={typeProps.order}
-                                        onChange={e => this.onInputChange(typeProps, "order", e.target.value)}
+                                        value={typeProps.rank}
+                                        onChange={e => this.onInputChange(typeProps, "rank", e.target.value)}
                                     />
                                 </div> : null
                         }
@@ -395,7 +397,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mt-2">
                     <div className="row">
                         {
-                            this.state.formData.types?.orderBy("order", "asc").map((type, index) => Type(type, index))
+                            this.state.formData.types?.orderBy("rank", "asc").map((type, index) => Type(type, index))
                         }
                     </div>
                 </div>
@@ -428,11 +430,11 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 </div>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
-                        title={`${this.props.t("order")}*`}
-                        name="formData.order"
+                        title={`${this.props.t("rank")}*`}
+                        name="formData.rank"
                         type="number"
                         required={true}
-                        value={this.state.formData.order}
+                        value={this.state.formData.rank}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>

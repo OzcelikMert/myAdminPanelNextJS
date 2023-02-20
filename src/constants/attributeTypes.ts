@@ -6,6 +6,6 @@ export enum AttributeTypeId {
 }
 
 export const AttributeTypes: Array<AttributeTypeDocument> = [
-    {id: AttributeTypeId.Text, order: 1, langKey: "text"},
-    {id: AttributeTypeId.Image, order: 2, langKey: "image"},
+    {id: AttributeTypeId.Text, rank: 1, langKey: "text"},
+    {id: AttributeTypeId.Image, rank: 2, langKey: "image"},
 ]

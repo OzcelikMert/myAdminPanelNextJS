@@ -8,11 +8,16 @@ import languageService from "services/language.service";
 import Image from "next/image";
 import imageSourceLib from "lib/imageSource.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
+import navigationService from "services/navigation.service";
+import ThemeToast from "components/theme/toast";
 
 type PageState = {
     searchKey: string
     items: LanguageDocument[],
     showingItems: LanguageDocument[]
+    selectedItemId: string
+    isShowModalUpdateRank: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -24,6 +29,8 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
             searchKey: "",
             items: [],
             showingItems: [],
+            selectedItemId: "",
+            isShowModalUpdateRank: false
         }
     }
 
@@ -52,6 +59,31 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
         });
     }
 
+    async onChangeRank(rank: number) {
+        let resData = await languageService.updateRank({
+            _id: [this.state.selectedItemId],
+            rank: rank
+        });
+
+        if(resData.status){
+            this.setState((state: PageState) => {
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                if(item){
+                    item.rank = rank;
+                }
+                return state;
+            }, () => {
+                this.onSearch(this.state.searchKey)
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: `'${item?.title}' ${this.props.t("itemEdited")}`,
+                    timeOut: 3
+                })
+            })
+        }
+    }
 
     onSearch(searchKey: string) {
         this.setState({
@@ -103,9 +135,16 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
                 cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
             },
             {
-                name: this.props.t("order"),
+                name: this.props.t("rank"),
                 sortable: true,
-                selector: row => row.order
+                selector: row => row.rank ?? 0,
+                cell: row => {
+                    return  (
+                        <span className="cursor-pointer" onClick={() => this.setState({selectedItemId: row._id, isShowModalUpdateRank: true})}>
+                            {row.rank ?? 0} <i className="fa fa-pencil-square-o"></i>
+                        </span>
+                    )
+                }
             },
             {
                 name: this.props.t("createdDate"),
@@ -128,8 +167,17 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
     }
 
     render() {
+        let item = this.state.items.findSingle("_id", this.state.selectedItemId);
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
+                <ThemeModalUpdateItemRank
+                    t={this.props.t}
+                    isShow={this.state.isShowModalUpdateRank}
+                    onHide={() => this.setState({isShowModalUpdateRank: false})}
+                    onSubmit={rank => this.onChangeRank(rank)}
+                    rank={item?.rank}
+                    title={item?.title}
+                />
                 <div className="grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body">

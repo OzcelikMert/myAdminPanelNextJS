@@ -7,7 +7,7 @@ import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
 import {SubscriberDocument} from "types/services/subscriber";
 import subscriberService from "services/subscriber.service";
-import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
+import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import ThemeDataTable from "components/theme/table/dataTable";
 import classNameLib from "lib/className.lib";
 
@@ -16,7 +16,6 @@ type PageState = {
     items: SubscriberDocument[]
     showingItems: PageState["items"]
     selectedItems: PageState["items"]
-    isShowToggleMenu: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -29,7 +28,6 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
             showingItems: [],
             items: [],
             selectedItems: [],
-            isShowToggleMenu: false
         }
     }
 
@@ -55,7 +53,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         }, () => this.onSearch(this.state.searchKey));
     }
 
-    async onDelete(statusId: number) {
+    async onChangeStatus(statusId: number) {
         let selectedItemId = this.state.selectedItems.map(item => item._id);
 
         let result = await Swal.fire({
@@ -95,7 +93,6 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
     onSelect(selectedRows: PageState["items"]) {
         this.setState((state: PageState) => {
             state.selectedItems = selectedRows;
-            state.isShowToggleMenu = selectedRows.length > 0;
             return state;
         })
     }
@@ -117,14 +114,9 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
     get getTableColumns(): TableColumn<PageState["items"][0]>[] {
         return [
             {
-                name: this.state.isShowToggleMenu ? (
-                    <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems}
-                        onChange={(value) => this.onDelete(value)}
-                    />
-                ) : this.props.t("email"),
+                name: this.props.t("email"),
                 selector: row => row.email,
-                sortable: !this.state.isShowToggleMenu,
+                sortable: true,
             },
             {
                 name: this.props.t("createdDate"),
@@ -158,6 +150,9 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                                     )}
                                     isAllSelectable={true}
                                     isSearchable={true}
+                                    isActiveToggleMenu={true}
+                                    toggleMenuItems={this.getToggleMenuItems}
+                                    onSubmitToggleMenuItem={(value) => this.onChangeStatus(value)}
                                 />
                             </div>
                         </div>

@@ -3,7 +3,7 @@ import LanguageKeys from "../languages";
 
 interface StatusDocument {
     id: StatusId,
-    order: number,
+    rank: number,
     langKey: LanguageKeys
 }
 

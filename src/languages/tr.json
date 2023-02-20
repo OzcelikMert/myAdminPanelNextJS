@@ -75,7 +75,7 @@
   "title": "Başlık",
   "main": "Ana",
   "tag": "Etiket",
-  "order": "Sıra",
+  "rank": "Sıra",
   "isFixed": "Sabitle",
   "url": "URL",
   "notSelected": "Seçili Değil",

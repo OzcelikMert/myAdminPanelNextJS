@@ -3,6 +3,6 @@ import {ProductTypeId} from "constants/productTypes";
 
 export interface ProductTypeDocument {
     id: ProductTypeId,
-    order: number,
+    rank: number,
     langKey: LanguageKeys
 }

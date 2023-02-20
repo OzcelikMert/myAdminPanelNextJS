@@ -5,7 +5,7 @@ import PostDocument, {
     PostDeleteParamDocument,
     PostGetParamDocument,
     PostAddParamDocument,
-    PostUpdateParamDocument, PostUpdateStatusParamDocument, PostUpdateViewParamDocument
+    PostUpdateParamDocument, PostUpdateStatusParamDocument, PostUpdateViewParamDocument, PostUpdateRankParamDocument
 } from "types/services/post";
 
 export default {
@@ -30,7 +30,13 @@ export default {
     },
     updateStatus(params: PostUpdateStatusParamDocument) {
         return Api.put({
-            url: [ServicePages.post, params.typeId.toString()],
+            url: [ServicePages.post, "status", params.typeId.toString()],
+            data: params
+        });
+    },
+    updateRank(params: PostUpdateRankParamDocument) {
+        return Api.put({
+            url: [ServicePages.post, "rank", params.typeId.toString()],
             data: params
         });
     },

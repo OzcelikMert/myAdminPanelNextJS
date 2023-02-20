@@ -32,7 +32,7 @@ export default interface PostTermDocument {
     statusId: StatusId,
     authorId: PopulateAuthorIdDocument
     lastAuthorId: PopulateAuthorIdDocument
-    order: number,
+    rank: number,
     contents?: PostTermContentDocument
     alternates?: PostTermAlternateDocument[]
     createdAt: string
@@ -77,6 +77,13 @@ export interface PostTermUpdateStatusParamDocument {
     typeId: PostTermTypeId
     postTypeId: PostTypeId
     statusId: StatusId
+}
+
+export interface PostTermUpdateRankParamDocument {
+    _id: string[]
+    typeId: PostTermTypeId
+    postTypeId: PostTypeId
+    rank: number
 }
 
 export interface PostTermDeleteParamDocument {

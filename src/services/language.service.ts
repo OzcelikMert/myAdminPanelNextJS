@@ -4,7 +4,7 @@ import ServiceResultDocument from "types/services/api/result";
 import LanguageDocument, {
     LanguageAddParamDocument,
     LanguageGetParamDocument,
-    LanguageUpdateParamDocument
+    LanguageUpdateParamDocument, LanguageUpdateRankParamDocument
 } from "types/services/language";
 
 export default {
@@ -32,4 +32,10 @@ export default {
             data: params
         });
     },
+    updateRank(params: LanguageUpdateRankParamDocument) {
+        return Api.put({
+            url: [ServicePages.language, "rank"],
+            data: params
+        });
+    }
 }

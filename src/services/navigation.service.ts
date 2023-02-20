@@ -5,7 +5,7 @@ import {
     NavigationAddParamDocument, NavigationDeleteParamDocument,
     NavigationDocument,
     NavigationGetParamDocument,
-    NavigationUpdateParamDocument, NavigationUpdateStatusIdParamDocument
+    NavigationUpdateParamDocument, NavigationUpdateRankParamDocument, NavigationUpdateStatusIdParamDocument
 } from "types/services/navigation";
 
 export default {
@@ -29,7 +29,13 @@ export default {
     },
     updateStatus(params: NavigationUpdateStatusIdParamDocument) {
         return Api.put({
-            url: [ServicePages.navigation],
+            url: [ServicePages.navigation, "status"],
+            data: params
+        });
+    },
+    updateRank(params: NavigationUpdateRankParamDocument) {
+        return Api.put({
+            url: [ServicePages.navigation, "rank"],
             data: params
         });
     },

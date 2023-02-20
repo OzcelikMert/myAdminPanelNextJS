@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import DataTable, {TableProps} from "react-data-table-component";
 import {PagePropCommonDocument} from "types/pageProps";
 import {ThemeFormCheckBox, ThemeFormType} from "../../form";
+import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 
 type PageState = {
     selectedItems: any[],
@@ -18,13 +19,16 @@ type PageProps<T> = {
     isAllSelectable?: boolean
     isMultiSelectable?: boolean
     selectedRows?: T[]
+    isActiveToggleMenu?: boolean
+    toggleMenuItems?: ThemeToggleMenuItemDocument[]
+    onSubmitToggleMenuItem?: (value: any) => void
 } & TableProps<T>;
 
 export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState> {
     listPage: number = 0;
     listPagePerCount: number = 10;
 
-    static dateSort(a: {createdAt: string | Date}, b: {createdAt: string | Date}) {
+    static dateSort(a: { createdAt: string | Date }, b: { createdAt: string | Date }) {
         return new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime() ? 1 : -1
     }
 
@@ -38,7 +42,7 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
     }
 
     componentDidUpdate(prevProps: Readonly<PageProps<T>>, prevState: Readonly<PageState>) {
-        if(JSON.stringify(prevProps.selectedRows) !== JSON.stringify(this.props.selectedRows)){
+        if (JSON.stringify(prevProps.selectedRows) !== JSON.stringify(this.props.selectedRows)) {
             this.setState({
                 selectedItems: this.props.selectedRows ?? []
             })
@@ -68,7 +72,7 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
             if (findIndex > -1) {
                 if (remove) state.selectedItems.remove(findIndex)
             } else {
-                if(this.props.isMultiSelectable === false){
+                if (this.props.isMultiSelectable === false) {
                     state.selectedItems = [];
                 }
                 state.selectedItems.push(item);
@@ -80,43 +84,62 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
         })
     }
 
-    setSelectable() {
-        return [
-            {
-                name: !this.props.isAllSelectable ? null : (
-                    <div>
-                        <ThemeFormCheckBox
-                            checked={this.isCheckedSelectAll}
-                            onChange={e => this.onSelectAll()}
-                        />
-                    </div>
-                ),
-                width: "55px",
-                cell: (row: any) => (
-                    <div>
-                        <ThemeFormCheckBox
-                            checked={this.state.selectedItems.includes(row)}
-                            onChange={e => this.onSelect(row)}
-                        />
-                    </div>
-                )
-            },
-            ...this.props.columns
-        ];
+    getColumns() {
+        let columns = [...this.props.columns];
+
+        if(this.props.isActiveToggleMenu){
+            if(columns.length > 0){
+                columns[0].name = this.state.selectedItems.length > 0 ? (
+                    <ThemeTableToggleMenu
+                        items={this.props.toggleMenuItems ?? []}
+                        onChange={(value) => this.props.onSubmitToggleMenuItem ? this.props.onSubmitToggleMenuItem(value) : null}
+                    />
+                ) : columns[0].name;
+                columns[0].sortable = columns[0].sortable && this.state.selectedItems.length === 0;
+            }
+        }
+
+
+        if (this.props.isSelectable) {
+            columns = [
+                {
+                    name: !this.props.isAllSelectable ? null : (
+                        <div>
+                            <ThemeFormCheckBox
+                                checked={this.isCheckedSelectAll}
+                                onChange={e => this.onSelectAll()}
+                            />
+                        </div>
+                    ),
+                    width: "55px",
+                    cell: (row: any) => (
+                        <div>
+                            <ThemeFormCheckBox
+                                checked={this.state.selectedItems.includes(row)}
+                                onChange={e => this.onSelect(row)}
+                            />
+                        </div>
+                    )
+                },
+                ...columns
+            ]
+        }
+
+        return columns;
     }
 
     onSearch(event: React.ChangeEvent<HTMLInputElement>) {
         this.setState({
             searchKey: event.target.value
         }, () => {
-            if(this.props.onSearch) this.props.onSearch(this.state.searchKey)
+            if (this.props.onSearch) this.props.onSearch(this.state.searchKey)
         });
     }
 
     render() {
         return (
             <div className="theme-table">
-                { this.props.isSearchable ?
+                {this.props.isSearchable ?
                     <div className="row pt-2 pb-2 m-0">
                         <div className="col-md-8"></div>
                         <div className="col-md-4">
@@ -132,7 +155,7 @@ export default class ThemeDataTable<T> extends Component<PageProps<T>, PageState
                 <div className="table-responsive">
                     <DataTable
                         className="theme-data-table"
-                        columns={this.props.isSelectable ? this.setSelectable() : this.props.columns}
+                        columns={this.getColumns()}
                         data={this.props.data}
                         noHeader
                         fixedHeader

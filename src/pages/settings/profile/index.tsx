@@ -216,7 +216,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                         <h6 className="pb-1 border-bottom fw-bold text-start">Permissions</h6>
                         <div className="row">
                             {
-                                permissionGroups.orderBy("order", "asc").map(group =>
+                                permissionGroups.orderBy("rank", "asc").map(group =>
                                     <PermissionGroup {...group} />
                                 )
                             }

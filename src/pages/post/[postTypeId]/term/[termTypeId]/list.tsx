@@ -7,7 +7,7 @@ import {
 } from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
+import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import Swal from "sweetalert2";
 import PostTermDocument from "types/services/postTerm";
 import postTermService from "services/postTerm.service";
@@ -21,6 +21,7 @@ import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
+import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
 type PageState = {
     typeId: PostTermTypeId
@@ -30,7 +31,8 @@ type PageState = {
     showingItems: PageState["items"]
     selectedItems: PageState["items"]
     listMode: "list" | "deleted"
-    isShowToggleMenu: boolean
+    selectedItemId: string
+    isShowModalUpdateRank: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -44,9 +46,10 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             searchKey: "",
             selectedItems: [],
             listMode: "list",
-            isShowToggleMenu: false,
             items: [],
-            showingItems: []
+            showingItems: [],
+            selectedItemId: "",
+            isShowModalUpdateRank: false
         }
     }
 
@@ -171,10 +174,37 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
         }
     }
 
+    async onChangeRank(rank: number) {
+        let resData = await postTermService.updateRank({
+            _id: [this.state.selectedItemId],
+            rank: rank,
+            postTypeId: this.state.postTypeId,
+            typeId: this.state.typeId
+        });
+
+        if(resData.status){
+            this.setState((state: PageState) => {
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                if(item){
+                    item.rank = rank;
+                }
+                return state;
+            }, () => {
+                this.onChangeListMode(this.state.listMode)
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: `'${item?.contents?.title}' ${this.props.t("itemEdited")}`,
+                    timeOut: 3
+                })
+            })
+        }
+    }
+
     onSelect(selectedRows: PageState["showingItems"]) {
         this.setState((state: PageState) => {
             state.selectedItems = selectedRows;
-            state.isShowToggleMenu = selectedRows.length > 0;
             return state;
         })
     }
@@ -191,7 +221,6 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             state.listMode = mode;
             state.showingItems = [];
             state.selectedItems = [];
-            state.isShowToggleMenu = false;
             if (mode === "list") {
                 state.showingItems = state.items.findMulti("statusId", StatusId.Deleted, false);
             } else {
@@ -238,12 +267,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
-                name: this.state.isShowToggleMenu ? (
-                    <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems}
-                        onChange={(value) => this.onChangeStatus(value)}
-                    />
-                ) : this.props.t("image"),
+                name: this.props.t("image"),
                 width: "105px",
                 cell: row => (
                     <div className="image pt-2 pb-2">
@@ -286,9 +310,16 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
             },
             {
-                name: this.props.t("order"),
+                name: this.props.t("rank"),
                 sortable: true,
-                selector: row => row.order
+                selector: row => row.rank ?? 0,
+                cell: row => {
+                    return  (
+                        <span className="cursor-pointer" onClick={() => this.setState({selectedItemId: row._id, isShowModalUpdateRank: true})}>
+                            {row.rank ?? 0} <i className="fa fa-pencil-square-o"></i>
+                        </span>
+                    )
+                }
             },
             {
                 name: this.props.t("createdDate"),
@@ -315,8 +346,17 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     }
 
     render() {
+        let item = this.state.items.findSingle("_id", this.state.selectedItemId);
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post-term">
+                <ThemeModalUpdateItemRank
+                    t={this.props.t}
+                    isShow={this.state.isShowModalUpdateRank}
+                    onHide={() => this.setState({isShowModalUpdateRank: false})}
+                    onSubmit={rank => this.onChangeRank(rank)}
+                    rank={item?.rank}
+                    title={item?.contents?.title}
+                />
                 <div className="row">
                     <div className="col-md-3 mb-3">
                         <div className="row">
@@ -379,6 +419,9 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                                     )}
                                     isAllSelectable={true}
                                     isSearchable={true}
+                                    isActiveToggleMenu={true}
+                                    toggleMenuItems={this.getToggleMenuItems}
+                                    onSubmitToggleMenuItem={(value) => this.onChangeStatus(value)}
                                 />
                             </div>
                         </div>

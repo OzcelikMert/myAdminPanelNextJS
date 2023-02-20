@@ -3,7 +3,7 @@ import {PermissionGroupId} from "constants/index";
 
 interface PermissionGroupDocument {
     id: PermissionGroupId,
-    order: number,
+    rank: number,
     langKey: LanguageKeys
 }
 

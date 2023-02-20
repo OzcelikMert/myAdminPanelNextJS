@@ -5,7 +5,7 @@ import {
     ComponentAddParamDocument, ComponentDeleteParamDocument,
     ComponentDocument,
     ComponentGetParamDocument,
-    ComponentUpdateParamDocument
+    ComponentUpdateParamDocument, ComponentUpdateRankParamDocument
 } from "types/services/component";
 
 export default {
@@ -24,6 +24,12 @@ export default {
     update(params: ComponentUpdateParamDocument) {
         return Api.put({
             url: [ServicePages.component, params._id.toString()],
+            data: params,
+        });
+    },
+    updateRank(params: ComponentUpdateRankParamDocument) {
+        return Api.put({
+            url: [ServicePages.component, "rank"],
             data: params,
         });
     },

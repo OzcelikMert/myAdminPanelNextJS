@@ -51,7 +51,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 postTypeId: Number(postTypeId),
                 mainId: "",
                 statusId: 0,
-                order: 0,
+                rank: 0,
                 contents: {
                     langId: this.props.getStateApp.pageData.langId,
                     image: "",
@@ -205,7 +205,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                         ...state.formData,
                         mainId: "",
                         statusId: StatusId.Active,
-                        order: 0,
+                        rank: 0,
                         contents: {
                             langId: this.props.getStateApp.pageData.mainLangId,
                             image: "",
@@ -288,11 +288,11 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                 </div>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
-                        title={this.props.t("order")}
-                        name="formData.order"
+                        title={this.props.t("rank")}
+                        name="formData.rank"
                         type="number"
                         required={true}
-                        value={this.state.formData.order}
+                        value={this.state.formData.rank}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>

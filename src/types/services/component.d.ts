@@ -12,6 +12,11 @@ export interface ComponentDeleteParamDocument {
     _id: string | string[]
 }
 
+export type ComponentUpdateRankParamDocument = {
+    _id: string[],
+    rank: number
+}
+
 export type ComponentUpdateParamDocument = { _id: string } & ComponentAddParamDocument
 
 export type ComponentAddParamDocument = {} & Omit<ComponentDocument, "_id"|"lastAuthorId"|"authorId"|"createdAt"|"updatedAt">
@@ -28,7 +33,7 @@ export interface ComponentTypeDocument {
     elementId: string
     typeId: number,
     langKey: LanguageKeys,
-    order: number,
+    rank: number,
     contents?: ComponentTypeContentDocument
 }
 
@@ -38,7 +43,7 @@ export interface ComponentDocument {
     lastAuthorId: PopulateAuthorIdDocument
     elementId: string
     langKey: LanguageKeys,
-    order: number,
+    rank: number,
     createdAt: string
     updatedAt: string
     types: ComponentTypeDocument[]

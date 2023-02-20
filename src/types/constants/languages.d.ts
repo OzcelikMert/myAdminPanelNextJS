@@ -4,7 +4,7 @@ interface LanguageDocument {
     id: LanguageId,
     code: string,
     title: string,
-    order: number,
+    rank: number,
     image: string
 }
 

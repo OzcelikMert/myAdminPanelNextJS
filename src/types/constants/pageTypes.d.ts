@@ -3,7 +3,7 @@ import LanguageKeys from "../languages";
 
 interface PageTypeDocument {
     id: PageTypeId,
-    order: number,
+    rank: number,
     langKey: LanguageKeys
 }
 

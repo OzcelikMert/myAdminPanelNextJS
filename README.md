@@ -40,6 +40,8 @@ Things to do:
 + Before & after post type ekle ve sayfasini yap (hair transplant icin)
 + sayfa degisikliligi yapmadan kategori ve etiket ekleme
 + multi dillli olan sayfalarin hepsinin listine multi dil selectboxunu getir boylece hangi dillerde hangi postlar eklenmemis gorulsun
++ Theme tabledeki toggle menuleri guncelle
++ list sayfalarinda order guncellemesi icin  modal kullan
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
 - tum loglari temizle

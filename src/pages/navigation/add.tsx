@@ -35,7 +35,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
             formData: {
                 _id: this.props.router.query._id as string ?? "",
                 statusId: 0,
-                order: 0,
+                rank: 0,
                 contents: {
                     langId: this.props.getStateApp.pageData.langId,
                     title: "",
@@ -205,11 +205,11 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
                 </div>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
-                        title={this.props.t("order")}
-                        name="formData.order"
+                        title={this.props.t("rank")}
+                        name="formData.rank"
                         type="number"
                         required={true}
-                        value={this.state.formData.order}
+                        value={this.state.formData.rank}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>

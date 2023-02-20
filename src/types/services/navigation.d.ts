@@ -5,9 +5,15 @@ export interface NavigationDeleteParamDocument {
 }
 
 export type NavigationUpdateStatusIdParamDocument = {
-    _id: string | string[],
+    _id: string[],
     statusId: number
 }
+
+export type NavigationUpdateRankParamDocument = {
+    _id: string[],
+    rank: number
+}
+
 
 export type NavigationUpdateParamDocument = {
     _id: string
@@ -48,6 +54,6 @@ export interface NavigationDocument {
     updatedAt: string
     authorId: PopulateAuthorIdDocument,
     lastAuthorId: PopulateAuthorIdDocument,
-    order: number,
+    rank: number,
     contents?: NavigationContentDocument
 }

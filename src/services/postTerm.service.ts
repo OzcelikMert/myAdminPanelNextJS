@@ -5,7 +5,7 @@ import PostTermDocument, {
     PostTermDeleteParamDocument,
     PostTermGetParamDocument,
     PostTermAddParamDocument,
-    PostTermUpdateStatusParamDocument, PostTermUpdateParamDocument
+    PostTermUpdateStatusParamDocument, PostTermUpdateParamDocument, PostTermUpdateRankParamDocument
 } from "types/services/postTerm";
 
 export default {
@@ -30,7 +30,13 @@ export default {
     },
     updateStatus(params: PostTermUpdateStatusParamDocument) {
         return Api.put({
-            url: [ServicePages.postTerm, params.postTypeId.toString(), params.typeId.toString()],
+            url: [ServicePages.postTerm, "status", params.postTypeId.toString(), params.typeId.toString()],
+            data: params
+        });
+    },
+    updateRank(params: PostTermUpdateRankParamDocument) {
+        return Api.put({
+            url: [ServicePages.postTerm, "rank", params.postTypeId.toString(), params.typeId.toString()],
             data: params
         });
     },

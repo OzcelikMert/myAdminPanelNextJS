@@ -41,7 +41,7 @@ export default class PageSettingLanguageAdd extends Component<PageProps, PageSta
                 shortKey: "",
                 title: "",
                 image: "",
-                order: 0
+                rank: 0
             }
         }
     }
@@ -172,11 +172,11 @@ export default class PageSettingLanguageAdd extends Component<PageProps, PageSta
                 </div>
                 <div className="col-md-7 mb-3">
                     <ThemeFormType
-                        title={`${this.props.t("order")}*`}
-                        name="formData.order"
+                        title={`${this.props.t("rank")}*`}
+                        name="formData.rank"
                         type="number"
                         required={true}
-                        value={this.state.formData.order}
+                        value={this.state.formData.rank}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>

@@ -21,7 +21,7 @@ export interface PostECommerceVariationSelectedDocument {
 export interface PostECommerceVariationDocument {
     _id?: string
     isWarningForIsThereOther?: boolean
-    order: number
+    rank: number
     selectedVariations: PostECommerceVariationSelectedDocument[]
     images: string[]
     contents?: PostECommerceVariationContentDocument
@@ -103,7 +103,7 @@ export default interface PostDocument {
     authorId: PopulateAuthorIdDocument
     lastAuthorId: PopulateAuthorIdDocument
     dateStart: Date,
-    order: number,
+    rank: number,
     isFixed?: boolean,
     terms: PopulateTermsDocument[]
     contents?: PostContentDocument,
@@ -139,7 +139,7 @@ export type PostAddParamDocument = {
     contents: PostContentDocument
     terms: string[]
     components?: string[],
-} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components"|"createdAt"|"updatedAt">
+} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components"|"createdAt"|"updatedAt"|"alternates">
 
 export type PostUpdateParamDocument = {
     _id: string
@@ -149,6 +149,12 @@ export interface PostUpdateStatusParamDocument {
     _id: string[],
     typeId: PostTypeId
     statusId: StatusId,
+}
+
+export interface PostUpdateRankParamDocument {
+    _id: string[],
+    typeId: PostTypeId
+    rank: number,
 }
 
 export interface PostUpdateViewParamDocument {

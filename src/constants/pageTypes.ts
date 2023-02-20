@@ -8,10 +8,10 @@ enum PageTypeId {
 }
 
 const PageTypes: Array<PageTypeDocument> = [
-    {id: PageTypeId.Default, order: 1, langKey: "default"},
-    {id: PageTypeId.HomePage, order: 2, langKey: "homePage"},
-    {id: PageTypeId.Blogs, order: 3, langKey: "blogs"},
-    {id: PageTypeId.Contact, order: 4, langKey: "contact"},
+    {id: PageTypeId.Default, rank: 1, langKey: "default"},
+    {id: PageTypeId.HomePage, rank: 2, langKey: "homePage"},
+    {id: PageTypeId.Blogs, rank: 3, langKey: "blogs"},
+    {id: PageTypeId.Contact, rank: 4, langKey: "contact"},
 ]
 
 export {PageTypes, PageTypeId};

@@ -77,7 +77,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                     _id: String.createId(),
                     selectedVariations: [],
                     images: [],
-                    order: 0,
+                    rank: 0,
                     pricing: {
                         taxIncluded: 0,
                         compared: 0,

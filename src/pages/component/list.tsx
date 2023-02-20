@@ -10,11 +10,14 @@ import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/theme/table/dataTable";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
+import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
 type PageState = {
     searchKey: string
     items: ComponentDocument[]
     showingItems: PageState["items"]
+    selectedItemId: string
+    isShowModalUpdateRank: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -25,7 +28,9 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         this.state = {
             searchKey: "",
             showingItems: [],
-            items: []
+            items: [],
+            selectedItemId: "",
+            isShowModalUpdateRank: false
         }
     }
 
@@ -86,6 +91,32 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         }
     }
 
+    async onChangeRank(rank: number) {
+        let resData = await componentService.updateRank({
+            _id: [this.state.selectedItemId],
+            rank: rank
+        });
+
+        if(resData.status){
+            this.setState((state: PageState) => {
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                if(item){
+                    item.rank = rank;
+                }
+                return state;
+            }, () => {
+                this.onSearch(this.state.searchKey);
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: `'${this.props.t(item?.langKey ?? "[noLangAdd]")}' ${this.props.t("itemEdited")}`,
+                    timeOut: 3
+                })
+            })
+        }
+    }
+
     onSearch(searchKey: string) {
         this.setState({
             searchKey: searchKey,
@@ -111,9 +142,16 @@ export default class PageComponentList extends Component<PageProps, PageState> {
                 cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
             },
             {
-                name: this.props.t("order"),
+                name: this.props.t("rank"),
                 sortable: true,
-                selector: row => row.order
+                selector: row => row.rank ?? 0,
+                cell: row => {
+                    return  (
+                        <span className="cursor-pointer" onClick={() => this.setState({selectedItemId: row._id, isShowModalUpdateRank: true})}>
+                            {row.rank ?? 0} <i className="fa fa-pencil-square-o"></i>
+                        </span>
+                    )
+                }
             },
             {
                 name: this.props.t("createdDate"),
@@ -156,8 +194,17 @@ export default class PageComponentList extends Component<PageProps, PageState> {
     }
 
     render() {
+        let item = this.state.items.findSingle("_id", this.state.selectedItemId);
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
+                <ThemeModalUpdateItemRank
+                    t={this.props.t}
+                    isShow={this.state.isShowModalUpdateRank}
+                    onHide={() => this.setState({isShowModalUpdateRank: false})}
+                    onSubmit={rank => this.onChangeRank(rank)}
+                    rank={item?.rank}
+                    title={this.props.t(item?.langKey ?? "[noLangAdd]")}
+                />
                 <div className="grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body">

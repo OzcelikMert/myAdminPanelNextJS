@@ -7,7 +7,7 @@ export default interface LanguageDocument {
     shortKey: string
     locale: string
     statusId: StatusId
-    order: number
+    rank: number
     createdAt: string
 }
 
@@ -19,6 +19,11 @@ export interface LanguageGetParamDocument {
 export type LanguageUpdateParamDocument = {
     _id: string
 } & LanguageAddParamDocument
+
+export type LanguageUpdateRankParamDocument = {
+    _id: string[],
+    rank: number
+}
 
 export type LanguageAddParamDocument = {} & Omit<LanguageDocument, "_id"|"createdAt">
 

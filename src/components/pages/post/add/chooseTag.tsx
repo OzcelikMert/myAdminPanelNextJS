@@ -36,7 +36,7 @@ export default class ComponentPagePostAddChooseTag extends Component<PageProps, 
                 typeId: PostTermTypeId.Tag,
                 postTypeId: this.props.page.state.formData.typeId,
                 statusId: StatusId.Active,
-                order: 0,
+                rank: 0,
                 contents: {
                     langId: this.props.page.state.formData.contents.langId,
                     title: this.state.newItemTitle
@@ -70,7 +70,7 @@ export default class ComponentPagePostAddChooseTag extends Component<PageProps, 
 
     Modal = () => {
         return (<Modal
-            className="post-add-term-popup"
+            className="form-modal"
             size="lg"
             centered
             show={this.state.isShowModal}

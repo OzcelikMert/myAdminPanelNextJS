@@ -3,6 +3,6 @@ import {AttributeTypeId} from "constants/attributeTypes";
 
 export interface AttributeTypeDocument {
     id: AttributeTypeId,
-    order: number,
+    rank: number,
     langKey: LanguageKeys
 }

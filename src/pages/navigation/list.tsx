@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {PermissionId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import ThemeTableToggleMenu from "components/theme/table/toggleMenu";
 import Swal from "sweetalert2";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
@@ -14,6 +13,7 @@ import PagePaths from "constants/pagePaths";
 import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import ThemeBadgeStatus from "components/theme/badge/status";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
+import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
 type PageState = {
     searchKey: string
@@ -21,7 +21,8 @@ type PageState = {
     showingItems: NavigationDocument[]
     selectedItems: NavigationDocument[]
     listMode: "list" | "deleted"
-    isShowToggleMenu: boolean
+    selectedItemId: string
+    isShowModalUpdateRank: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -33,9 +34,10 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
             searchKey: "",
             selectedItems: [],
             listMode: "list",
-            isShowToggleMenu: false,
             items: [],
             showingItems: [],
+            selectedItemId: "",
+            isShowModalUpdateRank: false
         }
     }
 
@@ -139,10 +141,35 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
         }
     }
 
+    async onChangeRank(rank: number) {
+        let resData = await navigationService.updateRank({
+            _id: [this.state.selectedItemId],
+            rank: rank
+        });
+
+        if(resData.status){
+            this.setState((state: PageState) => {
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                if(item){
+                    item.rank = rank;
+                }
+                return state;
+            }, () => {
+                this.onChangeListMode(this.state.listMode)
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: `'${item?.contents?.title}' ${this.props.t("itemEdited")}`,
+                    timeOut: 3
+                })
+            })
+        }
+    }
+
     onSelect(selectedRows: PageState["showingItems"]) {
         this.setState((state: PageState) => {
             state.selectedItems = selectedRows;
-            state.isShowToggleMenu = selectedRows.length > 0;
             return state;
         })
     }
@@ -159,7 +186,6 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
             state.listMode = mode;
             state.showingItems = [];
             state.selectedItems = [];
-            state.isShowToggleMenu = false;
             if (mode === "list") {
                 state.showingItems = state.items.findMulti("statusId", StatusId.Deleted, false);
             } else {
@@ -172,8 +198,10 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
     navigatePage(type: "edit", itemId = "") {
         let pagePath = PagePaths.navigation();
         let path = "";
-        switch(type){
-            case "edit": path = pagePath.edit(itemId); break;
+        switch (type) {
+            case "edit":
+                path = pagePath.edit(itemId);
+                break;
         }
         this.props.router.push(path);
     }
@@ -196,12 +224,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
-                name: this.state.isShowToggleMenu ? (
-                    <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems}
-                        onChange={(value) => this.onChangeStatus(value)}
-                    />
-                ) : this.props.t("title"),
+                name: this.props.t("title"),
                 selector: row => row.contents?.title || this.props.t("[noLangAdd]"),
                 cell: row => (
                     <div className="row w-100">
@@ -209,7 +232,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                     </div>
                 ),
                 width: "250px",
-                sortable: !this.state.isShowToggleMenu
+                sortable: true
             },
             {
                 name: this.props.t("main"),
@@ -219,17 +242,24 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
             {
                 name: this.props.t("status"),
                 sortable: true,
-                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId} />
+                cell: row => <ThemeBadgeStatus t={this.props.t} statusId={row.statusId}/>
             },
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt}/>
             },
             {
-                name: this.props.t("order"),
+                name: this.props.t("rank"),
                 sortable: true,
-                selector: row => row.order
+                selector: row => row.rank ?? 0,
+                cell: row => {
+                    return  (
+                        <span className="cursor-pointer" onClick={() => this.setState({selectedItemId: row._id, isShowModalUpdateRank: true})}>
+                            {row.rank ?? 0} <i className="fa fa-pencil-square-o"></i>
+                        </span>
+                    )
+                }
             },
             {
                 name: this.props.t("createdDate"),
@@ -256,8 +286,17 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
     }
 
     render() {
+        let item = this.state.items.findSingle("_id", this.state.selectedItemId);
         return this.props.getStateApp.isPageLoading ? null : (
-            <div className="page-post">
+            <div className="page-navigation">
+                <ThemeModalUpdateItemRank
+                    t={this.props.t}
+                    isShow={this.state.isShowModalUpdateRank}
+                    onHide={() => this.setState({isShowModalUpdateRank: false})}
+                    onSubmit={rank => this.onChangeRank(rank)}
+                    rank={item?.rank}
+                    title={item?.contents?.title}
+                />
                 <div className="row mb-3">
                     <div className="col-md-3"></div>
                     <div className="col-md-9 text-end">
@@ -299,6 +338,9 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                                     )}
                                     isAllSelectable={true}
                                     isSearchable={true}
+                                    isActiveToggleMenu={true}
+                                    toggleMenuItems={this.getToggleMenuItems}
+                                    onSubmitToggleMenuItem={(value) => this.onChangeStatus(value)}
                                 />
                             </div>
                         </div>

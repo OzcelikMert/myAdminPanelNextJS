@@ -4,7 +4,7 @@ import LanguageKeys from "../languages";
 interface UserRoleDocument {
     id: UserRoleId,
     rank: number,
-    order: number,
+    rank: number,
     langKey: LanguageKeys
 }
 

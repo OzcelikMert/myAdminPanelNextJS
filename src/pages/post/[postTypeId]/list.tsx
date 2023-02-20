@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PageTypeId, PageTypes, PostTermTypeId, PostTypeId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
-import ThemeTableToggleMenu, {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
+import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import Swal from "sweetalert2";
 import postService from "services/post.service";
 import PostDocument from "types/services/post";
@@ -16,7 +16,7 @@ import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
-import pathUtil from "utils/path.util";
+import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
 type PageState = {
     typeId: PostTypeId
@@ -25,7 +25,8 @@ type PageState = {
     showingItems: PageState["items"]
     selectedItems: PageState["items"]
     listMode: "list" | "deleted"
-    isShowToggleMenu: boolean
+    selectedItemId: string
+    isShowModalUpdateRank: boolean
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -38,9 +39,10 @@ export default class PagePostList extends Component<PageProps, PageState> {
             searchKey: "",
             selectedItems: [],
             listMode: "list",
-            isShowToggleMenu: false,
             items: [],
             showingItems: [],
+            selectedItemId: "",
+            isShowModalUpdateRank: false
         }
     }
 
@@ -164,10 +166,36 @@ export default class PagePostList extends Component<PageProps, PageState> {
         }
     }
 
+    async onChangeRank(rank: number) {
+        let resData = await postService.updateRank({
+            _id: [this.state.selectedItemId],
+            typeId: this.state.typeId,
+            rank: rank
+        });
+
+        if(resData.status){
+            this.setState((state: PageState) => {
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                if(item){
+                    item.rank = rank;
+                }
+                return state;
+            }, () => {
+                this.onChangeListMode(this.state.listMode)
+                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
+                new ThemeToast({
+                    type: "success",
+                    title: this.props.t("successful"),
+                    content: `'${item?.contents?.title}' ${this.props.t("itemEdited")}`,
+                    timeOut: 3
+                })
+            })
+        }
+    }
+
     onSelect(selectedRows: PageState["showingItems"]) {
         this.setState((state: PageState) => {
             state.selectedItems = selectedRows;
-            state.isShowToggleMenu = selectedRows.length > 0;
             return state;
         })
     }
@@ -184,7 +212,6 @@ export default class PagePostList extends Component<PageProps, PageState> {
             state.listMode = mode;
             state.showingItems = [];
             state.selectedItems = [];
-            state.isShowToggleMenu = false;
             if (mode === "list") {
                 state.showingItems = state.items.findMulti("statusId", StatusId.Deleted, false);
             } else {
@@ -230,12 +257,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
         return [
             {
-                name: this.state.isShowToggleMenu ? (
-                    <ThemeTableToggleMenu
-                        items={this.getToggleMenuItems}
-                        onChange={(value) => this.onChangeStatus(value)}
-                    />
-                ) : this.props.t("image"),
+                name: this.props.t("image"),
                 width: "105px",
                 cell: row => {
                     return Boolean(row.contents && row.contents.icon && row.contents.icon.length > 0)
@@ -276,20 +298,24 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     ? {
                         name: this.props.t("category"),
                         cell: row => row.terms.findMulti("typeId", PostTermTypeId.Category).length > 0
-                            ? row.terms.map(item => {
-                                    if (typeof item === "undefined") {
-                                        return <label
-                                            className={`badge badge-gradient-danger me-1`}
-                                        >{this.props.t("deleted")}</label>
-                                    } else if (item.typeId == PostTermTypeId.Category) {
-                                        return <label
-                                            onClick={() => this.navigatePage("termEdit", item._id, row.typeId)}
-                                            className={`badge badge-gradient-success me-1 cursor-pointer`}
-                                        >{item.contents?.title || this.props.t("[noLangAdd]")}</label>
-                                    }
-                                    return null;
+                            ? <div className="d-flex flex-row flex-wrap">
+                                {
+                                    row.terms.map(item => {
+                                            if (typeof item === "undefined") {
+                                                return <label
+                                                    className={`badge badge-gradient-danger m-1`}
+                                                >{this.props.t("deleted")}</label>
+                                            } else if (item.typeId == PostTermTypeId.Category) {
+                                                return <label
+                                                    onClick={() => this.navigatePage("termEdit", item._id, row.typeId)}
+                                                    className={`badge badge-gradient-success m-1 cursor-pointer`}
+                                                >{item.contents?.title || this.props.t("[noLangAdd]")}</label>
+                                            }
+                                            return null;
+                                        }
+                                    )
                                 }
-                            ) : this.props.t("notSelected")
+                            </div> : this.props.t("notSelected")
 
                     } : {}
             ),
@@ -327,9 +353,16 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
             },
             {
-                name: this.props.t("order"),
+                name: this.props.t("rank"),
                 sortable: true,
-                selector: row => row.order
+                selector: row => row.rank ?? 0,
+                cell: row => {
+                    return  (
+                        <span className="cursor-pointer" onClick={() => this.setState({selectedItemId: row._id, isShowModalUpdateRank: true})}>
+                            {row.rank ?? 0} <i className="fa fa-pencil-square-o"></i>
+                        </span>
+                    )
+                }
             },
             {
                 name: this.props.t("createdDate"),
@@ -356,8 +389,17 @@ export default class PagePostList extends Component<PageProps, PageState> {
     }
 
     render() {
+        let item = this.state.items.findSingle("_id", this.state.selectedItemId);
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
+                <ThemeModalUpdateItemRank
+                    t={this.props.t}
+                    isShow={this.state.isShowModalUpdateRank}
+                    onHide={() => this.setState({isShowModalUpdateRank: false})}
+                    onSubmit={rank => this.onChangeRank(rank)}
+                    rank={item?.rank}
+                    title={item?.contents?.title}
+                />
                 <div className="row mb-3">
                     <div className="col-md-8">
                         <div className="row">
@@ -446,6 +488,9 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                     )}
                                     isAllSelectable={true}
                                     isSearchable={true}
+                                    isActiveToggleMenu={true}
+                                    toggleMenuItems={this.getToggleMenuItems}
+                                    onSubmitToggleMenuItem={(value) => this.onChangeStatus(value)}
                                 />
                             </div>
                         </div>

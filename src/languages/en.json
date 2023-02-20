@@ -75,7 +75,7 @@
   "title": "Title",
   "main": "Main",
   "tag": "Tag",
-  "order": "Order",
+  "rank": "Rank",
   "isFixed": "Is fixed",
   "url": "URL",
   "notSelected": "Not selected",
