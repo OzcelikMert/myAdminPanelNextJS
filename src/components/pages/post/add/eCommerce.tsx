@@ -46,7 +46,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                     _id: String.createId(),
                     attributeId: "",
                     typeId: AttributeTypeId.Text,
-                    variationId: []
+                    variations: []
                 })
             }
             return state;
@@ -55,7 +55,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
 
     onChangeAttributeVariations(attribute: PostECommerceAttributeDocument, values: PostPageState["variations"]) {
         this.props.page.setState((state: PostPageState) => {
-            attribute.variationId = values.map(value => value.value)
+            attribute.variations = values.map(value => value.value)
             return state;
         })
     }
@@ -384,7 +384,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                         isMulti
                                         closeMenuOnSelect={false}
                                         options={this.props.page.state.variations.findMulti("mainId", attribute.attributeId)}
-                                        value={this.props.page.state.variations.findMulti("value", attribute.variationId)}
+                                        value={this.props.page.state.variations.findMulti("value", attribute.variations)}
                                         onChange={(item: any, e) => this.onChangeAttributeVariations(attribute, item)}
                                     />
                                 </div>
@@ -428,7 +428,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                             <div className="col-md-4 mt-3">
                                                 <ThemeFormSelect
                                                     title={this.props.page.state.attributes.findSingle("value", attribute.attributeId)?.label}
-                                                    options={this.props.page.state.variations.findMulti("value", attribute.variationId)}
+                                                    options={this.props.page.state.variations.findMulti("value", attribute.variations)}
                                                     value={this.props.page.state.variations.findSingle("value", variation.selectedVariations.findSingle("attributeId", attribute.attributeId)?.variationId)}
                                                     onChange={(item: any, e) => this.onChangeVariationAttributeChild(variation, attribute.attributeId, item.value)}
                                                 />
@@ -688,7 +688,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                                 <div className="col-md-4 mt-3">
                                     <ThemeFormSelect
                                         title={this.props.page.state.attributes.findSingle("value", attribute.attributeId)?.label}
-                                        options={this.props.page.state.variations.findMulti("value", attribute.variationId)}
+                                        options={this.props.page.state.variations.findMulti("value", attribute.variations)}
                                         value={this.props.page.state.variations.findSingle("value", this.props.page.state.formData.eCommerce?.variationDefaults?.findSingle("attributeId", attribute.attributeId)?.variationId)}
                                         onChange={(item: any, e) => this.onChangeVariationDefault(attribute.attributeId, item.value)}
                                     />

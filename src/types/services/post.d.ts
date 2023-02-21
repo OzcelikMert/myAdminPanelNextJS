@@ -33,7 +33,7 @@ export interface PostECommerceVariationDocument {
 export interface PostECommerceAttributeDocument {
     _id?: string
     attributeId: string
-    variationId: string[]
+    variations: string[]
     typeId: AttributeTypeId
 }
 

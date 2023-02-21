@@ -47,6 +47,7 @@ export interface PopulateTermsDocument {
         langId: string,
         title?: string,
         url?: string
+        image?: string
     }
 }
 
