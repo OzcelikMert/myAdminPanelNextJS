@@ -17,7 +17,7 @@ function setDataWithKeys(data: any, keys: string[], value: any, isArrayPush: boo
             data[key] = {};
         }
 
-        data[key] = setDataWithKeys(data[key], keys.slice(1), value);
+        data[key] = setDataWithKeys(data[key], keys.slice(1), value, isArrayPush);
     }
 
     return data;

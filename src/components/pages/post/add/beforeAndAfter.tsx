@@ -1,17 +1,9 @@
 import React, {Component} from 'react';
-import {ThemeFormCheckBox, ThemeFormSelect, ThemeFormType} from "components/theme/form";
-import HandleForm from "library/react/handles/form";
-import {PostECommerceAttributeDocument, PostECommerceVariationDocument} from "types/services/post";
-import {Accordion, Card, Tab, Tabs} from "react-bootstrap";
-import ThemeAccordionToggle from "components/theme/accordion/toggle";
+import {Tab, Tabs} from "react-bootstrap";
 import ThemeChooseImage from "components/theme/chooseImage";
 import Image from "next/image";
 import imageSourceLib from "lib/imageSource.lib";
-import {ProductTypeId} from "constants/productTypes";
 import PagePostAdd, {PageState as PostPageState} from "pages/post/[postTypeId]/add";
-import {AttributeTypeId} from "constants/attributeTypes";
-import dynamic from "next/dynamic";
-import ThemeToolTip from "components/theme/tooltip";
 import ThemeFieldSet from "components/theme/fieldSet";
 
 type PageState = {

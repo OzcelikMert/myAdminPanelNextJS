@@ -35,16 +35,14 @@ import ComponentPagePostAddChooseTag from "components/pages/post/add/chooseTag";
 const ThemeRichTextBox = dynamic(() => import("components/theme/richTextBox").then((module) => module.default), {ssr: false});
 
 export type PageState = {
-    categoryTermId: string[]
-    tagTermId: string[]
     langKeys: ThemeFormSelectValueDocument[]
     pageTypes: ThemeFormSelectValueDocument[]
     attributeTypes: ThemeFormSelectValueDocument[]
     productTypes: ThemeFormSelectValueDocument[]
     components: ThemeFormSelectValueDocument[]
     mainTabActiveKey: string
-    categoryTerms: ThemeFormSelectValueDocument[]
-    tagTerms: ThemeFormSelectValueDocument[]
+    categories: ThemeFormSelectValueDocument[]
+    tags: ThemeFormSelectValueDocument[]
     attributes: ThemeFormSelectValueDocument[],
     variations: (ThemeFormSelectValueDocument & { mainId: string })[],
     status: ThemeFormSelectValueDocument[]
@@ -63,15 +61,13 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         this.state = {
             mainTabActiveKey: `general`,
             attributeTypes: [],
-            categoryTermId: [],
-            tagTermId: [],
             productTypes: [],
             attributes: [],
             variations: [],
-            categoryTerms: [],
+            categories: [],
             langKeys: [],
             pageTypes: [],
-            tagTerms: [],
+            tags: [],
             status: [],
             components: [],
             isSubmitting: false,
@@ -85,13 +81,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 isFixed: false,
                 contents: {
                     langId: this.props.getStateApp.pageData.langId,
-                    image: "",
                     title: "",
-                    content: "",
-                    shortContent: "",
-                    url: "",
-                    seoTitle: "",
-                    seoContent: "",
                 }
             },
             isSelectionImage: false,
@@ -241,16 +231,16 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         });
         if (resData.status) {
             this.setState((state: PageState) => {
-                state.categoryTerms = [];
-                state.tagTerms = [];
+                state.categories = [];
+                state.tags = [];
                 for (const term of resData.data) {
                     if (term.typeId == PostTermTypeId.Category) {
-                        state.categoryTerms.push({
+                        state.categories.push({
                             value: term._id,
                             label: term.contents?.title || this.props.t("[noLangAdd]")
                         });
                     } else if (term.typeId == PostTermTypeId.Tag) {
-                        state.tagTerms.push({
+                        state.tags.push({
                             value: term._id,
                             label: term.contents?.title || this.props.t("[noLangAdd]")
                         });
@@ -284,21 +274,9 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                 const item = resData.data[0];
 
                 this.setState((state: PageState) => {
-                    let categoryTermId: string[] = [];
-                    let tagTermId: string[] = [];
-
-                    item.terms.forEach(term => {
-                        if (term?.typeId == PostTermTypeId.Category) categoryTermId.push(term._id);
-                        else if (term?.typeId == PostTermTypeId.Tag) tagTermId.push(term._id);
-                    });
-
-                    state.categoryTermId = categoryTermId;
-                    state.tagTermId = tagTermId;
-
                     state.formData = {
                         ...state.formData,
-                        ...item,
-                        components: item.components?.map(component => component._id),
+                        ...item as PostUpdateParamDocument,
                         dateStart: new Date(item.dateStart),
                         contents: {
                             ...state.formData.contents,
@@ -308,6 +286,42 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                             content: item.contents?.content ?? ""
                         }
                     };
+
+                    if(item.components){
+                        state.formData.components = item.components.map(component => component._id);
+                    }
+
+                    if(item.categories){
+                        state.formData.categories = item.categories.map(category => category._id);
+                    }
+
+                    if(item.tags){
+                        state.formData.tags = item.tags.map(tag => tag._id);
+                    }
+
+                    if(item.eCommerce){
+                        state.formData.eCommerce = {
+                            ...item.eCommerce,
+                            attributes: item.eCommerce.attributes?.map(attribute => ({
+                                ...attribute,
+                                attributeId: attribute.attributeId._id,
+                                variations: attribute.variations.map(variation => variation._id)
+                            })),
+                            variations: item.eCommerce.variations?.map(variation => ({
+                                ...variation,
+                                selectedVariations: variation.selectedVariations.map(selectedVariation => ({
+                                    ...selectedVariation,
+                                    variationId: selectedVariation.variationId._id,
+                                    attributeId: selectedVariation.attributeId._id
+                                }))
+                            })),
+                            variationDefaults: item.eCommerce.variationDefaults?.map(variationDefault => ({
+                                ...variationDefault,
+                                attributeId: variationDefault.attributeId._id,
+                                variationId: variationDefault.variationId._id
+                            }))
+                        }
+                    }
 
                     if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
                         state.mainTitle = state.formData.contents.title;
@@ -340,20 +354,20 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         }, async () => {
             let params = {
                 ...this.state.formData,
-                terms: this.state.tagTermId.concat(this.state.categoryTermId),
-                components: this.state.formData.components?.filter(componentId => !Variable.isEmpty(componentId)),
-                contents: {
-                    ...this.state.formData.contents,
-                    content: this.state.formData.contents.content
-                }
+                components: this.state.formData.components?.filter(component => !Variable.isEmpty(component))
             };
 
             let resData = await ((params._id)
                 ? postService.update(params)
                 : postService.add(params));
+
             this.setState({
                 isSubmitting: false
-            }, () => this.setMessage())
+            }, () => {
+                if(resData.status){
+                    this.setMessage();
+                }
+            })
         })
     }
 

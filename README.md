@@ -42,6 +42,9 @@ Things to do:
 + multi dillli olan sayfalarin hepsinin listine multi dil selectboxunu getir boylece hangi dillerde hangi postlar eklenmemis gorulsun
 + Theme tabledeki toggle menuleri guncelle
 + list sayfalarinda order guncellemesi icin  modal kullan
++ terms'i category ve tags diye ayir
++ ecommercda gelen datalarin hepsini populate yaparak string degilde contents degerlerini dondur
++ post interfacelerini ayarla
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
 - tum loglari temizle

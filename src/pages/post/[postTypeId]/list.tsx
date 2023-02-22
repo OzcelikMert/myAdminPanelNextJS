@@ -297,21 +297,20 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 [PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Product, PostTypeId.BeforeAndAfter].includes(this.state.typeId)
                     ? {
                         name: this.props.t("category"),
-                        cell: row => row.terms.findMulti("typeId", PostTermTypeId.Category).length > 0
+                        cell: row => row.categories && row.categories.length > 0
                             ? <div className="d-flex flex-row flex-wrap">
                                 {
-                                    row.terms.map(item => {
+                                    row.categories.map(item => {
                                             if (typeof item === "undefined") {
                                                 return <label
                                                     className={`badge badge-gradient-danger m-1`}
                                                 >{this.props.t("deleted")}</label>
-                                            } else if (item.typeId == PostTermTypeId.Category) {
+                                            } else {
                                                 return <label
-                                                    onClick={() => this.navigatePage("termEdit", item._id, row.typeId)}
+                                                    onClick={() => this.navigatePage("termEdit", item._id, item.typeId)}
                                                     className={`badge badge-gradient-success m-1 cursor-pointer`}
                                                 >{item.contents?.title || this.props.t("[noLangAdd]")}</label>
                                             }
-                                            return null;
                                         }
                                     )
                                 }

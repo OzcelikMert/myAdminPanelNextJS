@@ -46,9 +46,9 @@ export default class ComponentPagePostAddChooseTag extends Component<PageProps, 
             if(resData.status){
                 if(resData.data.length > 0){
                     this.props.page.setState({
-                        tagTerms: [
+                        tags: [
                             {value: resData.data[0]._id, label: this.state.newItemTitle},
-                            ...this.props.page.state.tagTerms
+                            ...this.props.page.state.tags
                         ]
                     }, () => {
                         this.setState({
@@ -122,12 +122,12 @@ export default class ComponentPagePostAddChooseTag extends Component<PageProps, 
                     <div className="col-md-10">
                         <ThemeFormSelect
                             title={this.props.page.props.t("tag")}
-                            name="tagTermId"
+                            name="formData.tags"
                             placeholder={this.props.page.props.t("chooseTag").toCapitalizeCase()}
                             isMulti
                             closeMenuOnSelect={false}
-                            options={this.props.page.state.tagTerms}
-                            value={this.props.page.state.tagTerms?.filter(item => this.props.page.state.tagTermId.includes(item.value))}
+                            options={this.props.page.state.tags}
+                            value={this.props.page.state.tags?.filter(item => this.props.page.state.formData.tags?.includes(item.value))}
                             onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item, this.props.page)}
                         />
                     </div>

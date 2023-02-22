@@ -12,17 +12,17 @@ export interface PostECommerceVariationContentDocument {
     shortContent?: string,
 }
 
-export interface PostECommerceVariationSelectedDocument {
+export interface PostECommerceVariationSelectedDocument<T = PopulateTermsDocument> {
     _id?: string
-    attributeId: string
-    variationId: string
+    attributeId: T
+    variationId: T
 }
 
-export interface PostECommerceVariationDocument {
+export interface PostECommerceVariationDocument<T = PopulateTermsDocument> {
     _id?: string
     isWarningForIsThereOther?: boolean
     rank: number
-    selectedVariations: PostECommerceVariationSelectedDocument[]
+    selectedVariations: PostECommerceVariationSelectedDocument<T>[]
     images: string[]
     contents?: PostECommerceVariationContentDocument
     inventory: PostECommerceInventoryDocument
@@ -30,10 +30,10 @@ export interface PostECommerceVariationDocument {
     pricing: PostECommercePricingDocument
 }
 
-export interface PostECommerceAttributeDocument {
+export interface PostECommerceAttributeDocument<T = PopulateTermsDocument> {
     _id?: string
-    attributeId: string
-    variations: string[]
+    attributeId: T
+    variations: T[]
     typeId: AttributeTypeId
 }
 
@@ -58,15 +58,15 @@ export interface PostECommercePricingDocument {
     shipping: number
 }
 
-export interface PostECommerceDocument {
+export interface PostECommerceDocument<T = PopulateTermsDocument> {
     typeId: number
     images: string[]
     pricing?: PostECommercePricingDocument
     inventory?: PostECommerceInventoryDocument
     shipping?: PostECommerceShippingDocument
-    attributes?: PostECommerceAttributeDocument[]
-    variations?: PostECommerceVariationDocument[]
-    variationDefaults?: PostECommerceVariationSelectedDocument[]
+    attributes?: PostECommerceAttributeDocument<T>[]
+    variations?: PostECommerceVariationDocument<T>[]
+    variationDefaults?: PostECommerceVariationSelectedDocument<T>[]
 }
 
 export interface PostContentButtonDocument {
@@ -105,7 +105,8 @@ export default interface PostDocument {
     dateStart: Date,
     rank: number,
     isFixed?: boolean,
-    terms: PopulateTermsDocument[]
+    categories?: PopulateTermsDocument[]
+    tags?: PopulateTermsDocument[]
     contents?: PostContentDocument,
     components?: ComponentDocument[]
     eCommerce?: PostECommerceDocument
@@ -137,13 +138,15 @@ export interface PostGetParamDocument {
 
 export type PostAddParamDocument = {
     contents: PostContentDocument
-    terms: string[]
+    categories?: string[]
+    tags?: string[]
     components?: string[],
-} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"terms"|"components"|"createdAt"|"updatedAt"|"alternates">
+    eCommerce?: PostECommerceDocument<string>
+} & Omit<PostDocument, "_id"|"lastAuthorId"|"authorId"|"views"|"contents"|"categories"|"tags"|"components"|"createdAt"|"updatedAt"|"alternates"|"eCommerce">
 
 export type PostUpdateParamDocument = {
     _id: string
-} & Omit<PostAddParamDocument, "themeGroups">
+} & PostAddParamDocument
 
 export interface PostUpdateStatusParamDocument {
     _id: string[],

@@ -46,9 +46,9 @@ export default class ComponentPagePostAddChooseCategory extends Component<PagePr
             if(resData.status){
                 if(resData.data.length > 0){
                     this.props.page.setState({
-                        categoryTerms: [
+                        categories: [
                             {value: resData.data[0]._id, label: this.state.newItemTitle},
-                            ...this.props.page.state.categoryTerms
+                            ...this.props.page.state.categories
                         ]
                     }, () => {
                         this.setState({
@@ -122,12 +122,12 @@ export default class ComponentPagePostAddChooseCategory extends Component<PagePr
                     <div className="col-md-10">
                         <ThemeFormSelect
                             title={this.props.page.props.t("category")}
-                            name="categoryTermId"
+                            name="formData.categories"
                             placeholder={this.props.page.props.t("chooseCategory").toCapitalizeCase()}
                             isMulti
                             closeMenuOnSelect={false}
-                            options={this.props.page.state.categoryTerms}
-                            value={this.props.page.state.categoryTerms?.filter(item => this.props.page.state.categoryTermId.includes(item.value))}
+                            options={this.props.page.state.categories}
+                            value={this.props.page.state.categories?.filter(item => this.props.page.state.formData.categories?.includes(item.value))}
                             onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item, this.props.page)}
                         />
                     </div>

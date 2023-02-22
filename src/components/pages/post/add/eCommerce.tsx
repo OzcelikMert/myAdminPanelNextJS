@@ -53,7 +53,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
         })
     }
 
-    onChangeAttributeVariations(attribute: PostECommerceAttributeDocument, values: PostPageState["variations"]) {
+    onChangeAttributeVariations(attribute: PostECommerceAttributeDocument<string>, values: PostPageState["variations"]) {
         this.props.page.setState((state: PostPageState) => {
             attribute.variations = values.map(value => value.value)
             return state;
@@ -114,7 +114,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
         })
     }
 
-    onChangeVariationAttributeChild(data: PostECommerceVariationDocument, attributeId: string, value: string) {
+    onChangeVariationAttributeChild(data: PostECommerceVariationDocument<string>, attributeId: string, value: string) {
         this.props.page.setState((state: PostPageState) => {
             if (typeof state.formData.eCommerce !== "undefined") {
                 let findIndex = data.selectedVariations.indexOfKey("attributeId", attributeId);
@@ -333,7 +333,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
     }
 
     TabAttributes = () => {
-        const Attribute = (attribute: PostECommerceAttributeDocument, index: number) => {
+        const Attribute = (attribute: PostECommerceAttributeDocument<string>, index: number) => {
             return (
                 <Card>
                     <Card.Header>
@@ -416,7 +416,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
     }
 
     TabVariations = () => {
-        const Variation = (variation: PostECommerceVariationDocument, index: number) => {
+        const Variation = (variation: PostECommerceVariationDocument<string>, index: number) => {
             return (
                 <Card>
                     <Card.Header>

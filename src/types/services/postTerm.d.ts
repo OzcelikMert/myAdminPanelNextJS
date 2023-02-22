@@ -21,14 +21,7 @@ export default interface PostTermDocument {
     _id: string
     postTypeId: PostTypeId,
     typeId: PostTermTypeId,
-    mainId?: {
-        _id: string
-        contents: {
-            langId: string
-            title: string,
-            url: string,
-        }
-    }
+    mainId?: PopulateTermsDocument
     statusId: StatusId,
     authorId: PopulateAuthorIdDocument
     lastAuthorId: PopulateAuthorIdDocument
