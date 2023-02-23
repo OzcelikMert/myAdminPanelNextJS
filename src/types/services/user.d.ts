@@ -24,7 +24,6 @@ export default interface UserDocument {
 export interface PopulateAuthorIdDocument {
     _id: string,
     name: string,
-    email: string,
     url: string
 }
 
