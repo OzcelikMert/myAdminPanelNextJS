@@ -1,96 +1,47 @@
-import LanguageKeys from "../languages";
+import {
+    SettingContactFormDocument,
+    SettingDocument, SettingECommerceDocument,
+    SettingSeoContentDocument, SettingSocialMediaDocument,
+    SettingStaticLanguageContentDocument,
+    SettingStaticLanguageDocument
+} from "../models/setting";
 
-export interface SettingStaticLanguageContentDocument {
-    _id?: string
-    langId: string
-    content?: string,
-}
+export type SettingGetResultDocument = {
+    seoContents?: SettingSeoContentDocument | SettingSeoContentDocument[]
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents?: SettingStaticLanguageContentDocument | SettingStaticLanguageContentDocument[] })[]
+} & Omit<SettingDocument, "seoContents" | "staticLanguages">
 
-export interface SettingStaticLanguageDocument {
-    _id?: string
-    langKey: LanguageKeys,
-    contents: SettingStaticLanguageContentDocument
-}
-
-export interface SettingSeoContentDocument {
-    langId: string
-    title?: string,
-    content?: string,
-    tags?: string[]
-}
-
-
-export interface SettingContactFormDocument {
-    _id?: string
-    name: string
-    key: string
-    outGoingEmail: string
-    email: string
-    password: string
-    outGoingServer: string
-    inComingServer: string
-    port: number
-}
-
-export interface SettingSocialMediaDocument {
-    _id?: string
-    elementId: string
-    title: string
-    url: string
-}
-
-export interface SettingContactDocument {
-    email?: string,
-    phone?: string,
-    address?: string,
-    addressMap?: string
-}
-
-export interface SettingECommerceDocument {
-    currencyId: number
-}
-
-export default interface SettingDocument {
-    _id: string
-    defaultLangId: string
-    icon?: string,
-    logo?: string,
-    logoTwo?: string
-    head?: string,
-    script?: string
-    seoContents?: SettingSeoContentDocument,
-    contact?: SettingContactDocument
-    contactForms?: SettingContactFormDocument[]
-    staticLanguages?: SettingStaticLanguageDocument[]
-    socialMedia?: SettingSocialMediaDocument[]
-    eCommerce?: SettingECommerceDocument
-}
-
-export interface SettingGetParamDocument {
+export type SettingGetParamDocument = {
     langId?: string
+    getContactFormPasswords?: boolean
     projection?: "general" | "seo" | "eCommerce" | "contactForm" | "socialMedia" | "staticLanguage"
 }
 
-export type SettingGeneralUpdateParamDocument =  {
-    defaultLangId?: string
-} & Omit<SettingDocument, "_id"|"defaultLangId"|"seoContents"|"contactForms"|"staticLanguages">
+export type SettingAddParamDocument = {
+    seoContents?: SettingSeoContentDocument
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument})[]
+} & Omit<SettingDocument, "_id" | "seoContents" | "staticLanguages">
 
-export type SettingSeoUpdateParamDocument =  {
-    seoContents: SettingSeoContentDocument
+export type SettingUpdateGeneralParamDocument = {
+
+} & Omit<SettingAddParamDocument, "seoContents"|"contactForms"|"staticLanguages"|"socialMedia">
+
+export type SettingUpdateSEOParamDocument = {
+    seoContents?: SettingSeoContentDocument
 }
 
-export type SettingContactFormUpdateParamDocument =  {
+export type SettingUpdateECommerceParamDocument = {
+    eCommerce: SettingECommerceDocument
+}
+
+export type SettingUpdateContactFormParamDocument = {
     contactForms: SettingContactFormDocument[]
 }
 
-export type SettingStaticLanguageUpdateParamDocument =  {
-    staticLanguages: SettingStaticLanguageDocument[]
-}
-
-export type SettingSocialMediaUpdateParamDocument = {
+export type SettingUpdateSocialMediaParamDocument = {
     socialMedia: SettingSocialMediaDocument[]
 }
 
-export type SettingECommerceUpdateParamDocument = {
-    eCommerce: SettingECommerceDocument
+export type SettingUpdateStaticLanguageParamDocument = {
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument})[]
 }

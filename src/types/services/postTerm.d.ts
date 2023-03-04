@@ -1,5 +1,16 @@
-import {PopulateAuthorIdDocument} from "./user";
-import {PostTermTypeId, PostTypeId, StatusId} from "constants/index";
+import {UserPopulateDocument} from "./user";
+import {PostTermContentDocument, PostTermDocument} from "../models/postTerm";
+
+export interface PostTermPopulateDocument {
+    _id: string,
+    typeId: number,
+    contents: {
+        langId: string,
+        title?: string,
+        image?: string
+        url?: string
+    }[]
+}
 
 export interface PostTermAlternateDocument {
     langId: string
@@ -7,81 +18,73 @@ export interface PostTermAlternateDocument {
     url?: string
 }
 
-export interface PostTermContentDocument {
-    langId: string
-    image?: string,
-    title: string,
-    shortContent?: string,
-    url?: string,
-    seoTitle?: string,
-    seoContent?: string
-}
-
-export default interface PostTermDocument {
-    _id: string
-    postTypeId: PostTypeId,
-    typeId: PostTermTypeId,
-    mainId?: PopulateTermsDocument
-    statusId: StatusId,
-    authorId: PopulateAuthorIdDocument
-    lastAuthorId: PopulateAuthorIdDocument
-    rank: number,
-    contents?: PostTermContentDocument
-    alternates?: PostTermAlternateDocument[]
-    createdAt: string
-    updatedAt: string
+export type PostTermGetResultDocument = {
+    authorId: UserPopulateDocument,
+    lastAuthorId: UserPopulateDocument,
+    mainId?: {
+        _id: string
+        contents: {
+            langId: string
+            title: string,
+            url: string,
+        }
+    },
+    contents?: PostTermContentDocument | PostTermContentDocument[]
+    alternates?: PostTermAlternateDocument[],
     postCount?: number
-}
+} & Omit<PostTermDocument, "contents">
 
-export interface PopulateTermsDocument {
-    _id: string,
-    typeId: PostTermTypeId
-    contents: {
-        langId: string,
-        title?: string,
-        url?: string
-        image?: string
-    }
-}
-
-export interface PostTermGetParamDocument {
+export interface PostTermGetOneParamDocument {
+    langId?: string
+    _id?: string
+    typeId: number,
+    postTypeId: number,
     url?: string
+    statusId?: number,
+    ignoreTermId?: string[],
+}
+
+export interface PostTermGetManyParamDocument {
+    langId?: string
+    _id?: string[]
+    typeId?: number[],
+    postTypeId: number,
+    url?: string
+    title?: string
+    statusId?: number,
     ignoreTermId?: string[],
     count?: number
-    langId: string
-    typeId?: PostTermTypeId
-    postTypeId: PostTypeId
-    _id?: string
-    statusId?: StatusId
+    page?: number
     withPostCount?: boolean
     ignoreDefaultLanguage?: boolean
 }
 
 export type PostTermAddParamDocument = {
-    mainId?: string
-    contents: PostTermContentDocument
-} & Omit<PostTermDocument, "_id"|"mainId"|"lastAuthorId"|"authorId"|"views"|"contents"|"alternates"|"createdAt"|"updatedAt"|"postCount">
+    contents?: PostTermContentDocument
+} & Omit<PostTermDocument, "_id"|"contents">
 
-export type PostTermUpdateParamDocument = {
-    _id: string
-} & PostTermAddParamDocument
+export type PostTermUpdateOneParamDocument = {
+    _id: string,
+} & Omit<PostTermAddParamDocument, "authorId">
 
-export interface PostTermUpdateStatusParamDocument {
-    _id: string[]
-    typeId: PostTermTypeId
-    postTypeId: PostTypeId
-    statusId: StatusId
+export type PostTermUpdateOneRankParamDocument = {
+    _id: string,
+    postTypeId: number,
+    typeId: number
+    rank: number,
+    lastAuthorId: string
 }
 
-export interface PostTermUpdateRankParamDocument {
-    _id: string[]
-    typeId: PostTermTypeId
-    postTypeId: PostTypeId
-    rank: number
+export type PostTermUpdateManyStatusIdParamDocument = {
+    _id: string[],
+    postTypeId: number,
+    typeId: number
+    statusId: number,
+    lastAuthorId: string
 }
 
-export interface PostTermDeleteParamDocument {
+export interface PostTermDeleteManyParamDocument {
     _id: string[]
-    typeId: PostTermTypeId
-    postTypeId: PostTypeId
+    typeId: number,
+    postTypeId: number
 }

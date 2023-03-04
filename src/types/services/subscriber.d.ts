@@ -1,17 +1,24 @@
-export interface SubscriberDeleteParamDocument {
-    _id: string[]
-}
+import {SubscriberDocument} from "../models/subscriber";
 
-export interface SubscriberGetParamDocument {
-    id?: string
+export type SubscriberGetResultDocument = {} & SubscriberDocument
+
+export interface SubscriberGetOneParamDocument {
+    _id?: string
     email?: string
 }
 
-export type SubscriberAddDocument = {
-} & Omit<SubscriberDocument, "_id"|"createdAt">
+export interface SubscriberGetManyParamDocument {
+    _id?: string[]
+    email?: string
+}
 
-export interface SubscriberDocument {
-    _id: string
-    email: string,
-    createdAt: string
+export type SubscriberAddDocument = {} & Omit<SubscriberDocument, "_id">
+
+export interface SubscriberDeleteOneParamDocument {
+    email?: string
+    _id?: string
+}
+
+export interface SubscriberDeleteManyParamDocument {
+    _id: string[]
 }

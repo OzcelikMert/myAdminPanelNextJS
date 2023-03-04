@@ -1,51 +1,49 @@
-import {StatusId, UserRoleId} from "constants/index";
+import {UserDocument} from "../models/user";
 
-export default interface UserDocument {
+export interface UserPopulateDocument {
     _id: string
-    roleId: UserRoleId,
-    statusId: StatusId,
-    image: string,
     name: string,
-    comment: string,
-    phone: string,
-    email: string,
-    password: string,
-    permissions: number[],
-    banDateEnd: Date,
-    banComment: string,
-    facebook: string,
-    instagram: string,
-    twitter: string,
-    views: number,
-    isOnline: boolean
-    createdAt: string
+    url: string,
+    image: string
 }
 
-export interface PopulateAuthorIdDocument {
-    _id: string,
-    name: string,
-    url: string
-}
+export type UserGetResultDocument = {
+    isOnline?: boolean
+} & UserDocument
 
-export interface UsersGetParamDocument {
+export interface UserGetOneParamDocument {
     _id?: string
+    email?: string
+    password?: string
+    statusId?: number
+    url?: string
+    roleId?: number
+    ignoreUserId?: string[]
 }
 
-export interface UserAddParamDocument {
-    roleId: UserRoleId,
-    statusId: StatusId,
-    name: string,
-    email: string,
-    password: string,
-    banDateEnd: string
-    banComment: string
-    permissions: number[]
+export interface UserGetManyParamDocument {
+    _id?: string[]
+    statusId?: number
+    email?: string,
+    count?: number,
+    page?: number
+    roleId?: number
+    ignoreUserId?: string[]
 }
 
-export type UserUpdateParamDocument = {
+export type UserAddParamDocument = {
+    password: string
+} & Omit<UserDocument, "_id"|"password">
+
+export type UserUpdateOneParamDocument = {
     _id: string
-} & UserAddParamDocument
+    roleId?: number
+    statusId?: number
+    name?: string
+    email?: string
+    permissions?: number[]
+} & Omit<UserDocument, "_id"|"roleId"|"statusId"|"name"|"email"|"permissions">
 
-export interface UserDeleteParamDocument {
+export type UserDeleteOneParamDocument = {
     _id: string
 }

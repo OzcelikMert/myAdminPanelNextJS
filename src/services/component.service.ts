@@ -2,14 +2,14 @@ import Api from "./api";
 import {ServicePages} from "constants/index";
 import ServiceResultDocument from "types/services/api/result";
 import {
-    ComponentAddParamDocument, ComponentDeleteParamDocument,
-    ComponentDocument,
-    ComponentGetParamDocument,
-    ComponentUpdateParamDocument, ComponentUpdateRankParamDocument
+    ComponentAddParamDocument, ComponentDeleteManyParamDocument,
+    ComponentGetResultDocument,
+    ComponentGetManyParamDocument,
+    ComponentGetOneParamDocument, ComponentUpdateOneParamDocument
 } from "types/services/component";
 
 export default {
-    get(params: ComponentGetParamDocument): Promise<ServiceResultDocument<ComponentDocument[]>> {
+    getOne(params: ComponentGetParamDocument): Promise<ServiceResultDocument<ComponentGetResultDocument[]>> {
         return Api.get({
             url: [ServicePages.component, params._id?.toString()],
             data: params,

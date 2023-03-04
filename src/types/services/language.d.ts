@@ -1,29 +1,23 @@
-import {StatusId} from "constants/index";
+import {LanguageDocument} from "../models/language";
 
-export default interface LanguageDocument {
-    _id: string
-    title: string
-    image: string
-    shortKey: string
-    locale: string
-    statusId: StatusId
-    rank: number
-    createdAt: string
-}
+export type LanguageGetResultDocument = {} & LanguageDocument
 
-export interface LanguageGetParamDocument {
+export interface LanguageGetOneParamDocument {
     _id?: string
-    statusId?: StatusId
 }
 
-export type LanguageUpdateParamDocument = {
+export interface LanguageGetManyParamDocument {
+    _id?: string[]
+    statusId?: number
+}
+
+export type LanguageAddParamDocument = {} & Omit<LanguageDocument, "_id">
+
+export type LanguageUpdateOneParamDocument = {
     _id: string
 } & LanguageAddParamDocument
 
-export type LanguageUpdateRankParamDocument = {
-    _id: string[],
+export type LanguageUpdateOneRankParamDocument = {
+    _id: string
     rank: number
 }
-
-export type LanguageAddParamDocument = {} & Omit<LanguageDocument, "_id"|"createdAt">
-

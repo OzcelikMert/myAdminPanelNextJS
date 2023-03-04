@@ -1,50 +1,36 @@
-import {PopulateAuthorIdDocument} from "./user";
-import LanguageKeys from "../languages";
+import {UserPopulateDocument} from "./user";
+import {ComponentDocument, ComponentTypeContentDocument, ComponentTypeDocument} from "types/models/component";
 
-export interface ComponentGetParamDocument {
+export type ComponentGetResultDocument = {
+    authorId: UserPopulateDocument,
+    lastAuthorId: UserPopulateDocument,
+    types: (Omit<ComponentTypeDocument, "contents"> & {
+        contents?: ComponentTypeContentDocument | ComponentTypeContentDocument[]
+    })[]
+} & Omit<ComponentDocument, "types">
+
+export interface ComponentGetOneParamDocument {
     _id?: string
-    langId: string,
-    getContents?: boolean,
+    langId?: string,
     elementId?: string
 }
 
-export interface ComponentDeleteParamDocument {
-    _id: string | string[]
+export interface ComponentGetManyParamDocument {
+    _id?: string[]
+    langId?: string,
+    elementId?: string[]
 }
 
-export type ComponentUpdateRankParamDocument = {
-    _id: string[],
-    rank: number
-}
+export type ComponentAddParamDocument = {
+    types?: (Omit<ComponentTypeDocument, "contents"> & {
+        contents: ComponentTypeContentDocument
+    })[]
+} & Omit<ComponentDocument, "_id"|"types">
 
-export type ComponentUpdateParamDocument = { _id: string } & ComponentAddParamDocument
+export type ComponentUpdateOneParamDocument = {
+    _id: string
+} & Omit<ComponentAddParamDocument, "authorId">
 
-export type ComponentAddParamDocument = {} & Omit<ComponentDocument, "_id"|"lastAuthorId"|"authorId"|"createdAt"|"updatedAt">
-
-export interface ComponentTypeContentDocument {
-    langId: string
-    content?: string
-    url?: string
-    comment?: string
-}
-
-export interface ComponentTypeDocument {
-    _id: string,
-    elementId: string
-    typeId: number,
-    langKey: LanguageKeys,
-    rank: number,
-    contents?: ComponentTypeContentDocument
-}
-
-export interface ComponentDocument {
-    _id: string,
-    authorId: PopulateAuthorIdDocument
-    lastAuthorId: PopulateAuthorIdDocument
-    elementId: string
-    langKey: LanguageKeys,
-    rank: number,
-    createdAt: string
-    updatedAt: string
-    types: ComponentTypeDocument[]
+export interface ComponentDeleteManyParamDocument {
+    _id: string[]
 }
