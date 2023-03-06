@@ -1,35 +1,42 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
-import UserDocument, {
-    UserDeleteParamDocument,
+import {
+    UserGetOneParamDocument,
+    UserGetManyParamDocument,
+    UserUpdateOneParamDocument,
+    UserGetResultDocument,
     UserAddParamDocument,
-    UserUpdateParamDocument,
-    UsersGetParamDocument
+    UserDeleteOneParamDocument
 } from "types/services/user";
 
 export default {
-    get(params: UsersGetParamDocument): Promise<ServiceResultDocument<UserDocument[]>> {
-        return Api.get({
-            url: [ServicePages.user, params._id?.toString()],
+    getOne(params: UserGetOneParamDocument) {
+        return Api.get<UserGetResultDocument | null>({
+            url: [ServicePages.user, "one"],
+            data: params,
+        });
+    },
+    getMany(params: UserGetManyParamDocument) {
+        return Api.get<UserGetResultDocument[]>({
+            url: [ServicePages.user, "many"],
             data: params,
         });
     },
     add(params: UserAddParamDocument) {
         return Api.post({
-            url: [ServicePages.user],
+            url: [ServicePages.user, "one"],
             data: params,
         });
     },
-    update(params: UserUpdateParamDocument) {
+    updateOne(params: UserUpdateOneParamDocument) {
         return Api.put({
-            url: [ServicePages.user, params._id.toString()],
+            url: [ServicePages.user, "one", params._id.toString()],
             data: params,
         });
     },
-    delete(params: UserDeleteParamDocument) {
+    deleteOne(params: UserDeleteOneParamDocument) {
         return Api.delete({
-            url: [ServicePages.user, params._id.toString()],
+            url: [ServicePages.user, "one", params._id.toString()],
             data: params,
         });
     },
