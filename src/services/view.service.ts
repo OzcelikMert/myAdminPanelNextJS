@@ -1,20 +1,26 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
 import {
-    ViewNumberDocument,
-    ViewStatisticsDocument
+    ViewGetStatisticsResultDocument,
+    ViewGetNumberResultDocument,
+    ViewAddParamDocument,
 } from "types/services/view";
 
 export default {
-    getNumber(): Promise<ServiceResultDocument<ViewNumberDocument>> {
-        return Api.get({
+    getNumber() {
+        return Api.get<ViewGetNumberResultDocument>({
             url: [ServicePages.view, "number"]
         });
     },
-    getStatistics(): Promise<ServiceResultDocument<ViewStatisticsDocument>> {
-        return Api.get({
+    getStatistics() {
+        return Api.get<ViewGetStatisticsResultDocument>({
             url: [ServicePages.view, "statistics"]
         });
-    }
+    },
+    add(params: ViewAddParamDocument) {
+        return Api.get({
+            url: [ServicePages.view, "one"],
+            data: params
+        });
+    },
 }
