@@ -1,54 +1,69 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
-import PostDocument, {
-    PostDeleteParamDocument,
-    PostGetParamDocument,
+import {
     PostAddParamDocument,
-    PostUpdateParamDocument, PostUpdateStatusParamDocument, PostUpdateViewParamDocument, PostUpdateRankParamDocument
+    PostDeleteManyParamDocument,
+    PostGetCountParamDocument,
+    PostGetManyParamDocument, PostGetManyResultDocument,
+    PostGetOneParamDocument, PostGetOneResultDocument,
+    PostUpdateManyStatusIdParamDocument,
+    PostUpdateOneParamDocument,
+    PostUpdateOneRankParamDocument,
+    PostUpdateOneViewParamDocument
 } from "types/services/post";
 
 export default {
-    get(params: PostGetParamDocument): Promise<ServiceResultDocument<PostDocument[], {allCount?: number}>> {
-        let url = Array.isArray(params.typeId) ? [] : [params.typeId?.toString(), params._id?.toString()]
-        return Api.get({
-            url: [ServicePages.post, ...url],
+    getOne(params: PostGetOneParamDocument){
+        return Api.get<PostGetOneResultDocument | null>({
+            url: [ServicePages.post, "one", params.typeId.toString()],
+            data: params
+        });
+    },
+    getMany(params: PostGetManyParamDocument){
+        return Api.get<PostGetManyResultDocument[]>({
+            url: [ServicePages.post, "many"],
+            data: params
+        });
+    },
+    getCount(params: PostGetCountParamDocument){
+        return Api.get<number>({
+            url: [ServicePages.post, params.typeId.toString()],
             data: params
         });
     },
     add(params: PostAddParamDocument) {
         return Api.post({
-            url: [ServicePages.post, params.typeId.toString()],
+            url: [ServicePages.post, "one", params.typeId.toString()],
             data: params
         });
     },
-    update(params: PostUpdateParamDocument) {
+    updateOne(params: PostUpdateOneParamDocument) {
         return Api.put({
-            url: [ServicePages.post, params.typeId.toString(), params._id.toString()],
+            url: [ServicePages.post, "one", params.typeId.toString(), params._id.toString()],
             data: params
         });
     },
-    updateStatus(params: PostUpdateStatusParamDocument) {
+    updateOneRank(params: PostUpdateOneRankParamDocument) {
         return Api.put({
-            url: [ServicePages.post, "status", params.typeId.toString()],
+            url: [ServicePages.post, "one", params.typeId.toString(), params._id.toString(), "rank"],
             data: params
         });
     },
-    updateRank(params: PostUpdateRankParamDocument) {
+    updateOneView(params: PostUpdateOneViewParamDocument) {
         return Api.put({
-            url: [ServicePages.post, "rank", params.typeId.toString()],
+            url: [ServicePages.post, "one", params.typeId.toString(), params._id.toString(), "view"],
             data: params
         });
     },
-    updateView(params: PostUpdateViewParamDocument) {
+    updateManyStatus(params: PostUpdateManyStatusIdParamDocument) {
         return Api.put({
-            url: [ServicePages.post, "view", params.typeId.toString(), params._id.toString()],
+            url: [ServicePages.post, "many", params.typeId.toString(), "status"],
             data: params
         });
     },
-    delete(params: PostDeleteParamDocument) {
+    delete(params: PostDeleteManyParamDocument) {
         return Api.delete({
-            url: [ServicePages.post, params.typeId.toString()],
+            url: [ServicePages.post, "many", params.typeId.toString()],
             data: params
         });
     },

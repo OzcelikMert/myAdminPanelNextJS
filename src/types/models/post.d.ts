@@ -6,7 +6,7 @@ import {AttributeTypeId} from "constants/attributeTypes";
 
 export interface PostDocument {
     _id?: string
-    typeId?: PostTypeId,
+    typeId: PostTypeId,
     statusId: StatusId,
     pageTypeId?: PageTypeId,
     authorId: string

@@ -1,40 +1,47 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
-import LanguageDocument, {
+import  {
     LanguageAddParamDocument,
-    LanguageGetParamDocument,
-    LanguageUpdateParamDocument, LanguageUpdateRankParamDocument
+    LanguageGetOneParamDocument,
+    LanguageGetResultDocument, LanguageGetManyParamDocument,
+    LanguageUpdateOneParamDocument,
+    LanguageUpdateOneRankParamDocument
 } from "types/services/language";
 
 export default {
-    getFlags(params: {}): Promise<ServiceResultDocument<string[]>> {
-        return Api.get({
-            url: [ServicePages.language, "flags"],
+    getOne(params: LanguageGetOneParamDocument){
+        return Api.get<LanguageGetResultDocument | null>({
+            url: [ServicePages.language, "one"],
             data: params
         });
     },
-    get(params: LanguageGetParamDocument): Promise<ServiceResultDocument<LanguageDocument[]>> {
-        return Api.get({
-            url: [ServicePages.language, params._id],
+    getMany(params: LanguageGetManyParamDocument) {
+        return Api.get<LanguageGetResultDocument[]>({
+            url: [ServicePages.language, "many"],
+            data: params
+        });
+    },
+    getFlags(params: {}) {
+        return Api.get<string[]>({
+            url: [ServicePages.language, "flags"],
             data: params
         });
     },
     add(params: LanguageAddParamDocument) {
         return Api.post({
-            url: [ServicePages.language],
+            url: [ServicePages.language, "one"],
             data: params
         });
     },
-    update(params: LanguageUpdateParamDocument) {
+    updateOne(params: LanguageUpdateOneParamDocument) {
         return Api.put({
-            url: [ServicePages.language, params._id.toString()],
+            url: [ServicePages.language, "one", params._id.toString()],
             data: params
         });
     },
-    updateRank(params: LanguageUpdateRankParamDocument) {
+    updateOneRank(params: LanguageUpdateOneRankParamDocument) {
         return Api.put({
-            url: [ServicePages.language, "rank"],
+            url: [ServicePages.language, "one", params._id.toString(), "rank"],
             data: params
         });
     }

@@ -1,47 +1,56 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
 import {
-    NavigationAddParamDocument, NavigationDeleteParamDocument,
-    NavigationDocument,
-    NavigationGetParamDocument,
-    NavigationUpdateParamDocument, NavigationUpdateRankParamDocument, NavigationUpdateStatusIdParamDocument
+    NavigationAddParamDocument,
+    NavigationGetOneParamDocument,
+    NavigationDeleteManyParamDocument,
+    NavigationGetManyParamDocument,
+    NavigationUpdateManyStatusIdParamDocument,
+    NavigationGetResultDocument,
+    NavigationUpdateOneParamDocument,
+    NavigationUpdateOneRankParamDocument
 } from "types/services/navigation";
 
 export default {
-    get(params: NavigationGetParamDocument): Promise<ServiceResultDocument<NavigationDocument[]>> {
-        return Api.get({
-            url: [ServicePages.navigation, params._id?.toString()],
+    getOne(params: NavigationGetOneParamDocument) {
+        return Api.get<NavigationGetResultDocument | null>({
+            url: [ServicePages.navigation, "one"],
+            data: params,
+        });
+    },
+    getMany(params: NavigationGetManyParamDocument) {
+        return Api.get<NavigationGetResultDocument[]>({
+            url: [ServicePages.navigation, "many"],
             data: params,
         });
     },
     add(params: NavigationAddParamDocument) {
         return Api.post({
-            url: [ServicePages.navigation],
+            url: [ServicePages.navigation, "one"],
             data: params,
         });
     },
-    update(params: NavigationUpdateParamDocument) {
+    updateOne(params: NavigationUpdateOneParamDocument) {
         return Api.put({
-            url: [ServicePages.navigation, params._id.toString()],
+            url: [ServicePages.navigation, "one", params._id.toString()],
             data: params,
         });
     },
-    updateStatus(params: NavigationUpdateStatusIdParamDocument) {
+    updateOneRank(params: NavigationUpdateOneRankParamDocument) {
         return Api.put({
-            url: [ServicePages.navigation, "status"],
+            url: [ServicePages.navigation, "one", params._id.toString(), "rank"],
             data: params
         });
     },
-    updateRank(params: NavigationUpdateRankParamDocument) {
+    updateManyStatus(params: NavigationUpdateManyStatusIdParamDocument) {
         return Api.put({
-            url: [ServicePages.navigation, "rank"],
+            url: [ServicePages.navigation, "many", "status"],
             data: params
         });
     },
-    delete(params: NavigationDeleteParamDocument) {
+    deleteMany(params: NavigationDeleteManyParamDocument) {
         return Api.delete({
-            url: [ServicePages.navigation],
+            url: [ServicePages.navigation, "many"],
             data: params,
         });
     },

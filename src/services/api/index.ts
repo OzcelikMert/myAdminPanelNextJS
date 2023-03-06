@@ -3,7 +3,7 @@ import ServiceResultDocument from "types/services/api/result";
 import ApiRequest from "./request";
 
 const Api = {
-    get(params: ApiRequestParamDocument): Promise<ServiceResultDocument<any>> {
+    get<T = any, P = any>(params: ApiRequestParamDocument): Promise<ServiceResultDocument<T, P>> {
         return new Promise(resolve => {
             new ApiRequest({
                 ...params,
@@ -13,7 +13,7 @@ const Api = {
             })
         });
     },
-    post(params: ApiRequestParamDocument): Promise<ServiceResultDocument<any>> {
+    post<T = any, P = any>(params: ApiRequestParamDocument): Promise<ServiceResultDocument<T, P>> {
         return new Promise(resolve => {
             new ApiRequest({
                 ...params,
@@ -23,7 +23,7 @@ const Api = {
             })
         });
     },
-    put(params: ApiRequestParamDocument): Promise<ServiceResultDocument<any>> {
+    put<T = any, P = any>(params: ApiRequestParamDocument): Promise<ServiceResultDocument<T, P>> {
         return new Promise(resolve => {
             new ApiRequest({
                 ...params,
@@ -33,7 +33,7 @@ const Api = {
             })
         })
     },
-    delete(params: ApiRequestParamDocument): Promise<ServiceResultDocument<any>> {
+    delete<T = any, P = any>(params: ApiRequestParamDocument): Promise<ServiceResultDocument<T, P>> {
         return new Promise(resolve => {
             new ApiRequest({
                 ...params,
