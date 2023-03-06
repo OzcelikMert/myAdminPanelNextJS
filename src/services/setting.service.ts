@@ -1,54 +1,54 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
-import SettingDocument, {
+import {
     SettingGetParamDocument,
-    SettingGeneralUpdateParamDocument,
-    SettingSeoUpdateParamDocument,
-    SettingContactFormUpdateParamDocument,
-    SettingStaticLanguageUpdateParamDocument,
-    SettingSocialMediaUpdateParamDocument,
-    SettingECommerceUpdateParamDocument,
+    SettingUpdateGeneralParamDocument,
+    SettingUpdateECommerceParamDocument,
+    SettingUpdateContactFormParamDocument,
+    SettingUpdateSEOParamDocument,
+    SettingUpdateSocialMediaParamDocument,
+    SettingUpdateStaticLanguageParamDocument,
+    SettingGetResultDocument
 } from "types/services/setting";
 
 export default {
-    get(params: SettingGetParamDocument): Promise<ServiceResultDocument<SettingDocument[]>> {
-        return Api.get({
+    get(params: SettingGetParamDocument) {
+        return Api.get<SettingGetResultDocument>({
             url: [ServicePages.setting],
             data: params,
         });
     },
-    updateGeneral(params: SettingGeneralUpdateParamDocument) {
+    updateGeneral(params: SettingUpdateGeneralParamDocument) {
         return Api.put({
             url: [ServicePages.setting, "general"],
             data: params,
         });
     },
-    updateSeo(params: SettingSeoUpdateParamDocument) {
+    updateSeo(params: SettingUpdateSEOParamDocument) {
         return Api.put({
             url: [ServicePages.setting, "seo"],
             data: params,
         });
     },
-    updateContactForm(params: SettingContactFormUpdateParamDocument) {
+    updateContactForm(params: SettingUpdateContactFormParamDocument) {
         return Api.put({
             url: [ServicePages.setting, "contactForm"],
             data: params,
         });
     },
-    updateStaticLanguage(params: SettingStaticLanguageUpdateParamDocument) {
+    updateStaticLanguage(params: SettingUpdateStaticLanguageParamDocument) {
         return Api.put({
             url: [ServicePages.setting, "staticLanguage"],
             data: params,
         });
     },
-    updateSocialMedia(params: SettingSocialMediaUpdateParamDocument) {
+    updateSocialMedia(params: SettingUpdateSocialMediaParamDocument) {
         return Api.put({
             url: [ServicePages.setting, "socialMedia"],
             data: params,
         });
     },
-    updateECommerce(params: SettingECommerceUpdateParamDocument) {
+    updateECommerce(params: SettingUpdateECommerceParamDocument) {
         return Api.put({
             url: [ServicePages.setting, "eCommerce"],
             data: params,

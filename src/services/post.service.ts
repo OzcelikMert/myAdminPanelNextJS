@@ -61,7 +61,7 @@ export default {
             data: params
         });
     },
-    delete(params: PostDeleteManyParamDocument) {
+    deleteMany(params: PostDeleteManyParamDocument) {
         return Api.delete({
             url: [ServicePages.post, "many", params.typeId.toString()],
             data: params

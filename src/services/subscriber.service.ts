@@ -1,29 +1,42 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
 import {
     SubscriberAddDocument,
-    SubscriberDeleteParamDocument,
-    SubscriberDocument,
-    SubscriberGetParamDocument
+    SubscriberGetOneParamDocument,
+    SubscriberDeleteOneParamDocument,
+    SubscriberDeleteManyParamDocument,
+    SubscriberGetResultDocument,
+    SubscriberGetManyParamDocument
 } from "types/services/subscriber";
 
 export default {
-    get(params: SubscriberGetParamDocument): Promise<ServiceResultDocument<SubscriberDocument[]>> {
-        return Api.get({
-            url: [ServicePages.subscriber],
+    getOne(params: SubscriberGetOneParamDocument) {
+        return Api.get<SubscriberGetResultDocument | null>({
+            url: [ServicePages.subscriber, "one"],
+            data: params
+        });
+    },
+    getMany(params: SubscriberGetManyParamDocument) {
+        return Api.get<SubscriberGetResultDocument[]>({
+            url: [ServicePages.subscriber, "many"],
             data: params
         });
     },
     add(params: SubscriberAddDocument) {
         return Api.post({
-            url: [ServicePages.subscriber],
+            url: [ServicePages.subscriber, "one"],
             data: params
         });
     },
-    delete(params: SubscriberDeleteParamDocument) {
+    deleteOne(params: SubscriberDeleteOneParamDocument) {
         return Api.delete({
-            url: [ServicePages.subscriber],
+            url: [ServicePages.subscriber, "one"],
+            data: params
+        });
+    },
+    deleteMany(params: SubscriberDeleteManyParamDocument) {
+        return Api.delete({
+            url: [ServicePages.subscriber, "many"],
             data: params
         });
     },

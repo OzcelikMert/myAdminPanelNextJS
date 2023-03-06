@@ -17,14 +17,7 @@ export type SettingGetParamDocument = {
     projection?: "general" | "seo" | "eCommerce" | "contactForm" | "socialMedia" | "staticLanguage"
 }
 
-export type SettingAddParamDocument = {
-    seoContents?: SettingSeoContentDocument
-    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument})[]
-} & Omit<SettingDocument, "_id" | "seoContents" | "staticLanguages">
-
-export type SettingUpdateGeneralParamDocument = {
-
-} & Omit<SettingAddParamDocument, "seoContents"|"contactForms"|"staticLanguages"|"socialMedia">
+export type SettingUpdateGeneralParamDocument = {} & Omit<SettingDocument, "seoContents"|"contactForms"|"staticLanguages"|"socialMedia">
 
 export type SettingUpdateSEOParamDocument = {
     seoContents?: SettingSeoContentDocument
