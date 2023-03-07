@@ -13,9 +13,11 @@ export interface UserDocument {
     phone?: string,
     password?: string,
     permissions: number[],
-    banDateEnd?: Date,
+    banDateEnd?: string,
     banComment?: string,
     facebook?: string,
     instagram?: string,
     twitter?: string
+    createdAt?: string
+    updatedAt?: string
 }

@@ -5,7 +5,7 @@ import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
-import {ComponentDocument} from "types/services/component";
+import {ComponentGetResultDocument} from "types/services/component";
 import componentService from "services/component.service";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/theme/table/dataTable";
@@ -14,7 +14,7 @@ import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
 type PageState = {
     searchKey: string
-    items: ComponentDocument[]
+    items: ComponentGetResultDocument[]
     showingItems: PageState["items"]
     selectedItemId: string
     isShowModalUpdateRank: boolean
@@ -50,7 +50,7 @@ export default class PageComponentList extends Component<PageProps, PageState> {
     }
 
     async getItems() {
-        let items = (await componentService.get({langId: this.props.getStateApp.pageData.langId})).data;
+        let items = (await componentService.getMany({langId: this.props.getStateApp.pageData.langId})).data;
         this.setState((state: PageState) => {
             state.items = items;
             return state;
@@ -91,32 +91,6 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         }
     }
 
-    async onChangeRank(rank: number) {
-        let resData = await componentService.updateRank({
-            _id: [this.state.selectedItemId],
-            rank: rank
-        });
-
-        if(resData.status){
-            this.setState((state: PageState) => {
-                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
-                if(item){
-                    item.rank = rank;
-                }
-                return state;
-            }, () => {
-                this.onSearch(this.state.searchKey);
-                let item = this.state.items.findSingle("_id", this.state.selectedItemId);
-                new ThemeToast({
-                    type: "success",
-                    title: this.props.t("successful"),
-                    content: `'${this.props.t(item?.langKey ?? "[noLangAdd]")}' ${this.props.t("itemEdited")}`,
-                    timeOut: 3
-                })
-            })
-        }
-    }
-
     onSearch(searchKey: string) {
         this.setState({
             searchKey: searchKey,
@@ -139,24 +113,12 @@ export default class PageComponentList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
-            },
-            {
-                name: this.props.t("rank"),
-                sortable: true,
-                selector: row => row.rank ?? 0,
-                cell: row => {
-                    return  (
-                        <span className="cursor-pointer" onClick={() => this.setState({selectedItemId: row._id, isShowModalUpdateRank: true})}>
-                            {row.rank ?? 0} <i className="fa fa-pencil-square-o"></i>
-                        </span>
-                    )
-                }
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt || ""} />
             },
             {
                 name: this.props.t("createdDate"),
                 sortable: true,
-                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                selector: row => new Date(row.createdAt || "").toLocaleDateString(),
                 sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {
@@ -197,14 +159,6 @@ export default class PageComponentList extends Component<PageProps, PageState> {
         let item = this.state.items.findSingle("_id", this.state.selectedItemId);
         return this.props.getStateApp.isPageLoading ? null : (
             <div className="page-post">
-                <ThemeModalUpdateItemRank
-                    t={this.props.t}
-                    isShow={this.state.isShowModalUpdateRank}
-                    onHide={() => this.setState({isShowModalUpdateRank: false})}
-                    onSubmit={rank => this.onChangeRank(rank)}
-                    rank={item?.rank}
-                    title={this.props.t(item?.langKey ?? "[noLangAdd]")}
-                />
                 <div className="grid-margin stretch-card">
                     <div className="card">
                         <div className="card-body">

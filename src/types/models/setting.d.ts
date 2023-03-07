@@ -1,7 +1,7 @@
 import {CurrencyId} from "constants/currencyTypes";
+import LanguageKeys from "types/languages";
 
 export interface SettingDocument {
-    _id: string
     defaultLangId: string
     icon?: string
     logo?: string
@@ -56,7 +56,7 @@ export interface SettingSeoContentDocument {
 
 export interface SettingStaticLanguageDocument {
     _id?: string
-    langKey: string,
+    langKey: LanguageKeys,
     contents: SettingStaticLanguageContentDocument
 }
 

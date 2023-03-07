@@ -56,8 +56,8 @@ class PageLock extends Component<PageProps, PageState> {
                 password: this.state.formData.password,
                 email: this.props.getStateApp.sessionData.email
             });
-            if (resData.status && resData.data.length > 0) {
-                let user = resData.data[0];
+            if (resData.status && resData.data) {
+                let user = resData.data;
                 this.props.setStateApp({
                     sessionData: {id: user._id}
                 }, () => {

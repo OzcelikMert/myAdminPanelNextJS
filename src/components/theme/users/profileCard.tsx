@@ -5,7 +5,7 @@ import {
     Permissions, Status,
     StatusId, UserRoles,
 } from "constants/index";
-import UserDocument from "types/services/user";
+import {UserDocument} from "types/models/user";
 import {PagePropCommonDocument} from "types/pageProps";
 import classNameLib from "lib/className.lib";
 import imageSourceLib from "lib/imageSource.lib";
@@ -82,7 +82,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                                 <div className="row">
                                     <div className="col-sm-12">
                                         <p className="mb-2 fw-bold">{this.props.t("banDateEnd")}:
-                                            <h6 className="text-muted d-inline-block ms-1">{this.props.userInfo.banDateEnd.toLocaleDateString() || ""}</h6>
+                                            <h6 className="text-muted d-inline-block ms-1">{this.props.userInfo.banDateEnd?.toLocaleDateString() || ""}</h6>
                                         </p>
                                     </div>
                                     <div className="col-sm-12">

@@ -7,7 +7,7 @@ import V from "library/variable";
 import HandleForm from "library/react/handles/form";
 import staticContentLib from "lib/staticContent.lib";
 import Swal from "sweetalert2";
-import {NavigationUpdateParamDocument} from "types/services/navigation";
+import {NavigationUpdateOneParamDocument} from "types/services/navigation";
 import navigationService from "services/navigation.service";
 import PagePaths from "constants/pagePaths";
 import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
@@ -18,7 +18,7 @@ type PageState = {
     status: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
-    formData: NavigationUpdateParamDocument,
+    formData: NavigationUpdateOneParamDocument,
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -94,7 +94,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
     }
 
     async getItems() {
-        let resData = await navigationService.get({
+        let resData = await navigationService.getMany({
             langId: this.props.getStateApp.pageData.mainLangId,
             statusId: StatusId.Active,
         });
@@ -116,13 +116,13 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
     }
 
     async getItem() {
-        let resData = await navigationService.get({
+        let resData = await navigationService.getOne({
             _id: this.state.formData._id,
             langId: this.props.getStateApp.pageData.langId
         });
         if (resData.status) {
-            if (resData.data.length > 0) {
-                const item = resData.data[0];
+            if (resData.data) {
+                const item = resData.data;
 
                 this.setState((state: PageState) => {
                     state.formData = {
@@ -137,7 +137,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
                     };
 
                     if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
-                        state.mainTitle = state.formData.contents.title;
+                        state.mainTitle = state.formData.contents.title || "";
                     }
 
                     return state;
@@ -166,7 +166,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
             };
 
             let resData = await ((params._id)
-                ? navigationService.update(params)
+                ? navigationService.updateOne(params)
                 : navigationService.add(params));
             this.setState({
                 isSubmitting: false

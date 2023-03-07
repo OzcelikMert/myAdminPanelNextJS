@@ -7,7 +7,7 @@ export type ComponentGetResultDocument = {
     types: (Omit<ComponentTypeDocument, "contents"> & {
         contents?: ComponentTypeContentDocument
     })[]
-} & Omit<ComponentDocument, "types">
+} & Omit<ComponentDocument, "types"|"authorId"|"lastAuthorId">
 
 export interface ComponentGetOneParamDocument {
     _id?: string
@@ -21,7 +21,7 @@ export interface ComponentGetManyParamDocument {
     elementId?: string[]
 }
 
-export type ComponentAddParamDocument = {} & Omit<ComponentDocument, "_id">
+export type ComponentAddParamDocument = {} & Omit<ComponentDocument, "_id"|"lastAuthorId"|"authorId">
 
 export type ComponentUpdateOneParamDocument = {
     _id: string

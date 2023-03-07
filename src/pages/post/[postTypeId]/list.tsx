@@ -5,7 +5,7 @@ import {TableColumn} from "react-data-table-component";
 import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import Swal from "sweetalert2";
 import postService from "services/post.service";
-import PostDocument from "types/services/post";
+import {PostGetManyResultDocument} from "types/services/post";
 import imageSourceLib from "lib/imageSource.lib";
 import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
@@ -21,7 +21,7 @@ import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 type PageState = {
     typeId: PostTypeId
     searchKey: string
-    items: PostDocument[],
+    items: PostGetManyResultDocument[],
     showingItems: PageState["items"]
     selectedItems: PageState["items"]
     listMode: "list" | "deleted"
@@ -89,8 +89,8 @@ export default class PagePostList extends Component<PageProps, PageState> {
     }
 
     async getItems() {
-        let items = (await postService.get({
-            typeId: this.state.typeId,
+        let items = (await postService.getMany({
+            typeId: [this.state.typeId],
             langId: this.props.getStateApp.pageData.langId,
             ignoreDefaultLanguage: true
         })).data;
@@ -118,7 +118,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     type: "loading"
                 });
 
-                let resData = await postService.delete({_id: selectedItemId, typeId: this.state.typeId})
+                let resData = await postService.deleteMany({_id: selectedItemId, typeId: this.state.typeId})
                 loadingToast.hide();
                 if (resData.status) {
                     this.setState((state: PageState) => {
@@ -140,7 +140,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 type: "loading"
             });
 
-            let resData = await postService.updateStatus({
+            let resData = await postService.updateManyStatus({
                 _id: selectedItemId,
                 typeId: this.state.typeId,
                 statusId: statusId
@@ -167,8 +167,8 @@ export default class PagePostList extends Component<PageProps, PageState> {
     }
 
     async onChangeRank(rank: number) {
-        let resData = await postService.updateRank({
-            _id: [this.state.selectedItemId],
+        let resData = await postService.updateOneRank({
+            _id: this.state.selectedItemId,
             typeId: this.state.typeId,
             rank: rank
         });
@@ -322,7 +322,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                 [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.BeforeAndAfter].includes(this.state.typeId)
                     ? {
                         name: this.props.t("views"),
-                        selector: row => row.views,
+                        selector: row => row.views || 0,
                         sortable: true
                     } : {}
             ),
@@ -349,7 +349,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt || ""} />
             },
             {
                 name: this.props.t("rank"),
@@ -366,7 +366,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("createdDate"),
                 sortable: true,
-                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                selector: row => new Date(row.createdAt || "").toLocaleDateString(),
                 sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {

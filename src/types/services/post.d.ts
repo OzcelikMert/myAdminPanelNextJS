@@ -29,7 +29,7 @@ export type PostGetOneResultDocument = {
             contents?: PostECommerceVariationContentDocument
         })[]
     })
-} & Omit<PostDocument, "contents"|"categories"|"tags"|"components"|"eCommerce">
+} & Omit<PostDocument, "contents"|"categories"|"tags"|"components"|"eCommerce"|"authorId"|"lastAuthorId">
 
 export type PostGetManyResultDocument = {
     components?: PostDocument["components"]
@@ -52,7 +52,8 @@ export interface PostGetOneParamDocument {
 
 export interface PostGetManyParamDocument {
     _id?: string[]
-    typeId: number[],
+    isRecent?: boolean
+    typeId?: number[],
     pageTypeId?: number[]
     langId?: string
     statusId?: number,
@@ -68,17 +69,16 @@ export interface PostGetCountParamDocument {
     statusId?: number
 }
 
-export type PostAddParamDocument = {} & Omit<PostDocument, "_id"|"views">
+export type PostAddParamDocument = {} & Omit<PostDocument, "_id"|"views"|"authorId"|"lastAuthorId">
 
 export type PostUpdateOneParamDocument = {
     _id: string
-} & Omit<PostAddParamDocument, "authorId">
+} & PostAddParamDocument
 
 export type PostUpdateOneRankParamDocument = {
     _id: string
     typeId: number
     rank: number
-    lastAuthorId: string
 }
 
 export type PostUpdateOneViewParamDocument = {
@@ -91,7 +91,6 @@ export type PostUpdateManyStatusIdParamDocument = {
     _id: string[],
     typeId: number
     statusId: number,
-    lastAuthorId: string
 }
 
 export interface PostDeleteManyParamDocument {

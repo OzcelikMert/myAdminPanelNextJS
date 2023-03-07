@@ -13,7 +13,7 @@ export type NavigationGetResultDocument = {
         }
     },
     contents?: NavigationContentDocument
-} & Omit<NavigationDocument, "contents">
+} & Omit<NavigationDocument, "contents"|"mainId"|"authorId"|"lastAuthorId">
 
 export interface NavigationGetOneParamDocument {
     _id?: string
@@ -28,7 +28,7 @@ export interface NavigationGetManyParamDocument {
     ignoreDefaultLanguage?: boolean
 }
 
-export type NavigationAddParamDocument = {} & Omit<NavigationDocument, "_id">
+export type NavigationAddParamDocument = {} & Omit<NavigationDocument, "_id"|"authorId"|"lastAuthorId">
 
 export type NavigationUpdateOneParamDocument = {
     _id: string
@@ -36,14 +36,12 @@ export type NavigationUpdateOneParamDocument = {
 
 export type NavigationUpdateOneRankParamDocument = {
     _id: string
-    rank: number,
-    lastAuthorId: string
+    rank: number
 }
 
 export type NavigationUpdateManyStatusIdParamDocument = {
     _id: string[],
-    statusId: number,
-    lastAuthorId: string
+    statusId: number
 }
 
 export interface NavigationDeleteManyParamDocument {

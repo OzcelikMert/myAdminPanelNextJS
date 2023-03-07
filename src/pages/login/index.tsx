@@ -5,7 +5,7 @@ import {LanguageId, StatusId} from "constants/index";
 import {ThemeForm, ThemeFormCheckBox} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import authService from "services/auth.service";
-import UserDocument from "types/services/user";
+import {UserGetResultDocument} from "types/services/user";
 import PagePaths from "constants/pagePaths";
 import Image from "next/image"
 
@@ -14,7 +14,7 @@ import Logo from "assets/images/ozcelikLogo.png"
 type PageState = {
     isSubmitting: boolean
     isWrong: boolean
-    user?: UserDocument
+    user?: UserGetResultDocument
     formData: {
         email: string,
         password: string,
@@ -58,8 +58,8 @@ class PageLogin extends Component<PageProps, PageState> {
             isSubmitting: true
         }, async () => {
             let resData = await authService.login(this.state.formData);
-            if (resData.data.length > 0) {
-                let user = resData.data[0];
+            if (resData.data) {
+                let user = resData.data;
                 if(resData.status){
                     this.props.setStateApp({
                         sessionData: {

@@ -5,7 +5,7 @@ import  {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
-import {SubscriberDocument} from "types/services/subscriber";
+import {SubscriberGetResultDocument} from "types/services/subscriber";
 import subscriberService from "services/subscriber.service";
 import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import ThemeDataTable from "components/theme/table/dataTable";
@@ -13,7 +13,7 @@ import classNameLib from "lib/className.lib";
 
 type PageState = {
     searchKey: string
-    items: SubscriberDocument[]
+    items: SubscriberGetResultDocument[]
     showingItems: PageState["items"]
     selectedItems: PageState["items"]
 };
@@ -47,7 +47,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
     }
 
     async getItems() {
-        let items = (await subscriberService.get({})).data;
+        let items = (await subscriberService.getMany({})).data;
         this.setState({
             items: items
         }, () => this.onSearch(this.state.searchKey));
@@ -70,7 +70,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
                 type: "loading"
             });
 
-            let resData = await subscriberService.delete({
+            let resData = await subscriberService.getMany({
                 _id: selectedItemId
             });
             loadingToast.hide();
@@ -121,7 +121,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
             {
                 name: this.props.t("createdDate"),
                 sortable: true,
-                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                selector: row => new Date(row.createdAt || "").toLocaleDateString(),
                 sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
         ];

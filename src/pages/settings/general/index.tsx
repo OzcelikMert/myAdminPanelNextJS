@@ -10,7 +10,7 @@ import serverInfoService from "services/serverInfo.service";
 import ThemeToast from "components/theme/toast";
 import ThemeChooseImage from "components/theme/chooseImage";
 import imageSourceLib from "lib/imageSource.lib";
-import {SettingGeneralUpdateParamDocument} from "types/services/setting";
+import {SettingUpdateGeneralParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
 import localStorageUtil from "utils/localStorage.util";
 import Spinner from "react-bootstrap/Spinner";
@@ -22,7 +22,7 @@ type PageState = {
     panelLanguages: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     serverInfo: ServerInfoDocument
-    formData: Omit<SettingGeneralUpdateParamDocument, "contactForms" | "staticLanguages" | "seoContents"> & { panelLangId: string },
+    formData: SettingUpdateGeneralParamDocument & { panelLangId: string },
     mainTabActiveKey: string
     isServerInfoLoading: boolean
     isLogoSelection: boolean
@@ -50,6 +50,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
                 memory: "0"
             },
             formData: {
+                defaultLangId: "",
                 contact: {},
                 panelLangId: localStorageUtil.adminLanguage.get.toString()
             }
@@ -73,22 +74,21 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
 
     async getSettings() {
         let resData = await settingService.get({projection: "general"})
-        if (resData.status) {
+        if (resData.status && resData.data) {
+            let setting = resData.data;
             this.setState((state: PageState) => {
-                resData.data.forEach(setting => {
-                    state.formData = {
-                        ...this.state.formData,
-                        logo: setting.logo,
-                        logoTwo: setting.logoTwo,
-                        icon: setting.icon,
-                        head: setting.head,
-                        script: setting.script,
-                        defaultLangId: setting.defaultLangId,
-                        contact: {
-                            ...setting.contact
-                        },
-                    }
-                })
+                state.formData = {
+                    ...this.state.formData,
+                    logo: setting.logo,
+                    logoTwo: setting.logoTwo,
+                    icon: setting.icon,
+                    head: setting.head,
+                    script: setting.script,
+                    defaultLangId: setting.defaultLangId,
+                    contact: {
+                        ...setting.contact
+                    },
+                }
                 return state;
             })
         }
@@ -104,7 +104,7 @@ export default class PageSettingsGeneral extends Component<PageProps, PageState>
     }
 
     async getLanguages() {
-        let resData = await languageService.get({statusId: StatusId.Active})
+        let resData = await languageService.getMany({statusId: StatusId.Active})
         if (resData.status) {
             this.setState({
                 languages: resData.data.map(lang => ({

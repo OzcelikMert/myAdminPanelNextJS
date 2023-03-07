@@ -4,8 +4,8 @@ import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import {
     PermissionGroups,
-    Permissions, Status,
-    UserRoleId, UserRoles
+    Permissions,
+    UserRoles
 } from "constants/index";
 import ThemeChooseImage from "components/theme/chooseImage";
 import userService from "services/user.service";
@@ -71,9 +71,9 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
     }
 
     async getUser() {
-        let resData = await userService.get({_id: this.props.getStateApp.sessionData.id});
-        if (resData.status) {
-            const user = resData.data[0];
+        let resData = await userService.getOne({_id: this.props.getStateApp.sessionData.id});
+        if (resData.status && resData.data) {
+            const user = resData.data;
             this.setState((state: PageState) => {
                 state.data = {
                     email: user.email,

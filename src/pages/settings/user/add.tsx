@@ -9,7 +9,7 @@ import V, {DateMask} from "library/variable";
 import userService from "services/user.service";
 import staticContentLib from "lib/staticContent.lib";
 import PagePaths from "constants/pagePaths";
-import {UserUpdateParamDocument} from "types/services/user";
+import {UserUpdateOneParamDocument} from "types/services/user";
 import Swal from "sweetalert2";
 import permissionLib from "lib/permission.lib";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
@@ -21,7 +21,7 @@ type PageState = {
     status: ThemeFormSelectValueDocument[]
     mainTitle: string,
     isSubmitting: boolean
-    formData: UserUpdateParamDocument
+    formData: UserUpdateOneParamDocument
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -99,12 +99,12 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
     }
 
     async getItem() {
-        let resData = await userService.get({
+        let resData = await userService.getOne({
             _id: this.state.formData._id
         });
         if (resData.status) {
-            if (resData.data.length > 0) {
-                const item = resData.data[0];
+            if (resData.data) {
+                const item = resData.data;
                 this.setState((state: PageState) => {
                     state.formData = Object.assign(state.formData, {
                         image: item.image,
@@ -143,8 +143,8 @@ export default class PageUserAdd extends Component<PageProps, PageState> {
             let params = this.state.formData;
 
             let resData = await ((params._id)
-                ? userService.update(params)
-                : userService.add(params));
+                ? userService.updateOne(params)
+                : userService.add({...params, password: this.state.formData.password || ""}));
             this.setState({isSubmitting: false}, () => this.setMessage())
         })
     }

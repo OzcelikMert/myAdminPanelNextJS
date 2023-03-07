@@ -3,7 +3,7 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {PermissionId, Status, UserRoleId, UserRoles} from "constants/index";
 import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
-import UserDocument from "types/services/user";
+import {UserGetResultDocument} from "types/services/user";
 import ThemeUsersProfileCard from "components/theme/users/profileCard";
 import userService from "services/user.service";
 import imageSourceLib from "lib/imageSource.lib";
@@ -17,7 +17,7 @@ import ThemeBadgeStatus from "components/theme/badge/status";
 
 type PageState = {
     searchKey: string
-    items: UserDocument[]
+    items: UserGetResultDocument[]
     showingItems: PageState["items"]
     isViewItemInfo: boolean
     selectedItemId: string
@@ -54,7 +54,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
     }
 
     async getItems() {
-        let items = (await userService.get({})).data;
+        let items = (await userService.getMany({})).data;
         items = items.orderBy("roleId", "desc");
         this.setState((state: PageState) => {
             state.items = state.items.sort(item => {
@@ -86,7 +86,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                     type: "loading"
                 });
 
-                let resData = await userService.delete({_id: userId})
+                let resData = await userService.deleteOne({_id: userId})
                 loadingToast.hide();
                 if (resData.status) {
                     this.setState((state: PageState) => {
@@ -171,7 +171,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("createdDate"),
                 sortable: true,
-                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                selector: row => new Date(row.createdAt || "").toLocaleDateString(),
                 sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {

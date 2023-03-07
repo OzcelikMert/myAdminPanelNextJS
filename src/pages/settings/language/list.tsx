@@ -3,19 +3,18 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
 import ThemeDataTable from "components/theme/table/dataTable";
 import PagePaths from "constants/pagePaths";
-import LanguageDocument from "types/services/language";
+import {LanguageGetResultDocument} from "types/services/language";
 import languageService from "services/language.service";
 import Image from "next/image";
 import imageSourceLib from "lib/imageSource.lib";
 import ThemeBadgeStatus from "components/theme/badge/status";
 import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
-import navigationService from "services/navigation.service";
 import ThemeToast from "components/theme/toast";
 
 type PageState = {
     searchKey: string
-    items: LanguageDocument[],
-    showingItems: LanguageDocument[]
+    items: LanguageGetResultDocument[],
+    showingItems: LanguageGetResultDocument[]
     selectedItemId: string
     isShowModalUpdateRank: boolean
 };
@@ -51,7 +50,7 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
     }
 
     async getItems() {
-        let items = (await languageService.get({})).data;
+        let items = (await languageService.getMany({})).data;
         this.setState((state: PageState) => {
             state.items = items;
             state.showingItems = items;
@@ -60,8 +59,8 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
     }
 
     async onChangeRank(rank: number) {
-        let resData = await languageService.updateRank({
-            _id: [this.state.selectedItemId],
+        let resData = await languageService.updateOneRank({
+            _id: this.state.selectedItemId,
             rank: rank
         });
 
@@ -149,7 +148,7 @@ export default class PageSettingLanguageList extends Component<PageProps, PageSt
             {
                 name: this.props.t("createdDate"),
                 sortable: true,
-                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                selector: row => new Date(row.createdAt || "").toLocaleDateString(),
                 sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {

@@ -9,7 +9,7 @@ import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
 import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import Swal from "sweetalert2";
-import PostTermDocument from "types/services/postTerm";
+import {PostTermGetResultDocument} from "types/services/postTerm";
 import postTermService from "services/postTerm.service";
 import imageSourceLib from "lib/imageSource.lib";
 import classNameLib from "lib/className.lib";
@@ -27,7 +27,7 @@ type PageState = {
     typeId: PostTermTypeId
     postTypeId: PostTypeId
     searchKey: string
-    items: PostTermDocument[],
+    items: PostTermGetResultDocument[],
     showingItems: PageState["items"]
     selectedItems: PageState["items"]
     listMode: "list" | "deleted"
@@ -88,11 +88,11 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     }
 
     async getItems() {
-        let items = (await postTermService.get({
-            typeId: this.state.typeId,
+        let items = (await postTermService.getMany({
+            typeId: [this.state.typeId],
             postTypeId: this.state.postTypeId,
             langId: this.props.getStateApp.pageData.langId,
-            withPostCount: true,
+            withPostCount: [PostTermTypeId.Category].includes(this.state.typeId),
             ignoreDefaultLanguage: true
         })).data;
         this.setState({
@@ -119,7 +119,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                     type: "loading"
                 });
 
-                let resData = await postTermService.delete({
+                let resData = await postTermService.deleteMany({
                     _id: selectedItemId,
                     typeId: this.state.typeId,
                     postTypeId: this.state.postTypeId
@@ -146,7 +146,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                 type: "loading"
             });
 
-            let resData = await postTermService.updateStatus({
+            let resData = await postTermService.updateManyStatus({
                 _id: selectedItemId,
                 typeId: this.state.typeId,
                 postTypeId: this.state.postTypeId,
@@ -175,8 +175,8 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
     }
 
     async onChangeRank(rank: number) {
-        let resData = await postTermService.updateRank({
-            _id: [this.state.selectedItemId],
+        let resData = await postTermService.updateOneRank({
+            _id: this.state.selectedItemId,
             rank: rank,
             postTypeId: this.state.postTypeId,
             typeId: this.state.typeId
@@ -307,7 +307,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt || ""} />
             },
             {
                 name: this.props.t("rank"),
@@ -324,7 +324,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
             {
                 name: this.props.t("createdDate"),
                 sortable: true,
-                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                selector: row => new Date(row.createdAt || "").toLocaleDateString(),
                 sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {

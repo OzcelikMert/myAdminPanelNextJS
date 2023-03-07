@@ -5,7 +5,7 @@ import {ProductTypeId} from "constants/productTypes";
 import {AttributeTypeId} from "constants/attributeTypes";
 
 export interface PostDocument {
-    _id?: string
+    _id: string
     typeId: PostTypeId,
     statusId: StatusId,
     pageTypeId?: PageTypeId,
@@ -98,6 +98,7 @@ export interface PostECommerceVariationDocument<T = string> {
     inventory: PostECommerceInventoryDocument
     shipping: PostECommerceShippingDocument
     pricing: PostECommercePricingDocument
+    isWarningForIsThereOther?: boolean
 }
 
 export interface PostECommerceVariationSelectedDocument<T = string> {

@@ -13,7 +13,7 @@ import postService from "services/post.service";
 import staticContentLib from "lib/staticContent.lib";
 import imageSourceLib from "lib/imageSource.lib";
 import {
-    PostUpdateParamDocument
+    PostUpdateOneParamDocument
 } from "types/services/post";
 import componentService from "services/component.service";
 import ThemeToolTip from "components/theme/tooltip";
@@ -48,7 +48,7 @@ export type PageState = {
     status: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
-    formData: Omit<PostUpdateParamDocument, "terms">,
+    formData: PostUpdateOneParamDocument,
     isSelectionImage: boolean
     isIconActive: boolean
 } & { [key: string]: any };
@@ -187,7 +187,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     async getComponents() {
-        let resData = await componentService.get({langId: this.props.getStateApp.pageData.mainLangId});
+        let resData = await componentService.getMany({langId: this.props.getStateApp.pageData.mainLangId});
         if (resData.status) {
             this.setState((state: PageState) => {
                 state.components = resData.data.map(component => {
@@ -224,7 +224,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     async getTerms() {
-        let resData = await postTermService.get({
+        let resData = await postTermService.getMany({
             postTypeId: this.state.formData.typeId,
             langId: this.props.getStateApp.pageData.mainLangId,
             statusId: StatusId.Active
@@ -263,20 +263,19 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     async getItem() {
-        let resData = await postService.get({
+        let resData = await postService.getOne({
             _id: this.state.formData._id,
             typeId: this.state.formData.typeId,
-            langId: this.props.getStateApp.pageData.langId,
-            getContents: true
+            langId: this.props.getStateApp.pageData.langId
         });
         if (resData.status) {
-            if (resData.data.length > 0) {
-                const item = resData.data[0];
+            if (resData.data) {
+                const item = resData.data;
 
                 this.setState((state: PageState) => {
                     state.formData = {
                         ...state.formData,
-                        ...item as PostUpdateParamDocument,
+                        ...item as PostUpdateOneParamDocument,
                         dateStart: new Date(item.dateStart),
                         contents: {
                             ...state.formData.contents,
@@ -324,7 +323,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                     }
 
                     if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
-                        state.mainTitle = state.formData.contents.title;
+                        state.mainTitle = state.formData.contents.title || "";
                     }
 
                     state.isIconActive = Boolean(item.contents && item.contents.icon && item.contents.icon.length > 0);
@@ -358,7 +357,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
             };
 
             let resData = await ((params._id)
-                ? postService.update(params)
+                ? postService.updateOne(params)
                 : postService.add(params));
 
             this.setState({
@@ -404,15 +403,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                         name="formData.contents.url"
                         type="text"
                         value={this.state.formData.contents.url}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title={this.props.t("title")}
-                        name="formData.contents.seoTitle"
-                        type="text"
-                        value={this.state.formData.contents.seoTitle}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>

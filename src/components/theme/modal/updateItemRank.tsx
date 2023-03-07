@@ -1,12 +1,7 @@
 import React, {Component} from 'react';
-import PagePostAdd from "pages/post/[postTypeId]/add";
-import {ThemeFormLoadingButton, ThemeFormSelect, ThemeFormType} from "components/theme/form";
+import {ThemeFormLoadingButton,  ThemeFormType} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import {Modal} from "react-bootstrap";
-import postTermService from "services/postTerm.service";
-import {PostTermTypeId} from "constants/postTermTypes";
-import {StatusId} from "constants/status";
-import ThemeToast from "components/theme/toast";
 import {PagePropCommonDocument} from "types/pageProps";
 
 type PageState = {

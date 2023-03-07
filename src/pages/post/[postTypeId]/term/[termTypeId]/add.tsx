@@ -2,14 +2,14 @@ import React, {Component, FormEvent} from 'react'
 import {Tab, Tabs} from "react-bootstrap";
 import {ThemeForm, ThemeFormSelect, ThemeFormType,} from "components/theme/form"
 import {PagePropCommonDocument} from "types/pageProps";
-import {PostTermTypeId, PostTermTypes, PostTypeId, PostTypes, StatusId} from "constants/index";
+import {PostTermTypeId, PostTermTypes, PostTypeId, StatusId} from "constants/index";
 import V from "library/variable";
 import HandleForm from "library/react/handles/form";
 import ThemeChooseImage from "components/theme/chooseImage";
 import postTermService from "services/postTerm.service";
 import staticContentLib from "lib/staticContent.lib";
 import imageSourceLib from "lib/imageSource.lib";
-import {PostTermUpdateParamDocument} from "types/services/postTerm";
+import {PostTermUpdateOneParamDocument} from "types/services/postTerm";
 import Swal from "sweetalert2";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
@@ -22,7 +22,7 @@ type PageState = {
     status: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
     mainTitle: string
-    formData: PostTermUpdateParamDocument,
+    formData: PostTermUpdateOneParamDocument,
     isSelectionImage: boolean
 };
 
@@ -57,7 +57,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     image: "",
                     title: "",
                     url: "",
-                    seoTitle: "",
                     seoContent: "",
                 }
             },
@@ -67,7 +66,9 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
 
     async componentDidMount() {
         this.setPageTitle();
-        await this.getItems();
+        if([PostTermTypeId.Category, PostTermTypeId.Variations].includes(this.state.formData.typeId)){
+            await this.getItems();
+        }
         this.getStatus();
         if (this.state.formData._id) {
             await this.getItem();
@@ -120,8 +121,11 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     }
 
     async getItems() {
-        let resData = await postTermService.get({
-            typeId: this.state.formData.typeId == PostTermTypeId.Variations ? PostTermTypeId.Attributes : this.state.formData.typeId,
+        let typeId = this.state.formData.typeId == PostTermTypeId.Variations
+            ? [PostTermTypeId.Attributes]
+            : [this.state.formData.typeId];
+        let resData = await postTermService.getMany({
+            typeId: typeId,
             postTypeId: this.state.formData.postTypeId,
             langId: this.props.getStateApp.pageData.mainLangId,
             statusId: StatusId.Active
@@ -144,15 +148,15 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
     }
 
     async getItem() {
-        let resData = await postTermService.get({
+        let resData = await postTermService.getOne({
             _id: this.state.formData._id,
             typeId: this.state.formData.typeId,
             postTypeId: this.state.formData.postTypeId,
             langId: this.props.getStateApp.pageData.langId
         });
         if (resData.status) {
-            if (resData.data.length > 0) {
-                const item = resData.data[0];
+            if (resData.data) {
+                const item = resData.data;
                 this.setState((state: PageState) => {
                     state.formData = {
                         ...state.formData,
@@ -166,7 +170,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     }
 
                     if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
-                        state.mainTitle = state.formData.contents.title;
+                        state.mainTitle = state.formData.contents.title || "";
                     }
                     return state;
                 }, () => {
@@ -193,7 +197,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         }, async () => {
             let params = this.state.formData;
             let resData = await ((params._id)
-                ? postTermService.update(params)
+                ? postTermService.updateOne(params)
                 : postTermService.add(params));
             if (this.state.formData.typeId == PostTermTypeId.Category && resData.status) {
                 await this.getItems();
@@ -211,7 +215,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                             image: "",
                             title: "",
                             url: "",
-                            seoTitle: "",
                             seoContent: "",
                         }
                     }
@@ -249,15 +252,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                         name="formData.contents.url"
                         type="text"
                         value={this.state.formData.contents.url}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title={this.props.t("title")}
-                        name="formData.contents.seoTitle"
-                        type="text"
-                        value={this.state.formData.contents.seoTitle}
                         onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>

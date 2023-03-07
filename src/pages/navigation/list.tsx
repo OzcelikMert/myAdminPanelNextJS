@@ -7,7 +7,7 @@ import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
 import ThemeDataTable from "components/theme/table/dataTable";
-import {NavigationDocument} from "types/services/navigation";
+import {NavigationGetResultDocument} from "types/services/navigation";
 import navigationService from "services/navigation.service";
 import PagePaths from "constants/pagePaths";
 import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
@@ -17,9 +17,9 @@ import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
 type PageState = {
     searchKey: string
-    items: NavigationDocument[],
-    showingItems: NavigationDocument[]
-    selectedItems: NavigationDocument[]
+    items: NavigationGetResultDocument[],
+    showingItems: NavigationGetResultDocument[]
+    selectedItems: NavigationGetResultDocument[]
     listMode: "list" | "deleted"
     selectedItemId: string
     isShowModalUpdateRank: boolean
@@ -70,7 +70,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
     }
 
     async getItems() {
-        let items = (await navigationService.get({
+        let items = (await navigationService.getMany({
             langId: this.props.getStateApp.pageData.langId,
             ignoreDefaultLanguage: true
         })).data;
@@ -98,7 +98,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                     type: "loading"
                 });
 
-                let resData = await navigationService.delete({_id: selectedItemId});
+                let resData = await navigationService.deleteMany({_id: selectedItemId});
                 loadingToast.hide();
                 if (resData.status) {
                     this.setState((state: PageState) => {
@@ -119,7 +119,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                 content: this.props.t("updating"),
                 type: "loading"
             });
-            let resData = await navigationService.updateStatus({_id: selectedItemId, statusId: statusId});
+            let resData = await navigationService.updateManyStatus({_id: selectedItemId, statusId: statusId});
             loadingToast.hide();
             if (resData.status) {
                 this.setState((state: PageState) => {
@@ -142,8 +142,8 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
     }
 
     async onChangeRank(rank: number) {
-        let resData = await navigationService.updateRank({
-            _id: [this.state.selectedItemId],
+        let resData = await navigationService.updateOneRank({
+            _id: this.state.selectedItemId,
             rank: rank
         });
 
@@ -247,7 +247,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt}/>
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt || ""}/>
             },
             {
                 name: this.props.t("rank"),
@@ -264,7 +264,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
             {
                 name: this.props.t("createdDate"),
                 sortable: true,
-                selector: row => new Date(row.createdAt).toLocaleDateString(),
+                selector: row => new Date(row.createdAt || "").toLocaleDateString(),
                 sortFunction: (a, b) => ThemeDataTable.dateSort(a, b)
             },
             {

@@ -9,7 +9,7 @@ export interface PostTermPopulateDocument {
         title?: string,
         image?: string
         url?: string
-    }[]
+    }
 }
 
 export interface PostTermAlternateDocument {
@@ -32,7 +32,7 @@ export type PostTermGetResultDocument = {
     contents?: PostTermContentDocument
     alternates?: PostTermAlternateDocument[],
     postCount?: number
-} & Omit<PostTermDocument, "contents">
+} & Omit<PostTermDocument, "contents"|"authorId"|"lastAuthorId"|"mainId">
 
 export interface PostTermGetOneParamDocument {
     langId?: string
@@ -59,7 +59,7 @@ export interface PostTermGetManyParamDocument {
     ignoreDefaultLanguage?: boolean
 }
 
-export type PostTermAddParamDocument = {} & Omit<PostTermDocument, "_id">
+export type PostTermAddParamDocument = {} & Omit<PostTermDocument, "_id"|"lastAuthorId"|"authorId">
 
 export type PostTermUpdateOneParamDocument = {
     _id: string,
@@ -70,7 +70,6 @@ export type PostTermUpdateOneRankParamDocument = {
     postTypeId: number,
     typeId: number
     rank: number,
-    lastAuthorId: string
 }
 
 export type PostTermUpdateManyStatusIdParamDocument = {
@@ -78,7 +77,6 @@ export type PostTermUpdateManyStatusIdParamDocument = {
     postTypeId: number,
     typeId: number
     statusId: number,
-    lastAuthorId: string
 }
 
 export interface PostTermDeleteManyParamDocument {

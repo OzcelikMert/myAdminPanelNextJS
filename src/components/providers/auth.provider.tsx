@@ -34,9 +34,9 @@ export default class ProviderAuth extends Component<PageProps, PageState> {
         let isAuth = false;
         let resData = await authService.getSession({});
         if (resData.status && resData.errorCode == ErrorCodes.success) {
-            if (resData.data.length > 0) {
+            if (resData.data) {
                 isAuth = true;
-                let user = resData.data[0];
+                let user = resData.data;
                 this.props.setStateApp({
                     sessionData: {
                         id: user._id,

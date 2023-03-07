@@ -5,7 +5,7 @@ import {LanguageKeysArray, ComponentInputTypeId, ComponentInputTypes, UserRoleId
 import HandleForm from "library/react/handles/form";
 import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form";
 import V from "library/variable";
-import {ComponentTypeDocument, ComponentUpdateParamDocument} from "types/services/component";
+import {ComponentUpdateOneParamDocument} from "types/services/component";
 import componentService from "services/component.service";
 import ThemeChooseImage from "components/theme/chooseImage";
 import imageSourceLib from "lib/imageSource.lib";
@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import PagePaths from "constants/pagePaths";
 import Image from "next/image"
 import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
-import ThemeToolTip from "components/theme/tooltip";
+import {ComponentTypeDocument} from "types/models/component";
 
 type PageState = {
     langKeys: ThemeFormSelectValueDocument[]
@@ -21,7 +21,7 @@ type PageState = {
     mainTabActiveKey: string
     isSubmitting: boolean
     mainTitle: string,
-    formData: ComponentUpdateParamDocument,
+    formData: ComponentUpdateOneParamDocument,
 } & { [key: string]: any };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -37,7 +37,6 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
             mainTitle: "",
             formData: {
                 _id: this.props.router.query._id as string ?? "",
-                rank: 0,
                 types: [],
                 elementId: "",
                 langKey: "[noLangAdd]"
@@ -99,25 +98,24 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
     }
 
     async getItem() {
-        let resData = await componentService.get({
+        let resData = await componentService.getOne({
             _id: this.state.formData._id,
             langId: this.props.getStateApp.pageData.langId,
-            getContents: true
         });
         if (resData.status) {
-            if (resData.data.length > 0) {
-                const item = resData.data[0];
+            if (resData.data) {
+                const item = resData.data;
                 this.setState((state: PageState) => {
                     state.formData = {
                         ...state.formData,
                         ...item,
-                        types: item.types.map(type => {
-                            type.contents = {
+                        types: item.types.map(type => ({
+                            ...type,
+                            contents: {
                                 ...type.contents,
                                 langId: this.props.getStateApp.pageData.langId
                             }
-                            return type;
-                        })
+                        }))
                     };
 
                     if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
@@ -146,7 +144,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
         }, async () => {
             let params = this.state.formData;
             let resData = await ((params._id)
-                ? componentService.update(params)
+                ? componentService.updateOne(params)
                 : componentService.add(params))
             this.setState({
                 isSubmitting: false
@@ -426,16 +424,6 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         options={this.state.langKeys}
                         value={this.state.langKeys?.findSingle("value", this.state.formData.langKey)}
                         onChange={(item: any, e) => HandleForm.onChangeSelect(e.name, item.value, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title={`${this.props.t("rank")}*`}
-                        name="formData.rank"
-                        type="number"
-                        required={true}
-                        value={this.state.formData.rank}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
                     />
                 </div>
             </div>

@@ -37,12 +37,8 @@ export type UserAddParamDocument = {
 
 export type UserUpdateOneParamDocument = {
     _id: string
-    roleId?: number
-    statusId?: number
-    name?: string
-    email?: string
-    permissions?: number[]
-} & Omit<UserDocument, "_id"|"roleId"|"statusId"|"name"|"email"|"permissions">
+    password?: string
+} & Omit<UserAddParamDocument, "password">
 
 export type UserDeleteOneParamDocument = {
     _id: string

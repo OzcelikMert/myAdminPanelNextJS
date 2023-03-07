@@ -4,11 +4,11 @@ import {PagePropCommonDocument} from "types/pageProps";
 import HandleForm from "library/react/handles/form";
 import settingService from "services/setting.service";
 import ThemeToast from "components/theme/toast";
-import {SettingSeoUpdateParamDocument} from "types/services/setting";
+import {SettingUpdateSEOParamDocument} from "types/services/setting";
 
 type PageState = {
     isSubmitting: boolean
-    formData: SettingSeoUpdateParamDocument
+    formData: SettingUpdateSEOParamDocument
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -56,20 +56,16 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
 
     async getSeo() {
         let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId, projection: "seo"});
-
-        if (resData.status) {
+        if (resData.status && resData.data) {
+            let setting = resData.data;
             this.setState((state: PageState) => {
-                if (resData.data.length > 0) {
-                    let setting = resData.data[0];
-                    state.formData = {
-                        seoContents: {
-                            ...state.formData.seoContents,
-                            ...setting.seoContents,
-                            langId: this.props.getStateApp.pageData.langId
-                        }
-                    };
-                }
-
+                state.formData = {
+                    seoContents: {
+                        ...state.formData.seoContents,
+                        ...setting.seoContents,
+                        langId: this.props.getStateApp.pageData.langId
+                    }
+                };
                 return state;
             })
         }

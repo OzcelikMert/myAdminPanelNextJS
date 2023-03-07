@@ -1,13 +1,15 @@
 import {StatusId} from "constants/status";
 
 export interface NavigationDocument {
-    _id?: string
+    _id: string
     statusId: StatusId,
     mainId?: string
     authorId: string
     lastAuthorId: string
     rank: number,
     contents: NavigationContentDocument
+    createdAt?: string
+    updatedAt?: string
 }
 
 export interface NavigationContentDocument {

@@ -2,8 +2,6 @@ import {PostTypeId, PostTypes} from "constants/postTypes";
 import PagePaths from "constants/pagePaths";
 import {PostLibGetPageTitleParamsDocument} from "types/lib/post.lib";
 import {PostTermTypes} from "constants/postTermTypes";
-import pagePathLib from "lib/pagePath.lib";
-import pathUtil from "utils/path.util";
 
 export default {
     getPagePath(postTypeId: PostTypeId) {

@@ -4,7 +4,7 @@ import {ThemeForm, ThemeFormSelect} from "components/theme/form";
 import HandleForm from "library/react/handles/form";
 import settingService from "services/setting.service";
 import ThemeToast from "components/theme/toast";
-import {SettingECommerceUpdateParamDocument} from "types/services/setting";
+import {SettingUpdateECommerceParamDocument} from "types/services/setting";
 import {Tab, Tabs} from "react-bootstrap";
 import {CurrencyId, CurrencyTypes} from "constants/currencyTypes";
 import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
@@ -12,7 +12,7 @@ import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 type PageState = {
     currencyTypes: ThemeFormSelectValueDocument[]
     isSubmitting: boolean
-    formData: SettingECommerceUpdateParamDocument,
+    formData: SettingUpdateECommerceParamDocument,
     mainTabActiveKey: string
 };
 
@@ -48,16 +48,15 @@ export default class PageECommerceSettings extends Component<PageProps, PageStat
 
     async getSettings() {
         let resData = await settingService.get({projection: "eCommerce"})
-        if (resData.status) {
+        if (resData.status && resData.data) {
+            let setting = resData.data;
             this.setState((state: PageState) => {
-                resData.data.forEach(setting => {
-                    state.formData = {
-                        eCommerce: {
-                            ...state.formData.eCommerce,
-                            ...setting.eCommerce
-                        }
+                state.formData = {
+                    eCommerce: {
+                        ...state.formData.eCommerce,
+                        ...setting.eCommerce
                     }
-                })
+                }
                 return state;
             })
         }

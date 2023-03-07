@@ -5,13 +5,13 @@ import {UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import ThemeToast from "components/theme/toast";
 import {
-    SettingSocialMediaDocument,
-    SettingSocialMediaUpdateParamDocument,
+    SettingUpdateSocialMediaParamDocument,
 } from "types/services/setting";
+import { SettingSocialMediaDocument } from 'types/models/setting';
 
 type PageState = {
     isSubmitting: boolean
-    formData: SettingSocialMediaUpdateParamDocument,
+    formData: SettingUpdateSocialMediaParamDocument,
     newItems: SettingSocialMediaDocument[]
 };
 
@@ -43,13 +43,12 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
 
     async getSettings() {
         let resData = await settingService.get({projection: "socialMedia"})
-        if (resData.status) {
+        if (resData.status && resData.data) {
+            let setting = resData.data;
             this.setState((state: PageState) => {
-                resData.data.forEach(setting => {
-                    state.formData = {
-                        socialMedia: setting.socialMedia || []
-                    }
-                })
+                state.formData = {
+                    socialMedia: setting.socialMedia || []
+                }
                 return state;
             })
         }

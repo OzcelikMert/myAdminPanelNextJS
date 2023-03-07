@@ -44,10 +44,10 @@ export default class ComponentPagePostAddChooseTag extends Component<PageProps, 
             });
 
             if(resData.status){
-                if(resData.data.length > 0){
+                if(resData.data){
                     this.props.page.setState({
                         tags: [
-                            {value: resData.data[0]._id, label: this.state.newItemTitle},
+                            {value: resData.data._id, label: this.state.newItemTitle},
                             ...this.props.page.state.tags
                         ]
                     }, () => {

@@ -3,10 +3,10 @@ import dynamic from "next/dynamic";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
 import {PostTypeId, PostTypes} from "constants/index";
-import PostDocument from "types/services/post";
+import {PostGetManyResultDocument} from "types/services/post";
 import postService from "services/post.service";
 import viewService from "services/view.service";
-import {ViewNumberDocument, ViewStatisticsDocument} from "types/services/view";
+import {ViewGetNumberResultDocument, ViewGetStatisticsResultDocument} from "types/services/view";
 import imageSourceLib from "lib/imageSource.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeDataTable from "components/theme/table/dataTable";
@@ -19,10 +19,10 @@ import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 const WorldMap = dynamic(() => import('react-svg-worldmap').then((module) => module.WorldMap), {ssr: false});
 
 type PageState = {
-    lastPosts: PostDocument[]
+    lastPosts: PostGetManyResultDocument[]
     visitorData: {
-        number: ViewNumberDocument,
-        statistics: ViewStatisticsDocument
+        number: ViewGetNumberResultDocument,
+        statistics: ViewGetStatisticsResultDocument
     }
     worldMapSize: "lg" | "xl" | "xxl"
 };
@@ -104,9 +104,10 @@ class PageDashboard extends Component<PageProps, PageState> {
     }
 
     async getLastPosts() {
-        let resData = await postService.get({
+        let resData = await postService.getMany({
             langId: this.props.getStateApp.pageData.mainLangId,
-            count: 10
+            count: 10,
+            isRecent: true
         });
         if (resData.status) {
             this.setState({
@@ -184,7 +185,7 @@ class PageDashboard extends Component<PageProps, PageState> {
             {
                 name: this.props.t("updatedBy"),
                 sortable: true,
-                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt} />
+                cell: row => <ThemeTableUpdatedBy name={row.lastAuthorId.name} updatedAt={row.updatedAt || ""} />
             },
             {
                 name: "",

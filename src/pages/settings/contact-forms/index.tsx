@@ -4,11 +4,12 @@ import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/theme/form";
 import {UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import ThemeToast from "components/theme/toast";
-import {SettingContactFormDocument, SettingContactFormUpdateParamDocument} from "types/services/setting";
+import {SettingUpdateContactFormParamDocument} from "types/services/setting";
+import { SettingContactFormDocument } from 'types/models/setting';
 
 type PageState = {
     isSubmitting: boolean
-    formData: SettingContactFormUpdateParamDocument
+    formData: SettingUpdateContactFormParamDocument
     newItems: SettingContactFormDocument[]
 };
 
@@ -40,13 +41,12 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
 
     async getSettings() {
         let resData = await settingService.get({projection: "contactForm"})
-        if (resData.status) {
+        if (resData.status && resData.data) {
+            let setting = resData.data;
             this.setState((state: PageState) => {
-                resData.data.forEach(setting => {
-                    state.formData = {
-                        contactForms: setting.contactForms ?? []
-                    }
-                })
+                state.formData = {
+                    contactForms: setting.contactForms ?? []
+                }
                 return state;
             })
         }

@@ -5,14 +5,15 @@ import {LanguageKeysArray, UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import ThemeToast from "components/theme/toast";
 import {
-    SettingStaticLanguageDocument, SettingStaticLanguageUpdateParamDocument
+    SettingUpdateStaticLanguageParamDocument
 } from "types/services/setting";
 import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
+import {SettingStaticLanguageDocument} from "types/models/setting";
 
 type PageState = {
     isSubmitting: boolean
     langKeys: ThemeFormSelectValueDocument[]
-    formData: SettingStaticLanguageUpdateParamDocument,
+    formData: SettingUpdateStaticLanguageParamDocument,
     newItems: SettingStaticLanguageDocument[]
 };
 
@@ -66,19 +67,18 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
 
     async getSettings() {
         let resData = await settingService.get({langId: this.props.getStateApp.pageData.langId, projection: "staticLanguage"})
-        if (resData.status) {
+        if (resData.status && resData.data) {
+            let setting = resData.data;
             this.setState((state: PageState) => {
-                resData.data.forEach(setting => {
-                    state.formData = {
-                        staticLanguages: setting.staticLanguages?.map(staticLanguage => ({
-                            ...staticLanguage,
-                            contents: {
-                                ...staticLanguage.contents,
-                                langId: this.props.getStateApp.pageData.langId
-                            }
-                        })) ?? []
-                    }
-                })
+                state.formData = {
+                    staticLanguages: setting.staticLanguages?.map(staticLanguage => ({
+                        ...staticLanguage,
+                        contents: {
+                            ...staticLanguage.contents,
+                            langId: this.props.getStateApp.pageData.langId
+                        }
+                    })) ?? []
+                }
                 return state;
             })
         }
