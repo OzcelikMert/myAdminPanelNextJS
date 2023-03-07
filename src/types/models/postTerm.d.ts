@@ -11,7 +11,7 @@ export interface PostTermDocument {
     authorId: string
     lastAuthorId: string
     rank: number,
-    contents: PostTermContentDocument[]
+    contents: PostTermContentDocument
     updatedAt?: string
     createdAt?: string
 }

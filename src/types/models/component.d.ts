@@ -16,7 +16,7 @@ export interface ComponentTypeDocument {
     typeId: ComponentInputTypeId,
     langKey: LanguageKeys,
     rank: number,
-    contents: ComponentTypeContentDocument[]
+    contents: ComponentTypeContentDocument
 }
 
 export interface ComponentTypeContentDocument {

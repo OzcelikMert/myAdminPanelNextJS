@@ -7,7 +7,7 @@ export interface NavigationDocument {
     authorId: string
     lastAuthorId: string
     rank: number,
-    contents: NavigationContentDocument[]
+    contents: NavigationContentDocument
 }
 
 export interface NavigationContentDocument {

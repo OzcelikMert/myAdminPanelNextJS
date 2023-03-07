@@ -7,8 +7,8 @@ import {
 } from "../models/setting";
 
 export type SettingGetResultDocument = {
-    seoContents?: SettingSeoContentDocument | SettingSeoContentDocument[]
-    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents?: SettingStaticLanguageContentDocument | SettingStaticLanguageContentDocument[] })[]
+    seoContents?: SettingSeoContentDocument
+    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents?: SettingStaticLanguageContentDocument })[]
 } & Omit<SettingDocument, "seoContents" | "staticLanguages">
 
 export type SettingGetParamDocument = {
@@ -20,7 +20,7 @@ export type SettingGetParamDocument = {
 export type SettingUpdateGeneralParamDocument = {} & Omit<SettingDocument, "seoContents"|"contactForms"|"staticLanguages"|"socialMedia">
 
 export type SettingUpdateSEOParamDocument = {
-    seoContents?: SettingSeoContentDocument
+    seoContents: SettingSeoContentDocument
 }
 
 export type SettingUpdateECommerceParamDocument = {
@@ -36,5 +36,5 @@ export type SettingUpdateSocialMediaParamDocument = {
 }
 
 export type SettingUpdateStaticLanguageParamDocument = {
-    staticLanguages?: (Omit<SettingStaticLanguageDocument, "contents"> & { contents: SettingStaticLanguageContentDocument})[]
+    staticLanguages: SettingStaticLanguageDocument[]
 }

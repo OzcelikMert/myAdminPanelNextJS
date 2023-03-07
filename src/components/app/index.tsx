@@ -5,7 +5,7 @@ import Navbar from "components/tools/navbar";
 import Sidebar from "components/tools/sidebar";
 import Footer from "components/tools/footer";
 import {AppAdminGetState, AppAdminSetState} from "types/pages/_app";
-import LanguageDocument from "types/services/language";
+import {LanguageGetResultDocument} from "types/services/language";
 import PagePaths from "constants/pagePaths";
 import ThemeBreadCrumb from "components/theme/breadCrumb";
 import ThemeContentLanguage from "components/theme/contentLanguage";
@@ -21,7 +21,7 @@ import {ToastContainer} from "react-toastify";
 import MultiLanguagePaths from "constants/multiLanguagePaths";
 
 type PageState = {
-    contentLanguages: LanguageDocument[],
+    contentLanguages: LanguageGetResultDocument[],
     breadCrumbTitle: string
 } & AppAdminGetState;
 

@@ -21,12 +21,12 @@ export type PostGetOneResultDocument = {
     views?: number,
     categories?: PostTermPopulateDocument[]
     tags?: PostTermPopulateDocument[]
-    contents?: PostContentDocument | PostContentDocument[]
+    contents?: PostContentDocument
     components?: ComponentDocument[],
     alternates?: PostAlternateDocument[]
     eCommerce?: (Omit<PostECommerceDocument<PostTermPopulateDocument, PostTermPopulateDocument[]>, "variations"> & {
         variations?: (Omit<PostECommerceVariationDocument<PostTermPopulateDocument>, "contents"> & {
-            contents?: PostECommerceVariationContentDocument | PostECommerceVariationContentDocument[]
+            contents?: PostECommerceVariationContentDocument
         })[]
     })
 } & Omit<PostDocument, "contents"|"categories"|"tags"|"components"|"eCommerce">
@@ -68,14 +68,7 @@ export interface PostGetCountParamDocument {
     statusId?: number
 }
 
-export type PostAddParamDocument = {
-    contents?: PostContentDocument
-    eCommerce?: (Omit<PostECommerceDocument, "variations"> & {
-        variations?: (Omit<PostECommerceVariationDocument, "contents"> & {
-            contents: PostECommerceVariationContentDocument
-        })[]
-    })
-} & Omit<PostDocument, "_id"|"views"|"contents"|"eCommerce">
+export type PostAddParamDocument = {} & Omit<PostDocument, "_id"|"views">
 
 export type PostUpdateOneParamDocument = {
     _id: string

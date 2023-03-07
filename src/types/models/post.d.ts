@@ -16,7 +16,7 @@ export interface PostDocument {
     isFixed?: boolean,
     categories?: string[]
     tags?: string[]
-    contents: PostContentDocument[]
+    contents: PostContentDocument
     components?: string []
     beforeAndAfter?: PostBeforeAndAfterDocument
     eCommerce?: PostECommerceDocument
@@ -94,7 +94,7 @@ export interface PostECommerceVariationDocument<T = string> {
     rank: number
     selectedVariations: PostECommerceVariationSelectedDocument<T>[]
     images: string[]
-    contents?: PostECommerceVariationContentDocument[]
+    contents?: PostECommerceVariationContentDocument
     inventory: PostECommerceInventoryDocument
     shipping: PostECommerceShippingDocument
     pricing: PostECommercePricingDocument

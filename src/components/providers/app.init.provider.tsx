@@ -27,7 +27,7 @@ export default class ProviderAppInit extends Component<PageProps, PageState> {
     }
 
     async getContentLanguages() {
-        let resData = await languageService.get({statusId: StatusId.Active});
+        let resData = await languageService.getMany({statusId: StatusId.Active});
         if (resData.status) {
             this.props.setStateApp({
                 contentLanguages: resData.data
@@ -37,8 +37,8 @@ export default class ProviderAppInit extends Component<PageProps, PageState> {
 
     async getContentMainLanguage() {
         let resData = await settingService.get({projection: "general"});
-        if (resData.status) {
-            let data = resData.data[0];
+        if (resData.status && resData.data) {
+            let data = resData.data;
             this.props.setStateApp({
                 pageData: {
                     mainLangId: data.defaultLangId,

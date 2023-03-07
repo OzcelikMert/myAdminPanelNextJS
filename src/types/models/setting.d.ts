@@ -8,7 +8,7 @@ export interface SettingDocument {
     logoTwo?: string
     head?: string
     script?: string
-    seoContents: SettingSeoContentDocument[],
+    seoContents: SettingSeoContentDocument,
     contact?: SettingContactDocument
     contactForms: SettingContactFormDocument[],
     staticLanguages: SettingStaticLanguageDocument[]
@@ -57,7 +57,7 @@ export interface SettingSeoContentDocument {
 export interface SettingStaticLanguageDocument {
     _id?: string
     langKey: string,
-    contents: SettingStaticLanguageContentDocument[]
+    contents: SettingStaticLanguageContentDocument
 }
 
 export interface SettingStaticLanguageContentDocument {

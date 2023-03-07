@@ -12,7 +12,7 @@ export type NavigationGetResultDocument = {
             url: string,
         }
     },
-    contents?: NavigationContentDocument | NavigationContentDocument[]
+    contents?: NavigationContentDocument
 } & Omit<NavigationDocument, "contents">
 
 export interface NavigationGetOneParamDocument {
@@ -28,9 +28,7 @@ export interface NavigationGetManyParamDocument {
     ignoreDefaultLanguage?: boolean
 }
 
-export type NavigationAddParamDocument = {
-    contents?: Omit<NavigationContentDocument, "_id">
-} & Omit<NavigationDocument, "_id"|"contents">
+export type NavigationAddParamDocument = {} & Omit<NavigationDocument, "_id">
 
 export type NavigationUpdateOneParamDocument = {
     _id: string

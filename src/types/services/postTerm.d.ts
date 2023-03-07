@@ -29,7 +29,7 @@ export type PostTermGetResultDocument = {
             url: string,
         }
     },
-    contents?: PostTermContentDocument | PostTermContentDocument[]
+    contents?: PostTermContentDocument
     alternates?: PostTermAlternateDocument[],
     postCount?: number
 } & Omit<PostTermDocument, "contents">
@@ -59,9 +59,7 @@ export interface PostTermGetManyParamDocument {
     ignoreDefaultLanguage?: boolean
 }
 
-export type PostTermAddParamDocument = {
-    contents?: PostTermContentDocument
-} & Omit<PostTermDocument, "_id"|"contents">
+export type PostTermAddParamDocument = {} & Omit<PostTermDocument, "_id">
 
 export type PostTermUpdateOneParamDocument = {
     _id: string,
