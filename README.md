@@ -50,3 +50,4 @@ Things to do:
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
 - tum loglari temizle
+- Panelin Dark ve Light temasini next-themes kullanarak yapmaya calis yada ona benzer bir algoritma kur (https://www.npmjs.com/package/next-themes | https://next-themes-example.vercel.app)
