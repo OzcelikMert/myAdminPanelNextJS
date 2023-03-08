@@ -347,7 +347,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
 
     onSubmit(event: FormEvent) {
         event.preventDefault();
-        console.log(this.state);
         this.setState({
             isSubmitting: true
         }, async () => {

@@ -2,7 +2,6 @@ import type {AppProps} from 'next/app'
 import React from "react";
 import {LanguageId, Languages} from "constants/languages";
 import localStorageUtil from "utils/localStorage.util";
-import ThemeUtil from "utils/theme.util";
 import i18n from "i18next";
 import {initReactI18next} from "react-i18next";
 
@@ -19,6 +18,7 @@ import ComponentApp from "components/app";
 import English from "languages/en.json"
 import Turkish from "languages/tr.json"
 import ProviderNoSSR from "components/providers/noSSR.provider";
+import themeUtil from "utils/theme.util";
 
 if(typeof window !== "undefined") {
     const language = i18n.use(initReactI18next);
@@ -36,7 +36,7 @@ if(typeof window !== "undefined") {
         }
     });
 
-    (new ThemeUtil(localStorageUtil.adminIsDarkTheme.get)).setThemeColor();
+    themeUtil.changeTheme(localStorageUtil.adminTheme.get);
 }
 
 function App(props: AppProps) {

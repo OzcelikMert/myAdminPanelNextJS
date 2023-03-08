@@ -46,8 +46,8 @@ Things to do:
 + ecommercda gelen datalarin hepsini populate yaparak string degilde contents degerlerini dondur
 + post interfacelerini ayarla
 + gereksiz rank gosterilen heryerden Rank inputlarini ve listese collumnunu kaldir
-- daha once secilen dil eklenmemis bir postu guncellerken url kismini bos birak
-- yeni eklenen language keylerini json dosyalarinada ekle
++ daha once secilen dil eklenmemis bir postu guncellerken url kismini bos birak
++ yeni eklenen language keylerini json dosyalarinada ekle
++ tum loglari temizle
++ Panelin Dark ve Light temasini next-themes kullanarak yapmaya calis yada ona benzer bir algoritma kur (https://www.npmjs.com/package/next-themes | https://next-themes-example.vercel.app)
 - Yaptigin tum guncellemelerin hata kontrolunu yap
-- tum loglari temizle
-- Panelin Dark ve Light temasini next-themes kullanarak yapmaya calis yada ona benzer bir algoritma kur (https://www.npmjs.com/package/next-themes | https://next-themes-example.vercel.app)

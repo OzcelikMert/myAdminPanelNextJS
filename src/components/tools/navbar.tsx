@@ -12,6 +12,7 @@ import themeUtil from "utils/theme.util";
 import Logo from "assets/images/ozcelikLogo.png"
 import LogoMini from "assets/images/ozcelikLogoMini.png"
 import Image from "next/image"
+import ThemeKeys from "types/themes";
 
 type PageState = {
     isDarkTheme: boolean
@@ -23,7 +24,7 @@ export default class Navbar extends Component<PageProps, PageState> {
     constructor(props: PageProps) {
         super(props);
         this.state = {
-            isDarkTheme: localStorageUtil.adminIsDarkTheme.get
+            isDarkTheme: localStorageUtil.adminTheme.get == "dark"
         }
     }
 
@@ -35,8 +36,9 @@ export default class Navbar extends Component<PageProps, PageState> {
         this.setState({
             isDarkTheme: !this.state.isDarkTheme
         }, () => {
-            localStorageUtil.adminIsDarkTheme.set(this.state.isDarkTheme);
-            (new themeUtil(this.state.isDarkTheme)).setThemeColor();
+            let theme: ThemeKeys = this.state.isDarkTheme ? "dark" : "default";
+            localStorageUtil.adminTheme.set(theme);
+            themeUtil.changeTheme(theme)
         })
     }
 

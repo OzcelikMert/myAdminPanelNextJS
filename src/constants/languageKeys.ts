@@ -1,6 +1,5 @@
 export const LanguageKeysArray = [
     "update",
-
     "imageAfter",
     "imageBefore",
     "width",

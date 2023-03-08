@@ -1,18 +1,20 @@
+import ThemeKeys from "types/themes";
+
 export default {
     adminLanguage: {
-        get get(): number {
+        get get() {
             return Number((window.localStorage.getItem("adminLanguage") ?? 1));
         },
         set: (langId: number) => {
             window.localStorage.setItem("adminLanguage", langId.toString());
         }
     },
-    adminIsDarkTheme: {
-        get get(): boolean {
-            return Boolean(JSON.parse(window.localStorage.getItem("adminIsDarkTheme") ?? "false"));
+    adminTheme: {
+        get get() {
+            return (window.localStorage.getItem("adminTheme") ?? "default") as ThemeKeys;
         },
-        set: (isDarkTheme: boolean) => {
-            window.localStorage.setItem("adminIsDarkTheme", isDarkTheme.toString());
+        set: (theme: ThemeKeys) => {
+            window.localStorage.setItem("adminTheme", theme);
         }
     }
 }
