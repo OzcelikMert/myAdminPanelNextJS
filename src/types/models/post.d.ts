@@ -33,7 +33,6 @@ export interface PostContentDocument {
     content?: string,
     shortContent?: string,
     url?: string,
-    seoContent?: string,
     views?: number,
     buttons?: PostContentButtonDocument[]
 }

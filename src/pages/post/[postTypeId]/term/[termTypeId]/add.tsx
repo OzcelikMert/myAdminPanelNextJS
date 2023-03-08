@@ -57,7 +57,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                     image: "",
                     title: "",
                     url: "",
-                    seoContent: "",
                 }
             },
             isSelectionImage: false
@@ -215,7 +214,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                             image: "",
                             title: "",
                             url: "",
-                            seoContent: "",
                         }
                     }
                 }
@@ -241,31 +239,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         if (this.state.formData._id) {
             this.navigatePage();
         }
-    }
-
-    TabSEO = () => {
-        return (
-            <div className="row">
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title={this.props.t("url")}
-                        name="formData.contents.url"
-                        type="text"
-                        value={this.state.formData.contents.url}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title={this.props.t("content")}
-                        name="formData.contents.seoContent"
-                        type="textarea"
-                        value={this.state.formData.contents.seoContent}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-            </div>
-        );
     }
 
     TabOptions = () => {
@@ -395,9 +368,6 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                                                 </Tab>
                                                 <Tab eventKey="options" title={this.props.t("options")}>
                                                     <this.TabOptions/>
-                                                </Tab>
-                                                <Tab eventKey="seo" title={this.props.t("seo")}>
-                                                    <this.TabSEO/>
                                                 </Tab>
                                             </Tabs>
                                         </div>

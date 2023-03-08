@@ -394,31 +394,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
         }
     }
 
-    TabSEO = () => {
-        return (
-            <div className="row">
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title={this.props.t("url")}
-                        name="formData.contents.url"
-                        type="text"
-                        value={this.state.formData.contents.url}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-                <div className="col-md-7 mb-3">
-                    <ThemeFormType
-                        title={this.props.t("content")}
-                        name="formData.contents.seoContent"
-                        type="textarea"
-                        value={this.state.formData.contents.seoContent}
-                        onChange={e => HandleForm.onChangeInput(e, this)}
-                    />
-                </div>
-            </div>
-        );
-    }
-
     TabOptions = () => {
         return (
             <div className="row">
@@ -640,12 +615,6 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                                                 <Tab eventKey="options" title={this.props.t("options")}>
                                                     <this.TabOptions/>
                                                 </Tab>
-                                                {
-                                                    ![PostTypeId.Slider, PostTypeId.Testimonial].includes(Number(this.state.formData.typeId))
-                                                        ? <Tab eventKey="seo" title={this.props.t("seo")}>
-                                                            <this.TabSEO/>
-                                                        </Tab> : null
-                                                }
                                             </Tabs>
                                         </div>
                                     </div>

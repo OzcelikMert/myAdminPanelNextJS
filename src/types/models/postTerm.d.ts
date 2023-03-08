@@ -18,9 +18,8 @@ export interface PostTermDocument {
 
 export interface PostTermContentDocument {
     langId: string
-    image?: string,
-    title?: string,
-    shortContent?: string,
-    url?: string,
-    seoContent?: string
+    image?: string
+    title?: string
+    shortContent?: string
+    url?: string
 }

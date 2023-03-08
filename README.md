@@ -45,7 +45,7 @@ Things to do:
 + terms'i category ve tags diye ayir
 + ecommercda gelen datalarin hepsini populate yaparak string degilde contents degerlerini dondur
 + post interfacelerini ayarla
-- gereksiz rank gosterilen heryerden Rank inputlarini ve listese collumnunu kaldir
++ gereksiz rank gosterilen heryerden Rank inputlarini ve listese collumnunu kaldir
 - daha once secilen dil eklenmemis bir postu guncellerken url kismini bos birak
 - yeni eklenen language keylerini json dosyalarinada ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
