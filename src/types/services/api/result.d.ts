@@ -1,4 +1,4 @@
-interface ServiceResultDocument<T, P = any> {
+interface ServiceResultDocument<T = any, P = any> {
     data: T;
     customData: P;
     status: boolean;

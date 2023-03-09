@@ -17,7 +17,7 @@ export type ViewGetStatisticsResultDocument = {
 export interface ViewAddParamDocument {
     url: string,
     langId: string
-    ip: string,
+    ip?: string,
     country?: string,
     city?: string,
     region?: string

@@ -28,6 +28,7 @@ class ApiRequest {
                 apiUrl += url + "/";
             }
         })
+        console.log(this.params.method, apiUrl.removeLastChar())
         return apiUrl.removeLastChar();
     }
 

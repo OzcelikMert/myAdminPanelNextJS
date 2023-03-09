@@ -11,7 +11,8 @@ const ServicePages = {
     subscriber: "subscriber",
     component: "component",
     navigation: "navigation",
-    sitemap: "sitemap"
+    sitemap: "sitemap",
+    mailer: "mailer"
 }
 
 export default ServicePages;

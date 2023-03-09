@@ -1,12 +1,11 @@
 import Api from "./api";
 import {ServicePages} from "constants/index";
-import ServiceResultDocument from "types/services/api/result";
 import GalleryDocument, {GalleryDeleteParamDocument, GalleryAddParamDocument} from "types/services/gallery";
 import {ApiRequestParamDocument} from "types/services/api";
 
 export default {
-    get(): Promise<ServiceResultDocument<GalleryDocument[]>> {
-        return Api.get({
+    get() {
+        return Api.get<GalleryDocument[]>({
             url: [ServicePages.gallery],
         });
     },

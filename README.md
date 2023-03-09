@@ -50,4 +50,5 @@ Things to do:
 + yeni eklenen language keylerini json dosyalarinada ekle
 + tum loglari temizle
 + Panelin Dark ve Light temasini next-themes kullanarak yapmaya calis yada ona benzer bir algoritma kur (https://www.npmjs.com/package/next-themes | https://next-themes-example.vercel.app)
+- Ecommerce Shipping costu ekle
 - Yaptigin tum guncellemelerin hata kontrolunu yap
