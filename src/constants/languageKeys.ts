@@ -1,4 +1,6 @@
 export const LanguageKeysArray = [
+    "shippingPrice",
+
     "update",
     "imageAfter",
     "imageBefore",
