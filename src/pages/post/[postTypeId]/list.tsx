@@ -405,7 +405,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                             <div className="col-md-6 mb-3 mb-md-0">
                                 <div className="row">
                                     {
-                                        ![PostTypeId.Slider, PostTypeId.Page, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
+                                        [PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Product].includes(this.state.typeId)
                                             ? <div className="col-6">
                                                 <button className="btn btn-gradient-success btn-lg w-100"
                                                         onClick={() => this.navigatePage("termList", "", PostTermTypeId.Category)}>
@@ -414,7 +414,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                                             </div> : null
                                     }
                                     {
-                                        ![PostTypeId.Slider, PostTypeId.Service, PostTypeId.Testimonial, PostTypeId.Reference].includes(this.state.typeId)
+                                        [PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.Page, PostTypeId.Product].includes(this.state.typeId)
                                             ? <div className="col-6">
                                                 <button className="btn btn-gradient-info btn-edit-tag btn-lg w-100"
                                                         onClick={() => this.navigatePage("termList", "", PostTermTypeId.Tag)}>
