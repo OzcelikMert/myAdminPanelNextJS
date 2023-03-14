@@ -7,16 +7,20 @@ import Swal from "sweetalert2";
 import postService from "services/post.service";
 import {PostGetManyResultDocument} from "types/services/post";
 import imageSourceLib from "lib/imageSource.lib";
-import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
 import ThemeDataTable from "components/theme/table/dataTable";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
-import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeBadgeStatus, {getStatusIcon} from "components/theme/badge/status";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
+import {ProductTypeId} from "constants/productTypes";
+import productLib from "lib/product.lib";
+import {CurrencyId} from "constants/currencyTypes";
+import ThemeBadgeProductType from "components/theme/badge/productType";
+import ThemeBadgePageType from "components/theme/badge/pageType";
 
 type PageState = {
     typeId: PostTypeId
@@ -251,7 +255,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     permissionLib.getPermissionIdForPostType(this.state.typeId, "Delete")
                 ) ? [StatusId.Deleted] : []
             )
-        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
@@ -319,7 +323,32 @@ export default class PagePostList extends Component<PageProps, PageState> {
                     } : {}
             ),
             (
-                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.BeforeAndAfter].includes(this.state.typeId)
+                [PostTypeId.Product].includes(this.state.typeId)
+                    ? {
+                        name: this.props.t("productType"),
+                        selector: row => row.eCommerce?.typeId || 0,
+                        sortable: true,
+                        cell: row => <ThemeBadgeProductType t={this.props.t} productTypeId={row.eCommerce?.typeId || ProductTypeId.SimpleProduct} />
+                    } : {}
+            ),
+            (
+                [PostTypeId.Product].includes(this.state.typeId)
+                    ? {
+                        name: this.props.t("price"),
+                        selector: row => productLib.getPricingDefault(row).taxIncluded,
+                        sortable: true,
+                        cell: row => {
+                            return (
+                                <div>
+                                    <span>{productLib.getPricingDefault(row).taxIncluded}</span>
+                                    <span className="ms-1">{productLib.getCurrencyType(this.props.getStateApp.appData.currencyId)?.icon}</span>
+                                </div>
+                            );
+                        },
+                    } : {}
+            ),
+            (
+                [PostTypeId.Page, PostTypeId.Blog, PostTypeId.Portfolio, PostTypeId.BeforeAndAfter, PostTypeId.Product].includes(this.state.typeId)
                     ? {
                         name: this.props.t("views"),
                         selector: row => row.views || 0,
@@ -332,13 +361,7 @@ export default class PagePostList extends Component<PageProps, PageState> {
                         name: this.props.t("pageType"),
                         selector: row => this.props.t(PageTypes.findSingle("id", (row.pageTypeId ? row.pageTypeId : PageTypeId.Default))?.langKey ?? "[noLangAdd]"),
                         sortable: true,
-                        cell: row => (
-                            <label className={`badge badge-gradient-dark`}>
-                                {
-                                    this.props.t(PageTypes.findSingle("id", (row.pageTypeId ? row.pageTypeId : PageTypeId.Default))?.langKey ?? "[noLangAdd]")
-                                }
-                            </label>
-                        )
+                        cell: row => <ThemeBadgePageType t={this.props.t} pageTypeId={row.pageTypeId || PageTypeId.Default} />
                     } : {}
             ),
             {

@@ -7,13 +7,13 @@ import {UserGetResultDocument} from "types/services/user";
 import ThemeUsersProfileCard from "components/theme/users/profileCard";
 import userService from "services/user.service";
 import imageSourceLib from "lib/imageSource.lib";
-import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
 import PagePaths from "constants/pagePaths";
 import ThemeDataTable from "components/theme/table/dataTable";
 import Image from "next/image"
 import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeBadgeUserRole from "components/theme/badge/userRole";
 
 type PageState = {
     searchKey: string
@@ -154,13 +154,7 @@ export default class PageUserList extends Component<PageProps, PageState> {
                 name: this.props.t("role"),
                 selector: row => UserRoles.findSingle("id", row.roleId)?.rank ?? 0,
                 sortable: true,
-                cell: row => (
-                    <label className={`badge badge-gradient-${classNameLib.getUserRoles(row.roleId)}`}>
-                        {
-                            this.props.t(UserRoles.findSingle("id", row.roleId)?.langKey ?? "[noLangAdd]")
-                        }
-                    </label>
-                )
+                cell: row => <ThemeBadgeUserRole t={this.props.t} userRoleId={row.roleId} />
             },
             {
                 name: this.props.t("status"),

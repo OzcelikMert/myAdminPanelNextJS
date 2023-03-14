@@ -78,6 +78,11 @@ export default class PageECommerceSettings extends Component<PageProps, PageStat
         }, async () => {
             let resData = await settingService.updateECommerce(this.state.formData);
             if (resData.status) {
+                this.props.setStateApp({
+                    appData: {
+                        currencyId: this.state.formData.eCommerce.currencyId
+                    }
+                })
                 new ThemeToast({
                     type: "success",
                     title: this.props.t("successful"),

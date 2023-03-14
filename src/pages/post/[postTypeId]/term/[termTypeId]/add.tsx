@@ -126,7 +126,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
         let resData = await postTermService.getMany({
             typeId: typeId,
             postTypeId: this.state.formData.postTypeId,
-            langId: this.props.getStateApp.pageData.mainLangId,
+            langId: this.props.getStateApp.appData.mainLangId,
             statusId: StatusId.Active
         });
         if (resData.status) {
@@ -168,7 +168,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                         }
                     }
 
-                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
+                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.appData.mainLangId) {
                         state.mainTitle = state.formData.contents.title || "";
                     }
                     return state;
@@ -210,7 +210,7 @@ export default class PagePostTermAdd extends Component<PageProps, PageState> {
                         statusId: StatusId.Active,
                         rank: 0,
                         contents: {
-                            langId: this.props.getStateApp.pageData.mainLangId,
+                            langId: this.props.getStateApp.appData.mainLangId,
                             image: "",
                             title: "",
                             url: "",

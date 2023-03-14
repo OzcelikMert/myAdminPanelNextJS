@@ -118,7 +118,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                         }))
                     };
 
-                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
+                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.appData.mainLangId) {
                         state.mainTitle = this.props.t(item.langKey);
                     }
 

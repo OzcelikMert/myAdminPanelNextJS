@@ -187,7 +187,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     }
 
     async getComponents() {
-        let resData = await componentService.getMany({langId: this.props.getStateApp.pageData.mainLangId});
+        let resData = await componentService.getMany({langId: this.props.getStateApp.appData.mainLangId});
         if (resData.status) {
             this.setState((state: PageState) => {
                 state.components = resData.data.map(component => {
@@ -226,7 +226,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
     async getTerms() {
         let resData = await postTermService.getMany({
             postTypeId: this.state.formData.typeId,
-            langId: this.props.getStateApp.pageData.mainLangId,
+            langId: this.props.getStateApp.appData.mainLangId,
             statusId: StatusId.Active
         });
         if (resData.status) {
@@ -322,7 +322,7 @@ export default class PagePostAdd extends Component<PageProps, PageState> {
                         }
                     }
 
-                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
+                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.appData.mainLangId) {
                         state.mainTitle = state.formData.contents.title || "";
                     }
 

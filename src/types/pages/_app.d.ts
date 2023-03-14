@@ -1,14 +1,17 @@
-import SearchParamDocument from "../providers";
 import {LanguageId, UserRoleId} from "constants/index";
-import LanguageDocument from "types/services/language";
+import {LanguageGetResultDocument} from "types/services/language";
+import {CurrencyId} from "constants/currencyTypes";
 
 type AppAdminGetState = {
-    contentLanguages: LanguageDocument[]
     isAppLoading: boolean
     isPageLoading: boolean
-    pageData: {
-        langId: string,
+    appData: {
         mainLangId: string
+        contentLanguages: LanguageGetResultDocument[]
+        currencyId: CurrencyId
+    }
+    pageData: {
+        langId: string
     },
     sessionData: {
         id: string,
@@ -22,14 +25,16 @@ type AppAdminGetState = {
 }
 
 type AppAdminSetState = {
-    contentLanguages?: LanguageDocument[]
     isAppLoading?: boolean
     isPageLoading?: boolean
+    appData?: {
+        mainLangId?: string
+        contentLanguages?: LanguageGetResultDocument[]
+        currencyId?: CurrencyId
+    }
     pageData?: {
-        langId?: string,
-        mainLangId?: string,
-        isDarkTheme?: boolean
-    },
+        langId?: string
+    }
     sessionData?: {
         id?: string,
         langId?: LanguageId,

@@ -105,7 +105,7 @@ class PageDashboard extends Component<PageProps, PageState> {
 
     async getLastPosts() {
         let resData = await postService.getMany({
-            langId: this.props.getStateApp.pageData.mainLangId,
+            langId: this.props.getStateApp.appData.mainLangId,
             count: 10,
             isRecent: true
         });

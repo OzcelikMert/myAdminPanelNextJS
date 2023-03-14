@@ -95,7 +95,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
 
     async getItems() {
         let resData = await navigationService.getMany({
-            langId: this.props.getStateApp.pageData.mainLangId,
+            langId: this.props.getStateApp.appData.mainLangId,
             statusId: StatusId.Active,
         });
         if (resData.status) {
@@ -136,7 +136,7 @@ export default class PageNavigationAdd extends Component<PageProps, PageState> {
                         }
                     };
 
-                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.pageData.mainLangId) {
+                    if (this.props.getStateApp.pageData.langId == this.props.getStateApp.appData.mainLangId) {
                         state.mainTitle = state.formData.contents.title || "";
                     }
 

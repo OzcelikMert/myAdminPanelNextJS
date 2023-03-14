@@ -19,9 +19,9 @@ import ProviderAppInit from "components/providers/app.init.provider";
 import Variable from "library/variable";
 import {ToastContainer} from "react-toastify";
 import MultiLanguagePaths from "constants/multiLanguagePaths";
+import {CurrencyId} from "constants/currencyTypes";
 
 type PageState = {
-    contentLanguages: LanguageGetResultDocument[],
     breadCrumbTitle: string
 } & AppAdminGetState;
 
@@ -37,12 +37,15 @@ class ComponentApp extends Component<PageProps, PageState> {
         this.pathname = this.props.router.asPath;
         this.state = {
             breadCrumbTitle: "",
-            contentLanguages: [],
             isAppLoading: true,
             isPageLoading: true,
-            pageData: {
-                langId: "",
+            appData: {
                 mainLangId: "",
+                contentLanguages: [],
+                currencyId: CurrencyId.TurkishLira
+            },
+            pageData: {
+                langId: ""
             },
             sessionData: {
                 id: "",
@@ -61,7 +64,7 @@ class ComponentApp extends Component<PageProps, PageState> {
             this.pathname = this.props.router.asPath;
             await this.onRouteChanged()
         }
-        if(prevState.isPageLoading && !this.state.isPageLoading){
+        if (prevState.isPageLoading && !this.state.isPageLoading) {
             window.scrollTo(0, 0);
             document.body.scrollTop = 0;
         }
@@ -74,7 +77,7 @@ class ComponentApp extends Component<PageProps, PageState> {
             this.setState({
                 pageData: {
                     ...this.state.pageData,
-                    langId: this.state.pageData.mainLangId
+                    langId: this.state.appData.mainLangId
                 }
             })
         })
@@ -116,8 +119,8 @@ class ComponentApp extends Component<PageProps, PageState> {
                             ? <div className="col-md-4 p-0 content-language">
                                 <ThemeContentLanguage
                                     t={props.t}
-                                    options={this.state.contentLanguages}
-                                    value={this.state.contentLanguages.findSingle("_id", this.state.pageData.langId)}
+                                    options={this.state.appData.contentLanguages}
+                                    value={this.state.appData.contentLanguages.findSingle("_id", this.state.pageData.langId)}
                                     onChange={(item, e) => this.setState((state: PageState) => {
                                         return {
                                             ...state,
@@ -140,7 +143,7 @@ class ComponentApp extends Component<PageProps, PageState> {
             return null;
         }
 
-        if(this.props.router.asPath === "/" || typeof this.props.pageProps.statusCode !== "undefined"){
+        if (this.props.router.asPath === "/" || typeof this.props.pageProps.statusCode !== "undefined") {
             this.props.router.push(PagePaths.dashboard());
             return null;
         }
@@ -163,23 +166,24 @@ class ComponentApp extends Component<PageProps, PageState> {
             <div>
                 <ComponentHead title={this.state.breadCrumbTitle}/>
                 <div className="container-scroller">
-                    <ToastContainer />
+                    <ToastContainer/>
                     {!isFullPageLayout ? <Navbar {...commonProps}/> : null}
                     <div className={`container-fluid page-body-wrapper ${isFullPageLayout ? "full-page-wrapper" : ""}`}>
                         {!isFullPageLayout ? <Sidebar {...commonProps}/> : null}
-                        {this.state.isPageLoading || this.state.isAppLoading ? <Spinner isFullPage={isFullPageLayout}/> : null}
+                        {this.state.isPageLoading || this.state.isAppLoading ?
+                            <Spinner isFullPage={isFullPageLayout}/> : null}
                         <ProviderAuth {...commonProps}>
                             <ProviderPermission {...commonProps}>
                                 <ProviderAppInit  {...commonProps}>
-                                        <div className="main-panel">
-                                            <div className="content-wrapper">
-                                                {
-                                                    !isFullPageLayout ? <this.PageHeader {...commonProps} />: null
-                                                }
-                                                <this.props.Component {...commonProps}/>
-                                            </div>
-                                            {!isFullPageLayout ? <Footer/> : ''}
+                                    <div className="main-panel">
+                                        <div className="content-wrapper">
+                                            {
+                                                !isFullPageLayout ? <this.PageHeader {...commonProps} /> : null
+                                            }
+                                            <this.props.Component {...commonProps}/>
                                         </div>
+                                        {!isFullPageLayout ? <Footer/> : ''}
+                                    </div>
                                 </ProviderAppInit>
                             </ProviderPermission>
                         </ProviderAuth>

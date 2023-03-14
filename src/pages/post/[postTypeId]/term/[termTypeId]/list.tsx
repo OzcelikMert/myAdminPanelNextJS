@@ -12,14 +12,13 @@ import Swal from "sweetalert2";
 import {PostTermGetResultDocument} from "types/services/postTerm";
 import postTermService from "services/postTerm.service";
 import imageSourceLib from "lib/imageSource.lib";
-import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
 import ThemeDataTable from "components/theme/table/dataTable";
 import Image from "next/image"
 import PostLib from "lib/post.lib";
 import postLib from "lib/post.lib";
-import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeBadgeStatus, {getStatusIcon} from "components/theme/badge/status";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
@@ -261,7 +260,7 @@ export default class PagePostTermList extends Component<PageProps, PageState> {
                     permissionLib.getPermissionIdForPostType(this.state.postTypeId, "Delete")
                 ) ? [StatusId.Deleted] : []
             )
-        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {

@@ -3,6 +3,7 @@ import {PagePropCommonDocument} from "types/pageProps";
 import languageService from "services/language.service";
 import settingService from "services/setting.service";
 import {StatusId} from "constants/status";
+import {CurrencyId} from "constants/currencyTypes";
 
 type PageState = {};
 
@@ -20,6 +21,7 @@ export default class ProviderAppInit extends Component<PageProps, PageState> {
         if(this.props.getStateApp.isAppLoading){
             await this.getContentLanguages();
             await this.getContentMainLanguage();
+            await this.getSettingECommerce();
             this.props.setStateApp({
                 isAppLoading: false
             })
@@ -30,7 +32,9 @@ export default class ProviderAppInit extends Component<PageProps, PageState> {
         let resData = await languageService.getMany({statusId: StatusId.Active});
         if (resData.status) {
             this.props.setStateApp({
-                contentLanguages: resData.data
+                appData: {
+                    contentLanguages: resData.data
+                }
             })
         }
     }
@@ -40,10 +44,24 @@ export default class ProviderAppInit extends Component<PageProps, PageState> {
         if (resData.status && resData.data) {
             let data = resData.data;
             this.props.setStateApp({
+                appData: {
+                  mainLangId: data.defaultLangId
+                },
                 pageData: {
-                    mainLangId: data.defaultLangId,
                     langId: data.defaultLangId
                 }
+            })
+        }
+    }
+
+    async getSettingECommerce() {
+        let resData = await settingService.get({projection: "eCommerce"});
+        if (resData.status && resData.data) {
+            let data = resData.data;
+            this.props.setStateApp({
+                appData: {
+                    currencyId: data.eCommerce?.currencyId || CurrencyId.TurkishLira
+                },
             })
         }
     }

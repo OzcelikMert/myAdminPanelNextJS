@@ -9,7 +9,7 @@ import {SubscriberGetResultDocument} from "types/services/subscriber";
 import subscriberService from "services/subscriber.service";
 import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
 import ThemeDataTable from "components/theme/table/dataTable";
-import classNameLib from "lib/className.lib";
+import {getStatusIcon} from "components/theme/badge/status";
 
 type PageState = {
     searchKey: string
@@ -108,7 +108,7 @@ export default class PageSubscribers extends Component<PageProps, PageState> {
         return Status.findMulti("id", [
                 StatusId.Deleted
             ]
-        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["items"][0]>[] {

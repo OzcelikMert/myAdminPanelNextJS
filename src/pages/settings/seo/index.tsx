@@ -20,7 +20,7 @@ class PageSettingsSEO extends Component<PageProps, PageState> {
             isSubmitting: false,
             formData: {
                 seoContents: {
-                    langId: this.props.getStateApp.pageData.mainLangId,
+                    langId: this.props.getStateApp.appData.mainLangId,
                     title: "",
                     content: "",
                     tags: [],

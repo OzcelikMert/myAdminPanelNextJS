@@ -10,13 +10,13 @@ import {
 import ThemeChooseImage from "components/theme/chooseImage";
 import userService from "services/user.service";
 import profileService from "services/profile.service";
-import classNameLib from "lib/className.lib";
 import imageSourceLib from "lib/imageSource.lib";
 import ThemeToast from "components/theme/toast";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import {ProfileUpdateParamDocument} from "types/services/profile";
 import Image from "next/image"
 import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeBadgeUserRole from "components/theme/badge/userRole";
 
 type PageState = {
     isSubmitting: boolean
@@ -161,12 +161,7 @@ export default class PageSettingsProfile extends Component<PageProps, PageState>
                         </div>
                         <div className="col-sm-12">
                             <span className="mb-2 fw-bold">{this.props.t("role")}:
-                                <label
-                                    className={`badge badge-gradient-${classNameLib.getUserRoles(this.state.data.roleId)} ms-1`}>
-                                    {
-                                        this.props.t(UserRoles.findSingle("id", this.state.data.roleId)?.langKey ?? "[noLangAdd]")
-                                    }
-                                </label>
+                                <ThemeBadgeUserRole t={this.props.t} userRoleId={this.state.data.roleId} />
                             </span>
                         </div>
                         <div className="col-sm-12">

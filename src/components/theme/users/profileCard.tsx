@@ -2,17 +2,17 @@ import React, {Component} from "react";
 import {Modal} from "react-bootstrap";
 import {
     LanguageId, PermissionGroups,
-    Permissions, Status,
-    StatusId, UserRoles,
+    Permissions,
+    StatusId
 } from "constants/index";
 import {UserDocument} from "types/models/user";
 import {PagePropCommonDocument} from "types/pageProps";
-import classNameLib from "lib/className.lib";
 import imageSourceLib from "lib/imageSource.lib";
 import {ThemeFieldSet} from "../form";
 import {PermissionDocument, PermissionGroupDocument} from "types/constants";
 import Image from "next/image"
 import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeBadgeUserRole from "components/theme/badge/userRole";
 
 type PageState = {};
 
@@ -62,12 +62,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                 </div>
                 <div className="col-sm-12">
                     <span className="mb-2 fw-bold">{this.props.t("role")}:
-                        <label
-                            className={`badge badge-gradient-${classNameLib.getUserRoles(this.props.userInfo.roleId)} ms-1`}>
-                            {
-                                this.props.t(UserRoles.findSingle("id", this.props.userInfo.roleId)?.langKey ?? "[noLangAdd]")
-                            }
-                        </label>
+                        <ThemeBadgeUserRole t={this.props.t} userRoleId={this.props.userInfo.roleId} />
                     </span>
                 </div>
                 <div className="col-sm-12">
@@ -82,7 +77,7 @@ class ThemeUsersProfileCard extends Component<PageProps, PageState> {
                                 <div className="row">
                                     <div className="col-sm-12">
                                         <p className="mb-2 fw-bold">{this.props.t("banDateEnd")}:
-                                            <h6 className="text-muted d-inline-block ms-1">{this.props.userInfo.banDateEnd?.toLocaleDateString() || ""}</h6>
+                                            <h6 className="text-muted d-inline-block ms-1">{new Date(this.props.userInfo.banDateEnd || "").toLocaleDateString() || ""}</h6>
                                         </p>
                                     </div>
                                     <div className="col-sm-12">

@@ -3,7 +3,6 @@ import {PermissionId, Status, StatusId} from "constants/index";
 import {PagePropCommonDocument} from "types/pageProps";
 import {TableColumn} from "react-data-table-component";
 import Swal from "sweetalert2";
-import classNameLib from "lib/className.lib";
 import permissionLib from "lib/permission.lib";
 import ThemeToast from "components/theme/toast";
 import ThemeDataTable from "components/theme/table/dataTable";
@@ -11,7 +10,7 @@ import {NavigationGetResultDocument} from "types/services/navigation";
 import navigationService from "services/navigation.service";
 import PagePaths from "constants/pagePaths";
 import {ThemeToggleMenuItemDocument} from "components/theme/table/toggleMenu";
-import ThemeBadgeStatus from "components/theme/badge/status";
+import ThemeBadgeStatus, {getStatusIcon} from "components/theme/badge/status";
 import ThemeTableUpdatedBy from "components/theme/table/updatedBy";
 import ThemeModalUpdateItemRank from "components/theme/modal/updateItemRank";
 
@@ -218,7 +217,7 @@ export default class PageNavigationList extends Component<PageProps, PageState> 
                     PermissionId.NavigationDelete
                 ) ? [StatusId.Deleted] : []
             )
-        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: classNameLib.getStatusIcon(item.id)}))
+        ).map(item => ({label: this.props.t(item.langKey), value: item.id, icon: getStatusIcon(item.id)}))
     }
 
     get getTableColumns(): TableColumn<PageState["showingItems"][0]>[] {
