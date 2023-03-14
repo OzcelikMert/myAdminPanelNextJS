@@ -98,6 +98,7 @@ export interface PostECommerceVariationDocument<T = string> {
     shipping: PostECommerceShippingDocument
     pricing: PostECommercePricingDocument
     isWarningForIsThereOther?: boolean
+    isDefault?: boolean
 }
 
 export interface PostECommerceVariationSelectedDocument<T = string> {

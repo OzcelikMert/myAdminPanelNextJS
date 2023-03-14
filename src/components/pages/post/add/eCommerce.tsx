@@ -12,6 +12,7 @@ import PagePostAdd, {PageState as PostPageState} from "pages/post/[postTypeId]/a
 import {AttributeTypeId} from "constants/attributeTypes";
 import dynamic from "next/dynamic";
 import ThemeToolTip from "components/theme/tooltip";
+import Swal from "sweetalert2";
 
 const ThemeRichTextBox = dynamic(() => import("components/theme/richTextBox").then((module) => module.default), {ssr: false});
 
@@ -29,6 +30,51 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
         this.state = {
             mainTabActiveKey: "options"
         }
+    }
+
+    componentDidMount() {
+        console.log(this.props.page.state)
+        this.findDefaultVariation();
+        this.findSameVariation();
+    }
+
+    findSameVariation() {
+        this.props.page.setState((state: PostPageState) => {
+            if (typeof state.formData.eCommerce !== "undefined") {
+                state.formData.eCommerce.variations = state.formData.eCommerce.variations?.map(variation => {
+                    let dataFilter = JSON.stringify(variation.selectedVariations.map(selectedVariation => ({
+                        variationId: selectedVariation.variationId,
+                        attributeId: selectedVariation.attributeId
+                    })));
+                    variation.isWarningForIsThereOther = state.formData.eCommerce?.variations?.some(variation_ => variation_._id != variation._id && JSON.stringify(variation_.selectedVariations.map(selectedVariation => ({
+                        variationId: selectedVariation.variationId,
+                        attributeId: selectedVariation.attributeId
+                    }))) == dataFilter);
+                    return variation;
+                })
+            }
+            return state;
+        })
+    }
+
+    findDefaultVariation() {
+        this.props.page.setState((state: PostPageState) => {
+            if (typeof state.formData.eCommerce !== "undefined") {
+                let dataFilter = JSON.stringify(state.formData.eCommerce.variationDefaults?.map(variationDefault => ({
+                    variationId: variationDefault.variationId,
+                    attributeId: variationDefault.attributeId
+                })));
+
+                state.formData.eCommerce.variations = state.formData.eCommerce.variations?.map(variation => {
+                    variation.isDefault = JSON.stringify(variation.selectedVariations.map(selectedVariation => ({
+                        variationId: selectedVariation.variationId,
+                        attributeId: selectedVariation.attributeId
+                    }))) == dataFilter;
+                    return variation;
+                })
+            }
+            return state;
+        })
     }
 
     onChange(data: any, key: any, value: any) {
@@ -105,13 +151,24 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
         })
     }
 
-    onDeleteVariation(index: number) {
-        this.props.page.setState((state: PostPageState) => {
-            if (typeof state.formData.eCommerce !== "undefined") {
-                state.formData.eCommerce.variations?.remove(index);
-            }
-            return state;
-        })
+    async onDeleteVariation(index: number) {
+        let result = await Swal.fire({
+            title: this.props.page.props.t("deleteAction"),
+            html: `${this.props.page.props.t("deleteSelectedItemsQuestion")}`,
+            confirmButtonText: this.props.page.props.t("yes"),
+            cancelButtonText: this.props.page.props.t("no"),
+            icon: "question",
+            showCancelButton: true,
+        });
+
+        if (result.isConfirmed) {
+            this.props.page.setState((state: PostPageState) => {
+                if (typeof state.formData.eCommerce !== "undefined") {
+                    state.formData.eCommerce.variations?.remove(index);
+                }
+                return state;
+            })
+        }
     }
 
     onChangeVariationAttributeChild(data: PostECommerceVariationDocument<string>, attributeId: string, value: string) {
@@ -126,11 +183,10 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         variationId: value
                     })
                 }
-
-                let dataSelectedVariationFilter = JSON.stringify(data.selectedVariations);
-                data.isWarningForIsThereOther = state.formData.eCommerce.variations?.some(variation => variation._id != data._id && JSON.stringify(variation.selectedVariations) == dataSelectedVariationFilter);
             }
             return state;
+        }, () => {
+            this.findSameVariation();
         })
     }
 
@@ -149,6 +205,8 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                 }
             }
             return state;
+        }, () => {
+            this.findDefaultVariation();
         })
     }
 
@@ -449,14 +507,24 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                             <div className="col-3 m-auto">
                                 <div className="row">
                                     <div className="col-md text-center text-md-end">
-                                        <button type="button" className="btn btn-gradient-danger btn-lg"
-                                                onClick={() => this.onDeleteVariation(index)}>
-                                            <i className="mdi mdi-trash-can"></i></button>
+                                        {
+                                            variation.isDefault
+                                                ? <ThemeToolTip message={this.props.page.props.t("default")}>
+                                                    <label className="badge badge-gradient-success pt-2 pb-2 ps-4 pe-4">
+                                                        <i className="mdi mdi-check"></i>
+                                                    </label>
+                                                </ThemeToolTip>
+                                                : <button type="button" className="btn btn-gradient-danger btn-lg"
+                                                          onClick={() => this.onDeleteVariation(index)}>
+                                                    <i className="mdi mdi-trash-can"></i>
+                                                </button>
+                                        }
                                     </div>
                                     {
                                         variation.isWarningForIsThereOther
                                             ? <div className="col-md text-center pt-1 mt-5 m-md-auto">
-                                                <ThemeToolTip message={this.props.page.props.t("sameVariationErrorMessage")}>
+                                                <ThemeToolTip
+                                                    message={this.props.page.props.t("sameVariationErrorMessage")}>
                                                     <div className="fs-4 cursor-pointer text-warning"><i
                                                         className="mdi mdi-alert-circle"></i></div>
                                                 </ThemeToolTip>
