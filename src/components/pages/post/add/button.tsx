@@ -48,7 +48,7 @@ export default class ComponentPagePostAddButton extends Component<PageProps, Pag
                     legendElement={<i className="mdi mdi-trash-can text-danger fs-3 cursor-pointer"
                                       onClick={() => this.onDelete(props.index)}></i>}
                 >
-                    <div className="row mt-3">
+                    <div className="row mt-2">
                         <div className="col-md-6">
                             <ThemeFormType
                                 type={"text"}

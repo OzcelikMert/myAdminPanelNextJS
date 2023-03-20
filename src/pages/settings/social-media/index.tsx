@@ -12,7 +12,6 @@ import { SettingSocialMediaDocument } from 'types/models/setting';
 type PageState = {
     isSubmitting: boolean
     formData: SettingUpdateSocialMediaParamDocument,
-    newItems: SettingSocialMediaDocument[]
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -22,7 +21,6 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
         super(props);
         this.state = {
             isSubmitting: false,
-            newItems: [],
             formData: {
                 socialMedia: []
             }
@@ -83,42 +81,33 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
 
     onCreate() {
         this.setState((state: PageState) => {
-            state.newItems.push({
+            state.formData.socialMedia = [{
                 _id: String.createId(),
                 elementId: "",
                 url: "",
                 title: ""
-            })
+            }, ...state.formData.socialMedia];
             return state;
         })
     }
 
-    onAccept(_id: string) {
+    onAccept(data: SettingSocialMediaDocument) {
         this.setState((state: PageState) => {
-            let findIndex = state.newItems.indexOfKey("_id", _id);
-            if (findIndex > -1) {
-                if (typeof state.formData.socialMedia === "undefined") {
-                    state.formData.socialMedia = [];
-                }
-                state.formData.socialMedia.push(state.newItems[findIndex]);
-                state.newItems.remove(findIndex);
-            }
-
+            data.isEditing = false;
             return state;
         })
     }
 
-    onDelete(data: any[], index: number) {
+    onDelete(data: SettingSocialMediaDocument[], index: number) {
         this.setState((state: PageState) => {
             data.remove(index);
             return state;
         })
     }
 
-    onEdit(data: any, index: number) {
+    onEdit(data: SettingSocialMediaDocument) {
         this.setState((state: PageState) => {
-            state.newItems.push(data[index]);
-            data.remove(index);
+            data.isEditing = true;
             return state;
         })
     }
@@ -132,11 +121,11 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
                         legendElement={
                             this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <i className="mdi mdi-pencil-box text-warning fs-3 cursor-pointer"
-                                     onClick={() => this.onEdit(this.state.formData.socialMedia, index)}></i>
+                                     onClick={() => this.onEdit(props)}></i>
                                 : undefined
                         }
                     >
-                        <div className="row mt-3">
+                        <div className="row mt-2">
                             <div className="col-md-12">
                                 <ThemeFormType
                                     type="url"
@@ -151,7 +140,7 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
             )
         }
 
-        const NewSocialMedia = (props: SettingSocialMediaDocument, index: number) => {
+        const EditSocialMedia = (props: SettingSocialMediaDocument, index: number) => {
             return (
                 <div className="col-md-12 mt-3">
                     <ThemeFieldSet legend={this.props.t("newSocialMedia")}>
@@ -174,9 +163,9 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
                             </div>
                             <div className="col-md-12 mt-3">
                                 <button type={"button"} className="btn btn-gradient-success btn-lg"
-                                        onClick={() => this.onAccept(props._id || "")}>{this.props.t("okay")}</button>
+                                        onClick={() => this.onAccept(props)}>{this.props.t("okay")}</button>
                                 <button type={"button"} className="btn btn-gradient-danger btn-lg"
-                                        onClick={() => this.onDelete(this.state.newItems, index)}>{this.props.t("delete")}</button>
+                                        onClick={() => this.onDelete(this.state.formData.socialMedia, index)}>{this.props.t("delete")}</button>
                             </div>
                         </div>
                     </ThemeFieldSet>
@@ -197,12 +186,11 @@ export default class PageSettingsSocialMedia extends Component<PageProps, PageSt
                 <div className="col-md-7 mt-2">
                     <div className="row">
                         {
-                            this.state.newItems.map((newItem, index) => NewSocialMedia(newItem, index))
-                        }
-                    </div>
-                    <div className="row">
-                        {
-                            this.state.formData.socialMedia?.map((item, index) => SocialMedia(item, index))
+                            this.state.formData.socialMedia?.map((item, index) =>
+                                item.isEditing
+                                    ? EditSocialMedia(item, index)
+                                    : SocialMedia(item, index)
+                            )
                         }
                     </div>
                 </div>

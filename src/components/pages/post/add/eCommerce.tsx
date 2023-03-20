@@ -143,7 +143,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                         isManageStock: false
                     },
                     contents: {
-                        langId: this.props.page.state.formData.contents.langId,
+                        langId: state.formData.contents.langId,
                     }
                 })
             }
@@ -790,9 +790,7 @@ export default class ComponentPagePostAddECommerce extends Component<PageProps, 
                 <div className="col-md-7 mt-3">
                     <Accordion flush>
                         {
-                            this.props.page.state.formData.eCommerce?.variations?.map((variation, index) => {
-                                return Variation(variation, index)
-                            })
+                            this.props.page.state.formData.eCommerce?.variations?.map((variation, index) => Variation(variation, index))
                         }
                     </Accordion>
                 </div>

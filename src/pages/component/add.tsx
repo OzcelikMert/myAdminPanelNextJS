@@ -168,7 +168,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
 
     onCreateType() {
         this.setState((state: PageState) => {
-            state.formData.types.push({
+            state.formData.types = [{
                 _id: String.createId(),
                 elementId: "",
                 rank: state.formData.types.length,
@@ -178,7 +178,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                     langId: this.props.getStateApp.pageData.langId,
                     content: ""
                 }
-            })
+            }, ...state.formData.types]
             return state;
         })
     }
@@ -306,9 +306,9 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                     <div className="row">
                         {
                             this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
-                                ? <div className="col-md-12">
+                                ? <div className="col-md-12 text-end">
                                     <button type={"button"} className="btn btn-gradient-danger btn-lg"
-                                            onClick={() => this.onDelete(this.state.formData.types, typeIndex)}>{this.props.t("delete")}</button>
+                                            onClick={() => this.onDelete(this.state.formData.types, typeIndex)}><i className="mdi mdi-trash-can-outline"></i> {this.props.t("delete")}</button>
                                 </div> : null
                         }
                         {
@@ -395,7 +395,7 @@ export default class PageComponentAdd extends Component<PageProps, PageState> {
                 <div className="col-md-7 mt-2">
                     <div className="row">
                         {
-                            this.state.formData.types?.orderBy("rank", "asc").map((type, index) => Type(type, index))
+                            this.state.formData.types?.map((type, index) => Type(type, index))
                         }
                     </div>
                 </div>

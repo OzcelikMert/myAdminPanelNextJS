@@ -1,20 +1,17 @@
 import React, {Component} from 'react'
 import {PagePropCommonDocument} from "types/pageProps";
-import {ThemeFieldSet, ThemeForm, ThemeFormSelect, ThemeFormType} from "components/theme/form";
-import {LanguageKeysArray, UserRoleId} from "constants/index";
+import {ThemeFieldSet, ThemeForm, ThemeFormType} from "components/theme/form";
+import {UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import ThemeToast from "components/theme/toast";
 import {
     SettingUpdateStaticLanguageParamDocument
 } from "types/services/setting";
-import {ThemeFormSelectValueDocument} from "components/theme/form/input/select";
 import {SettingStaticLanguageDocument} from "types/models/setting";
 
 type PageState = {
     isSubmitting: boolean
-    langKeys: ThemeFormSelectValueDocument[]
     formData: SettingUpdateStaticLanguageParamDocument,
-    newItems: SettingStaticLanguageDocument[]
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -24,8 +21,6 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             isSubmitting: false,
-            langKeys: [],
-            newItems: [],
             formData: {
                 staticLanguages: []
             }
@@ -34,7 +29,6 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
 
     async componentDidMount() {
         this.setPageTitle();
-        this.getLangKeys();
         await this.getSettings();
         this.props.setStateApp({
             isPageLoading: false
@@ -56,13 +50,6 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
 
     setPageTitle() {
         this.props.setBreadCrumb([this.props.t("settings"), this.props.t("staticLanguages")])
-    }
-
-    getLangKeys() {
-        this.setState((state: PageState) => {
-            state.langKeys = LanguageKeysArray.map(langKey => ({label: langKey, value: langKey}))
-            return state;
-        })
     }
 
     async getSettings() {
@@ -113,44 +100,37 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
 
     onCreate() {
         this.setState((state: PageState) => {
-            state.newItems.push({
+            state.formData.staticLanguages = [{
                 _id: String.createId(),
-                langKey: "[noLangAdd]",
+                isEditing: true,
+                langKey: "",
+                title: "",
                 contents: {
                     langId: this.props.getStateApp.pageData.langId,
                     content: ""
                 }
-            })
+            }, ...state.formData.staticLanguages]
             return state;
         })
     }
 
-    onAccept(_id: string) {
+    onAccept(data: SettingStaticLanguageDocument) {
         this.setState((state: PageState) => {
-            let findIndex = state.newItems.indexOfKey("_id", _id);
-            if (findIndex > -1) {
-                if (typeof state.formData.staticLanguages === "undefined") {
-                    state.formData.staticLanguages = [];
-                }
-                state.formData.staticLanguages.push(state.newItems[findIndex]);
-                state.newItems.remove(findIndex);
-            }
-
+            data.isEditing = false;
             return state;
         })
     }
 
-    onDelete(data: any[], index: number) {
+    onDelete(data: SettingStaticLanguageDocument[], index: number) {
         this.setState((state: PageState) => {
             data.remove(index);
             return state;
         })
     }
 
-    onEdit(data: any, index: number) {
+    onEdit(data: SettingStaticLanguageDocument, index: number) {
         this.setState((state: PageState) => {
-            state.newItems.push(data[index]);
-            data.remove(index);
+            data.isEditing = true;
             return state;
         })
     }
@@ -164,15 +144,15 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
                         legendElement={
                             this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <i className="mdi mdi-pencil-box text-warning fs-3 cursor-pointer"
-                                     onClick={() => this.onEdit(this.state.formData.staticLanguages, staticLanguageIndex)}></i>
+                                     onClick={() => this.onEdit(staticLanguageProps, staticLanguageIndex)}></i>
                                 : undefined
                         }
                     >
-                        <div className="row">
-                            <div className="col-md-12 mt-4">
+                        <div className="row mt-2">
+                            <div className="col-md-12">
                                 <ThemeFormType
                                     type="text"
-                                    title={this.props.t(staticLanguageProps.langKey)}
+                                    title={staticLanguageProps.title}
                                     value={staticLanguageProps.contents.content}
                                     onChange={e => this.onInputChange(staticLanguageProps.contents, "content", e.target.value)}
                                 />
@@ -183,26 +163,34 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
             )
         }
 
-        const NewStaticLanguage = (staticLanguageProps: SettingStaticLanguageDocument, staticLanguageIndex: number) => {
+        const EditStaticLanguage = (staticLanguageProps: SettingStaticLanguageDocument, staticLanguageIndex: number) => {
             return (
                 <div className="col-md-12 mt-3">
                     <ThemeFieldSet legend={this.props.t("newStaticLanguage")}>
                         <div className="row mt-3">
                             <div className="col-md-12">
-                                <ThemeFormSelect
-                                    title={`${this.props.t("key")}*`}
-                                    name="formData.langKey"
+                                <ThemeFormType
+                                    title={`${this.props.t("langKey")}*`}
                                     placeholder={this.props.t("langKey")}
-                                    options={this.state.langKeys}
-                                    value={this.state.langKeys?.findSingle("value", staticLanguageProps.langKey)}
-                                    onChange={(item: any, e) => this.onInputChange(staticLanguageProps, "langKey", item.value)}
+                                    type="text"
+                                    value={staticLanguageProps.langKey}
+                                    onChange={e => this.onInputChange(staticLanguageProps, "langKey", e.target.value)}
+                                />
+                            </div>
+                            <div className="col-md-12 mt-3">
+                                <ThemeFormType
+                                    title={`${this.props.t("title")}`}
+                                    placeholder={this.props.t("title")}
+                                    type="text"
+                                    value={staticLanguageProps.title}
+                                    onChange={e => this.onInputChange(staticLanguageProps, "title", e.target.value)}
                                 />
                             </div>
                             <div className="col-md-12 mt-3">
                                 <button type={"button"} className="btn btn-gradient-success btn-lg"
-                                        onClick={() => this.onAccept(staticLanguageProps._id || "")}>{this.props.t("okay")}</button>
+                                        onClick={() => this.onAccept(staticLanguageProps)}>{this.props.t("okay")}</button>
                                 <button type={"button"} className="btn btn-gradient-danger btn-lg"
-                                        onClick={() => this.onDelete(this.state.newItems, staticLanguageIndex)}>{this.props.t("delete")}</button>
+                                        onClick={() => this.onDelete(this.state.formData.staticLanguages, staticLanguageIndex)}><i className="mdi mdi-trash-can-outline"></i> {this.props.t("delete")}</button>
                             </div>
                         </div>
                     </ThemeFieldSet>
@@ -223,12 +211,10 @@ class PageSettingsStaticLanguages extends Component<PageProps, PageState> {
                 <div className="col-md-7 mt-2">
                     <div className="row">
                         {
-                            this.state.newItems.map((newItem, index) => NewStaticLanguage(newItem, index))
-                        }
-                    </div>
-                    <div className="row">
-                        {
-                            this.state.formData.staticLanguages?.map((item, index) => StaticLanguage(item, index))
+                            this.state.formData.staticLanguages?.map((item, index) =>
+                                item.isEditing
+                                    ? EditStaticLanguage(item, index)
+                                    : StaticLanguage(item, index))
                         }
                     </div>
                 </div>

@@ -5,12 +5,11 @@ import {UserRoleId} from "constants/index";
 import settingService from "services/setting.service";
 import ThemeToast from "components/theme/toast";
 import {SettingUpdateContactFormParamDocument} from "types/services/setting";
-import { SettingContactFormDocument } from 'types/models/setting';
+import {SettingContactFormDocument} from 'types/models/setting';
 
 type PageState = {
     isSubmitting: boolean
     formData: SettingUpdateContactFormParamDocument
-    newItems: SettingContactFormDocument[]
 };
 
 type PageProps = {} & PagePropCommonDocument;
@@ -20,7 +19,6 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
         super(props);
         this.state = {
             isSubmitting: false,
-            newItems: [],
             formData: {
                 contactForms: []
             }
@@ -79,7 +77,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
 
     onCreate() {
         this.setState((state: PageState) => {
-            state.newItems.push({
+            state.formData.contactForms = [{
                 _id: String.createId(),
                 key: "",
                 port: 465,
@@ -89,37 +87,28 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                 name: "",
                 password: "",
                 email: ""
-            })
+            }, ...state.formData.contactForms];
             return state;
         })
     }
 
-    onAccept(_id: string) {
+    onAccept(data: SettingContactFormDocument) {
         this.setState((state: PageState) => {
-            let findIndex = state.newItems.indexOfKey("_id", _id);
-            if (findIndex > -1) {
-                if (typeof state.formData.contactForms === "undefined") {
-                    state.formData.contactForms = [];
-                }
-                state.formData.contactForms.push(state.newItems[findIndex]);
-                state.newItems = state.newItems.filter(newItem => newItem._id != state.newItems[findIndex]._id);
-            }
-
+            data.isEditing = false;
             return state;
         })
     }
 
-    onDelete(data: any, index: number) {
+    onDelete(data: SettingContactFormDocument[], index: number) {
         this.setState((state: PageState) => {
             data.splice(index, 1);
             return state;
         })
     }
 
-    onEdit(data: any, index: number) {
+    onEdit(data: SettingContactFormDocument) {
         this.setState((state: PageState) => {
-            state.newItems.push(data[index]);
-            data.splice(index, 1);
+            data.isEditing = true;
             return state;
         })
     }
@@ -133,7 +122,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                         legendElement={
                             this.props.getStateApp.sessionData.roleId == UserRoleId.SuperAdmin
                                 ? <i className="mdi mdi-pencil-box text-warning fs-3 cursor-pointer"
-                                     onClick={() => this.onEdit(this.state.formData.contactForms, contactFormIndex)}></i>
+                                     onClick={() => this.onEdit(contactFormProps)}></i>
                                 : undefined
                         }
                     >
@@ -200,7 +189,7 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
             )
         }
 
-        const NewContactForm = (contactFormProps: SettingContactFormDocument, contactFormIndex: number) => {
+        const EditContactForm = (contactFormProps: SettingContactFormDocument, contactFormIndex: number) => {
             return (
                 <div className="col-md-12 mt-3">
                     <ThemeFieldSet legend={this.props.t("newContactForm")}>
@@ -216,9 +205,9 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                             </div>
                             <div className="col-md-12 mt-3">
                                 <button type={"button"} className="btn btn-gradient-success btn-lg"
-                                        onClick={() => this.onAccept(contactFormProps._id || "")}>{this.props.t("okay")}</button>
+                                        onClick={() => this.onAccept(contactFormProps)}>{this.props.t("okay")}</button>
                                 <button type={"button"} className="btn btn-gradient-danger btn-lg"
-                                        onClick={() => this.onDelete(this.state.newItems, contactFormIndex)}>{this.props.t("delete")}</button>
+                                        onClick={() => this.onDelete(this.state.formData.contactForms, contactFormIndex)}>{this.props.t("delete")}</button>
                             </div>
                         </div>
                     </ThemeFieldSet>
@@ -239,12 +228,10 @@ class PageSettingsContactForms extends Component<PageProps, PageState> {
                 <div className="col-md-7 mt-2">
                     <div className="row">
                         {
-                            this.state.newItems.map((newItem, index) => NewContactForm(newItem, index))
-                        }
-                    </div>
-                    <div className="row">
-                        {
-                            this.state.formData.contactForms?.map((item, index) => ContactForm(item, index))
+                            this.state.formData.contactForms?.map((item, index) =>
+                                item.isEditing
+                                    ? EditContactForm(item, index)
+                                    : ContactForm(item, index))
                         }
                     </div>
                 </div>

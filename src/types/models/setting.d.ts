@@ -32,6 +32,7 @@ export interface SettingSocialMediaDocument {
     elementId: string
     title: string
     url: string
+    isEditing?: boolean
 }
 
 export interface SettingContactFormDocument {
@@ -44,6 +45,7 @@ export interface SettingContactFormDocument {
     outGoingServer: string
     inComingServer: string
     port: number
+    isEditing?: boolean
 }
 
 export interface SettingSeoContentDocument {
@@ -56,8 +58,10 @@ export interface SettingSeoContentDocument {
 
 export interface SettingStaticLanguageDocument {
     _id?: string
-    langKey: LanguageKeys,
+    langKey: string,
+    title: string
     contents: SettingStaticLanguageContentDocument
+    isEditing?: boolean
 }
 
 export interface SettingStaticLanguageContentDocument {
