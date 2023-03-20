@@ -51,5 +51,6 @@ Things to do:
 + tum loglari temizle
 + Panelin Dark ve Light temasini next-themes kullanarak yapmaya calis yada ona benzer bir algoritma kur (https://www.npmjs.com/package/next-themes | https://next-themes-example.vercel.app)
 + Ecommerce Shipping costu ekle
-- Element olusturulan sayfalarda newItems methodu yerine formdatadaki metodlari kullan isEditing diye param ekle ona gore editable olup olmadigini kontrol et
++ Element olusturulan sayfalarda newItems methodu yerine formdatadaki metodlari kullan isEditing diye param ekle ona gore editable olup olmadigini kontrol et
+- Diller icin export import yap
 - Yaptigin tum guncellemelerin hata kontrolunu yap
